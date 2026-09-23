@@ -1,11 +1,33 @@
 "use client";
 
+import { useRef } from "react";
 import { Check, Eye, Lightbulb, X } from "lucide-react";
 import type { ExerciseTask } from "@/content/types";
 import { Markdown } from "@/components/content/Markdown";
 import { useExerciseState } from "@/hooks/useExerciseState";
 import { emptyTaskState, gradeTask, taskKey, type SelfMark } from "@/lib/exercises";
 import { cn } from "@/lib/cn";
+
+const ALGEBRA_SYMBOLS = [
+  { symbol: "Π", label: "projection" },
+  { symbol: "σ", label: "selection" },
+  { symbol: "ρ", label: "rename" },
+  { symbol: "⋈", label: "join" },
+  { symbol: "⋉", label: "left semi-join" },
+  { symbol: "⋊", label: "right semi-join" },
+  { symbol: "∪", label: "union" },
+  { symbol: "∩", label: "intersection" },
+  { symbol: "−", label: "difference" },
+  { symbol: "×", label: "cross product" },
+  { symbol: "∧", label: "and" },
+  { symbol: "∨", label: "or" },
+  { symbol: "¬", label: "not" },
+  { symbol: "≠", label: "not equal" },
+  { symbol: "≤", label: "less or equal" },
+  { symbol: "≥", label: "greater or equal" },
+  { symbol: "⊆", label: "subset of" },
+  { symbol: "κ", label: "key candidate" },
+];
 
 const SELF_MARKS: { id: SelfMark; label: string; tone: string }[] = [
   { id: "correct", label: "Got it", tone: "border-positive/40 bg-positive-soft text-positive" },
@@ -21,10 +43,25 @@ interface ExerciseAnswerProps {
 
 export function ExerciseAnswer({ sheetId, task, index }: ExerciseAnswerProps) {
   const { state, setValue, toggleOption, reveal, setSelfMark, update } = useExerciseState();
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const key = taskKey(sheetId, task.id);
   const taskState = state[key] ?? emptyTaskState;
   const verdict = gradeTask(task.check, taskState);
   const showVerdict = taskState.checked && (verdict === "correct" || verdict === "incorrect");
+
+  const insertSymbol = (symbol: string) => {
+    const field = textareaRef.current;
+    if (!field) return;
+
+    const start = field.selectionStart ?? field.value.length;
+    const end = field.selectionEnd ?? start;
+    setValue(key, `${field.value.slice(0, start)}${symbol}${field.value.slice(end)}`);
+
+    requestAnimationFrame(() => {
+      field.focus();
+      field.setSelectionRange(start + symbol.length, start + symbol.length);
+    });
+  };
 
   return (
     <li className="grid gap-3 border-t border-line pt-4 first:border-0 first:pt-0">
@@ -73,13 +110,32 @@ export function ExerciseAnswer({ sheetId, task, index }: ExerciseAnswerProps) {
             className="w-full max-w-sm rounded-xl border border-line bg-surface px-3 py-2 font-mono text-sm outline-none transition-colors focus:border-brand/60 placeholder:text-faint"
           />
         ) : (
-          <textarea
-            value={taskState.value}
-            rows={4}
-            placeholder="Write your answer here — it is saved in this browser."
-            onChange={(event) => setValue(key, event.target.value)}
-            className="w-full resize-y rounded-xl border border-line bg-surface px-3 py-2 text-sm outline-none transition-colors focus:border-brand/60 placeholder:text-faint"
-          />
+          <div className="grid gap-1.5">
+            {task.check.palette === "algebra" ? (
+              <div className="flex flex-wrap gap-1">
+                {ALGEBRA_SYMBOLS.map(({ symbol, label }) => (
+                  <button
+                    key={symbol}
+                    type="button"
+                    title={label}
+                    aria-label={`Insert ${label}`}
+                    onClick={() => insertSymbol(symbol)}
+                    className="grid size-7 place-items-center rounded-md border border-line bg-sunken text-sm text-muted transition-colors hover:border-brand/40 hover:bg-brand-soft hover:text-brand"
+                  >
+                    {symbol}
+                  </button>
+                ))}
+              </div>
+            ) : null}
+            <textarea
+              ref={textareaRef}
+              value={taskState.value}
+              rows={4}
+              placeholder="Write your answer here — it is saved in this browser."
+              onChange={(event) => setValue(key, event.target.value)}
+              className="w-full resize-y rounded-xl border border-line bg-surface px-3 py-2 text-sm outline-none transition-colors focus:border-brand/60 placeholder:text-faint"
+            />
+          </div>
         )}
 
         <div className="flex flex-wrap items-center gap-2">
