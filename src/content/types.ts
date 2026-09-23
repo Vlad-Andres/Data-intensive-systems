@@ -11,6 +11,7 @@ export type SectionKind =
   | "examples"
   | "mistakes"
   | "quiz"
+  | "exercises"
   | "summary";
 
 export interface SectionOutline {
@@ -63,6 +64,34 @@ export interface QuizQuestion {
 
 export type InfoVariant = "note" | "insight" | "warning" | "pitfall";
 
+export type ExerciseCheck =
+  | { mode: "open" }
+  | { mode: "text"; accept: string[]; placeholder?: string }
+  | { mode: "select"; options: string[]; answer: string[] };
+
+export interface ExerciseTask {
+  id: string;
+  prompt: string;
+  check: ExerciseCheck;
+  solution: string;
+  hint?: string;
+}
+
+export interface Exercise {
+  id: string;
+  title: string;
+  intro?: string;
+  tasks: ExerciseTask[];
+}
+
+export interface ExerciseSheet {
+  id: string;
+  title: string;
+  description: string;
+  source: string;
+  exercises: Exercise[];
+}
+
 export type Block =
   | { kind: "prose"; md: string }
   | { kind: "info"; variant: InfoVariant; title: string; md: string }
@@ -73,7 +102,8 @@ export type Block =
   | { kind: "steps"; title: string; intro?: string; steps: WorkedStep[] }
   | { kind: "timeline"; items: TimelineItem[] }
   | { kind: "interactive"; title: string; description?: string; component: ComponentType }
-  | { kind: "list"; variant: "objectives" | "takeaways"; items: string[] };
+  | { kind: "list"; variant: "objectives" | "takeaways"; items: string[] }
+  | { kind: "exercises"; sheet: ExerciseSheet };
 
 export interface WorkedStep {
   title: string;

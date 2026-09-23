@@ -4,7 +4,7 @@ import { CourseOverview } from "@/components/home/CourseOverview";
 import { LectureCard } from "@/components/home/LectureCard";
 import { ProgressSummary } from "@/components/home/ProgressSummary";
 import { Card } from "@/components/ui/Card";
-import { lectureIndex, lectureMetas } from "@/content/registry";
+import { countExercises, lectureIndex, lectureMetas } from "@/content/registry";
 
 const PRINCIPLES = [
   {
@@ -47,6 +47,7 @@ export default function HomePage() {
               meta={entry.meta}
               conceptCount={entry.concepts.length}
               quizCount={entry.quiz.length}
+              exerciseCount={countExercises(entry)}
             />
           ))}
 

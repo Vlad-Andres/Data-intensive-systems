@@ -1,7 +1,6 @@
-import { BookOpen, Compass, ListChecks, Timer } from "lucide-react";
-import type { LectureIndexEntry } from "@/content/registry";
+import { BookOpen, Compass, ListChecks, PencilRuler } from "lucide-react";
+import { countExercises, type LectureIndexEntry } from "@/content/registry";
 import { Badge } from "@/components/ui/Badge";
-import { formatMinutes } from "@/lib/format";
 
 interface CourseOverviewProps {
   entries: LectureIndexEntry[];
@@ -21,9 +20,9 @@ export function CourseOverview({ entries }: CourseOverviewProps) {
       value: String(entries.reduce((sum, entry) => sum + entry.quiz.length, 0)),
     },
     {
-      icon: Timer,
-      label: "Study time",
-      value: formatMinutes(entries.reduce((sum, entry) => sum + entry.meta.estimatedMinutes, 0)),
+      icon: PencilRuler,
+      label: "Exercises",
+      value: String(entries.reduce((sum, entry) => sum + countExercises(entry), 0)),
     },
   ];
 

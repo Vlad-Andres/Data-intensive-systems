@@ -1,4 +1,5 @@
 import type { Block, SectionBlocks } from "@/content/types";
+import { sheet01 } from "./exercises";
 import { lecture02Meta, lecture02Outline } from "./meta";
 import { FragmentationLab } from "./interactive/FragmentationLab";
 import { GreenplumExplorer } from "./interactive/GreenplumExplorer";
@@ -537,6 +538,14 @@ const summary: Block[] = [
   },
 ];
 
+const exercises: Block[] = [
+  {
+    kind: "prose",
+    md: "The homework sheet for this lecture. Every part has the official solution behind a reveal, and the ones with a definite answer — quorum sets, hash values, bit vectors, byte counts — are graded here as soon as you press **Check answer**.\n\nYour answers are saved in this browser, so you can leave and come back. For the open questions, write the answer out before revealing the solution: the self-assessment afterwards is only useful if you committed to something first.",
+  },
+  { kind: "exercises", sheet: sheet01 },
+];
+
 export const lecture02Blocks: SectionBlocks<typeof lecture02Outline> = {
   objectives,
   "why-clusters": whyClusters,
@@ -553,4 +562,5 @@ export const lecture02Blocks: SectionBlocks<typeof lecture02Outline> = {
   mistakes,
   quiz,
   summary,
+  exercises,
 };

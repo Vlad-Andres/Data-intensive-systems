@@ -12,6 +12,7 @@ const KIND_LABEL: Record<SectionKind, string> = {
   examples: "Worked examples",
   mistakes: "Common mistakes",
   quiz: "Check understanding",
+  exercises: "Practice",
   summary: "Summary",
 };
 
