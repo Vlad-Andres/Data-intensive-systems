@@ -2,6 +2,7 @@ import type { Block, Concept } from "@/content/types";
 import { CodeBlock } from "@/components/content/CodeBlock";
 import { ConceptCard } from "@/components/content/ConceptCard";
 import { DataTable } from "@/components/content/DataTable";
+import { ExerciseSheetView } from "@/components/content/ExerciseSheetView";
 import { Formula } from "@/components/content/Formula";
 import { HighlightList } from "@/components/content/HighlightList";
 import { InfoBox } from "@/components/content/InfoBox";
@@ -58,6 +59,9 @@ export function BlockRenderer({ block, concepts }: BlockRendererProps) {
 
     case "list":
       return <HighlightList variant={block.variant} items={block.items} />;
+
+    case "exercises":
+      return <ExerciseSheetView sheet={block.sheet} />;
 
     case "interactive": {
       const Interactive = block.component;

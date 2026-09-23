@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, BookOpen, Clock, ListChecks } from "lucide-react";
+import { ArrowRight, BookOpen, Clock, ListChecks, PencilRuler } from "lucide-react";
 import type { LectureMeta } from "@/content/types";
 import { Badge, type BadgeTone } from "@/components/ui/Badge";
 import { Card } from "@/components/ui/Card";
@@ -20,9 +20,10 @@ interface LectureCardProps {
   meta: LectureMeta;
   conceptCount: number;
   quizCount: number;
+  exerciseCount: number;
 }
 
-export function LectureCard({ meta, conceptCount, quizCount }: LectureCardProps) {
+export function LectureCard({ meta, conceptCount, quizCount, exerciseCount }: LectureCardProps) {
   const { progress } = useProgress();
   const stats = lectureStats(progress, meta);
 
@@ -69,6 +70,12 @@ export function LectureCard({ meta, conceptCount, quizCount }: LectureCardProps)
           <ListChecks size={13} aria-hidden />
           {quizCount} questions
         </span>
+        {exerciseCount > 0 ? (
+          <span className="flex items-center gap-1.5">
+            <PencilRuler size={13} aria-hidden />
+            {exerciseCount} exercises
+          </span>
+        ) : null}
         <span className="ml-auto flex items-center gap-1 font-medium text-brand">
           {stats.started ? "Continue" : "Start"}
           <ArrowRight size={13} className="transition-transform group-hover:translate-x-0.5" aria-hidden />

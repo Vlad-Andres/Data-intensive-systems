@@ -16,6 +16,7 @@ export const lecture02Outline = [
   { id: "mistakes", title: "Common mistakes", kind: "mistakes" },
   { id: "quiz", title: "Check your understanding", kind: "quiz" },
   { id: "summary", title: "Cheat sheet", kind: "summary" },
+  { id: "exercises", title: "Exercise sheet 01", kind: "exercises" },
 ] as const satisfies readonly SectionOutline[];
 
 export type Lecture02SectionId = (typeof lecture02Outline)[number]["id"];
