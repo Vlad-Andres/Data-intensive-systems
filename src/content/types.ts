@@ -65,7 +65,7 @@ export interface QuizQuestion {
 export type InfoVariant = "note" | "insight" | "warning" | "pitfall";
 
 export type ExerciseCheck =
-  | { mode: "open" }
+  | { mode: "open"; palette?: "algebra" }
   | { mode: "text"; accept: string[]; placeholder?: string }
   | { mode: "select"; options: string[]; answer: string[] };
 

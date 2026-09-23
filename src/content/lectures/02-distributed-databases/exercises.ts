@@ -63,7 +63,7 @@ The query to translate:
         {
           id: "hw1-a",
           prompt: "Translate the query into the **canonical form** over the fragments — reconstruct the relation first, then apply the query.",
-          check: { mode: "open" },
+          check: { mode: "open", palette: "algebra" },
           hint: "Rebuild Profs from its three horizontal fragments with ∪, then rebuild Professors by joining that to ProfVerw on PersNr. Only then apply the selection and the projection.",
           solution: `$\\Pi_{Name, Salary, Level}\\Big(\\sigma_{Salary > 80000}\\big(\\text{ProfVerw} \\bowtie_{PersNr = PersNr} (\\text{TheolProfs} \\cup \\text{PhysikProfs} \\cup \\text{PhiloProfs})\\big)\\Big)$
 
@@ -79,7 +79,7 @@ This is correct but wasteful: the whole relation is reconstructed before a singl
         {
           id: "hw1-b",
           prompt: "Now **optimize** the plan using algebraic transformation rules. Name the rules you apply.",
-          check: { mode: "open" },
+          check: { mode: "open", palette: "algebra" },
           hint: "Two moves: push the selection down towards the table scans, and insert extra projections to keep intermediate results small. Which attribute is stored redundantly in both vertical fragments?",
           solution: `$\\Pi_{Name, Salary, Level}\\Big(\\Pi_{PersNr, Name, Salary}\\big(\\sigma_{Salary > 80000}(\\text{ProfVerw})\\big) \\bowtie_{PersNr = PersNr} \\big(\\Pi_{PersNr, Level}(\\text{TheolProfs}) \\cup \\Pi_{PersNr, Level}(\\text{PhysikProfs}) \\cup \\Pi_{PersNr, Level}(\\text{PhiloProfs})\\big)\\Big)$
 
@@ -178,7 +178,7 @@ need not hold, where $\\kappa$ is a key candidate of $R$.`,
         {
           id: "hw3-a",
           prompt: "Give an illustrative example, preferably based on the professors relation.",
-          check: { mode: "open" },
+          check: { mode: "open", palette: "algebra" },
           hint: "Build a chain: fragment 1 and fragment 2 share one key, fragment 2 and fragment 3 share a different one. The reconstruction is then a chain of joins, and no attribute is common to all three.",
           solution: `Take the professors relation and split it into three fragments that form a **chain** rather than a star (primary keys underlined):
 
