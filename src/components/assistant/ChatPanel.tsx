@@ -5,7 +5,7 @@ import { ArrowUp, Quote, RotateCcw, Settings2, Sparkles, Square, X } from "lucid
 import { Markdown } from "@/components/content/Markdown";
 import { ConnectForm } from "@/components/assistant/ConnectForm";
 import type { ChatTurn } from "@/hooks/useAssistantChat";
-import { ASSISTANT_MODELS, type AssistantModelId } from "@/lib/assistant/claude";
+import { ASSISTANT_MODEL_LABEL } from "@/lib/assistant/claude";
 import { clearApiKey, type KeyStatus } from "@/lib/assistant/credentials";
 import type { AssistantSelection } from "@/lib/assistant/prompt";
 import { cn } from "@/lib/cn";
@@ -18,8 +18,6 @@ interface ChatPanelProps {
   busy: boolean;
   pending?: AssistantSelection;
   keyStatus: KeyStatus;
-  model: AssistantModelId;
-  onModelChange: (model: AssistantModelId) => void;
   onClearPending: () => void;
   onSend: (question: string) => void;
   onStop: () => void;
@@ -78,8 +76,6 @@ export function ChatPanel({
   busy,
   pending,
   keyStatus,
-  model,
-  onModelChange,
   onClearPending,
   onSend,
   onStop,
@@ -169,30 +165,10 @@ export function ChatPanel({
         <ConnectForm />
       ) : view === "settings" ? (
         <div className="grid content-start gap-4 overflow-y-auto p-4">
-          <fieldset className="grid gap-2">
-            <legend className="mb-1 text-xs font-semibold tracking-wide text-faint uppercase">Model</legend>
-            {ASSISTANT_MODELS.map((option) => (
-              <label
-                key={option.id}
-                className={cn(
-                  "flex cursor-pointer items-start gap-2.5 rounded-xl border px-3 py-2.5 transition-colors",
-                  model === option.id ? "border-brand/50 bg-brand-soft/60" : "border-line hover:border-brand/30",
-                )}
-              >
-                <input
-                  type="radio"
-                  name="assistant-model"
-                  checked={model === option.id}
-                  onChange={() => onModelChange(option.id)}
-                  className="mt-1 accent-brand"
-                />
-                <span className="grid">
-                  <span className="text-sm font-medium text-ink">{option.label}</span>
-                  <span className="text-xs text-faint">{option.detail}</span>
-                </span>
-              </label>
-            ))}
-          </fieldset>
+          <p className="text-sm text-muted">
+            Answers come from <span className="font-medium text-ink">{ASSISTANT_MODEL_LABEL}</span> at
+            the lowest effort setting, which keeps them quick and inexpensive.
+          </p>
 
           <div className="grid gap-2 rounded-xl border border-line bg-sunken px-3 py-2.5">
             <p className="text-sm text-muted">

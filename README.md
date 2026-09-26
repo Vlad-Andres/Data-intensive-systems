@@ -110,8 +110,7 @@ lecture.
   worked examples, glossary, quiz answers and exercise solutions — at build time. It is sent as a
   system block with a one-hour prompt-cache breakpoint, so follow-up questions read it from the
   cache.
-- **Model.** Claude Opus 5 by default at `medium` effort, with server-side refusal fallbacks;
-  Sonnet 5 and Haiku 4.5 can be picked in the assistant's settings.
+- **Model.** Claude Sonnet 5 at `low` effort, to keep answers quick and inexpensive.
 
 ## Deployment
 

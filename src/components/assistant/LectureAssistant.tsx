@@ -5,7 +5,7 @@ import { Sparkles } from "lucide-react";
 import { ChatPanel } from "@/components/assistant/ChatPanel";
 import { SelectionPill } from "@/components/assistant/SelectionPill";
 import { useAssistantChat } from "@/hooks/useAssistantChat";
-import { useAssistantSettings } from "@/hooks/useAssistantSettings";
+import { useApiKeyStatus } from "@/hooks/useApiKeyStatus";
 import { useTextSelection } from "@/hooks/useTextSelection";
 import type { AssistantSelection } from "@/lib/assistant/prompt";
 
@@ -19,8 +19,8 @@ interface LectureAssistantProps {
 export function LectureAssistant({ slug, label, context, sectionTitles }: LectureAssistantProps) {
   const [open, setOpen] = useState(false);
   const [pending, setPending] = useState<AssistantSelection>();
-  const { keyStatus, model, setModel } = useAssistantSettings();
-  const chat = useAssistantChat(slug, context, model);
+  const keyStatus = useApiKeyStatus();
+  const chat = useAssistantChat(slug, context);
   const { anchor, clear } = useTextSelection("[data-assistant-scope]", sectionTitles);
 
   const close = useCallback(() => setOpen(false), []);
@@ -45,8 +45,6 @@ export function LectureAssistant({ slug, label, context, sectionTitles }: Lectur
           busy={chat.busy}
           pending={pending}
           keyStatus={keyStatus}
-          model={model}
-          onModelChange={setModel}
           onClearPending={() => setPending(undefined)}
           onSend={(question) => {
             void chat.send(question, pending);

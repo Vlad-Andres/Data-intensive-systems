@@ -17,7 +17,7 @@ The full lecture is provided below inside <lecture> tags: every section, the wor
 
 Keep responses focused, brief, and concise to avoid overwhelming the person. Disclaimers and caveats are brief, with most of the response on the main answer; when asked to explain something, give a high-level summary unless an in-depth one is specifically requested.`;
 
-export function buildSystem(lectureContext: string): Anthropic.Beta.BetaTextBlockParam[] {
+export function buildSystem(lectureContext: string): Anthropic.TextBlockParam[] {
   return [
     { type: "text", text: INSTRUCTIONS },
     {

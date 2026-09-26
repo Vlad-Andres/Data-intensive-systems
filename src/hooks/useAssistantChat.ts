@@ -2,12 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type Anthropic from "@anthropic-ai/sdk";
-import {
-  AssistantError,
-  streamReply,
-  type AssistantErrorKind,
-  type AssistantModelId,
-} from "@/lib/assistant/claude";
+import { AssistantError, streamReply, type AssistantErrorKind } from "@/lib/assistant/claude";
 import { readApiKey } from "@/lib/assistant/credentials";
 import { buildSystem, formatQuestion, type AssistantSelection } from "@/lib/assistant/prompt";
 
@@ -25,8 +20,8 @@ export interface ChatTurn {
 
 const conversations = new Map<string, ChatTurn[]>();
 
-function toMessages(turns: ChatTurn[]): Anthropic.Beta.BetaMessageParam[] {
-  return turns.flatMap<Anthropic.Beta.BetaMessageParam>((turn) => {
+function toMessages(turns: ChatTurn[]): Anthropic.MessageParam[] {
+  return turns.flatMap<Anthropic.MessageParam>((turn) => {
     if (turn.role === "user") {
       return [{ role: "user", content: formatQuestion(turn.text, turn.selection) }];
     }
@@ -35,7 +30,7 @@ function toMessages(turns: ChatTurn[]): Anthropic.Beta.BetaMessageParam[] {
   });
 }
 
-export function useAssistantChat(slug: string, lectureContext: string, model: AssistantModelId) {
+export function useAssistantChat(slug: string, lectureContext: string) {
   const [turns, setTurns] = useState<ChatTurn[]>(() => conversations.get(slug) ?? []);
   const controller = useRef<AbortController | null>(null);
   const system = useMemo(() => buildSystem(lectureContext), [lectureContext]);
@@ -71,7 +66,6 @@ export function useAssistantChat(slug: string, lectureContext: string, model: As
       try {
         const reply = await streamReply({
           apiKey,
-          model,
           system,
           messages: toMessages(history),
           signal: request.signal,
@@ -92,7 +86,7 @@ export function useAssistantChat(slug: string, lectureContext: string, model: As
         if (controller.current === request) controller.current = null;
       }
     },
-    [busy, turns, model, system, updateTurn],
+    [busy, turns, system, updateTurn],
   );
 
   const stop = useCallback(() => controller.current?.abort(), []);
