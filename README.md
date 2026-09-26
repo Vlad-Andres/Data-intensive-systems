@@ -90,6 +90,28 @@ Progress (sections read, best quiz score) and the theme live in `localStorage` b
 sync and server rendering is unaffected. A small inline script in the root layout applies the
 stored theme before first paint. Nothing leaves the browser.
 
+### Ask AI
+
+Every lecture page has an assistant: select any text and an **Ask AI** button appears next to it,
+or use the button in the corner for general questions. Answers are grounded in that lecture.
+
+- **Model.** Gemini 3.8 Flash at its lowest thinking level, through Google's official
+  `@google/genai` SDK. Its free tier costs nothing and scores at or above Claude Sonnet 5 on
+  independent benchmarks; on the free tier Google may use prompts to improve its products.
+- **No server.** The browser calls `generativelanguage.googleapis.com` directly with the reader's
+  own key from Google AI Studio. The SDK is code-split and only downloaded when the assistant is
+  first used.
+- **Key storage.** Kept in `sessionStorage` by default (gone when the tab closes); "Remember on
+  this device" moves it to `localStorage`. The key is verified before it is stored and is only
+  ever sent in the request header to Google.
+- **Content Security Policy.** Production builds ship a CSP meta tag (`src/lib/security.ts`) whose
+  `connect-src` and `img-src` only allow this origin and the Gemini API, so injected code could
+  not send the key anywhere else. `script-src` needs `'unsafe-inline'` because a static export
+  cannot use nonces.
+- **Context.** `src/lib/assistant/lectureContext.ts` serialises the whole lecture — sections,
+  worked examples, glossary, quiz answers and exercise solutions — at build time and sends it as
+  the system instruction.
+
 ## Deployment
 
 `.github/workflows/deploy.yml` builds the site and publishes `./out` to GitHub Pages on every
