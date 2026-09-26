@@ -1,8 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import type Anthropic from "@anthropic-ai/sdk";
-import { AssistantError, streamReply, type AssistantErrorKind } from "@/lib/assistant/claude";
+import type { Content } from "@google/genai";
+import { AssistantError, streamReply, type AssistantErrorKind } from "@/lib/assistant/gemini";
 import { readApiKey } from "@/lib/assistant/credentials";
 import { buildSystem, formatQuestion, type AssistantSelection } from "@/lib/assistant/prompt";
 
@@ -20,13 +20,13 @@ export interface ChatTurn {
 
 const conversations = new Map<string, ChatTurn[]>();
 
-function toMessages(turns: ChatTurn[]): Anthropic.MessageParam[] {
-  return turns.flatMap<Anthropic.MessageParam>((turn) => {
+function toContents(turns: ChatTurn[]): Content[] {
+  return turns.flatMap<Content>((turn) => {
     if (turn.role === "user") {
-      return [{ role: "user", content: formatQuestion(turn.text, turn.selection) }];
+      return [{ role: "user", parts: [{ text: formatQuestion(turn.text, turn.selection) }] }];
     }
     const text = turn.text.trim();
-    return text && turn.status !== "error" ? [{ role: "assistant", content: text }] : [];
+    return text && turn.status !== "error" ? [{ role: "model", parts: [{ text }] }] : [];
   });
 }
 
@@ -67,9 +67,8 @@ export function useAssistantChat(slug: string, lectureContext: string) {
         const reply = await streamReply({
           apiKey,
           system,
-          messages: toMessages(history),
+          contents: toContents(history),
           signal: request.signal,
-          onThinking: () => updateTurn(assistantTurn.id, { status: "thinking" }),
           onText: (text) => updateTurn(assistantTurn.id, { text, status: "streaming" }),
         });
         updateTurn(assistantTurn.id, { text: reply.text, status: reply.truncated ? "truncated" : "done" });

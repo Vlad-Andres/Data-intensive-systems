@@ -1,4 +1,4 @@
-const STORAGE_KEY = "dis-playground:anthropic-api-key";
+const STORAGE_KEY = "dis-playground:gemini-api-key";
 
 export type KeyPersistence = "session" | "device";
 export type KeyStatus = "none" | KeyPersistence;

@@ -5,7 +5,7 @@ import { ArrowUp, Quote, RotateCcw, Settings2, Sparkles, Square, X } from "lucid
 import { Markdown } from "@/components/content/Markdown";
 import { ConnectForm } from "@/components/assistant/ConnectForm";
 import type { ChatTurn } from "@/hooks/useAssistantChat";
-import { ASSISTANT_MODEL_LABEL } from "@/lib/assistant/claude";
+import { ASSISTANT_MODEL_LABEL } from "@/lib/assistant/gemini";
 import { clearApiKey, type KeyStatus } from "@/lib/assistant/credentials";
 import type { AssistantSelection } from "@/lib/assistant/prompt";
 import { cn } from "@/lib/cn";
@@ -114,14 +114,14 @@ export function ChatPanel({
   return (
     <div
       role="dialog"
-      aria-label="Ask Claude about this lecture"
+      aria-label="Ask AI about this lecture"
       data-assistant-ignore
       className="animate-rise fixed inset-x-2 bottom-2 z-40 flex max-h-[85vh] flex-col overflow-hidden rounded-2xl border border-line bg-surface shadow-[var(--shadow-card)] sm:inset-x-auto sm:right-4 sm:bottom-4 sm:h-[36rem] sm:max-h-[calc(100vh-6rem)] sm:w-[26rem]"
     >
       <header className="flex items-center gap-2 border-b border-line bg-brand-soft/40 px-4 py-3">
         <Sparkles size={16} className="shrink-0 text-brand" aria-hidden />
         <div className="grid min-w-0 flex-1">
-          <p className="text-sm font-semibold text-ink">Ask Claude</p>
+          <p className="text-sm font-semibold text-ink">Ask AI</p>
           <p className="truncate text-xs text-faint">{lectureLabel}</p>
         </div>
         {connected ? (
@@ -167,7 +167,7 @@ export function ChatPanel({
         <div className="grid content-start gap-4 overflow-y-auto p-4">
           <p className="text-sm text-muted">
             Answers come from <span className="font-medium text-ink">{ASSISTANT_MODEL_LABEL}</span> at
-            the lowest effort setting, which keeps them quick and inexpensive.
+            its lowest thinking level, which keeps them quick.
           </p>
 
           <div className="grid gap-2 rounded-xl border border-line bg-sunken px-3 py-2.5">
@@ -186,8 +186,8 @@ export function ChatPanel({
           </div>
 
           <p className="text-xs text-faint">
-            The lecture&apos;s full text is sent with the first question and cached for an hour, so
-            follow-up questions cost a fraction of the first one.
+            Every question sends the lecture&apos;s full text as context. On Google&apos;s free tier
+            that costs nothing, but questions count against its per-minute and daily limits.
           </p>
         </div>
       ) : (
@@ -195,7 +195,7 @@ export function ChatPanel({
           <div ref={listRef} aria-busy={busy} className="grid flex-1 content-start gap-4 overflow-y-auto p-4">
             {turns.length === 0 ? (
               <div className="grid gap-2 text-sm text-muted">
-                <p>Ask anything about this lecture. Claude answers from its sections, examples, quiz and exercises.</p>
+                <p>Ask anything about this lecture. Answers draw on its sections, examples, quiz and exercises.</p>
                 <p className="text-xs text-faint">Tip: select any text on the page to ask about that passage.</p>
               </div>
             ) : (

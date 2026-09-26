@@ -25,12 +25,12 @@ export function SelectionPill({ anchor, onAsk }: SelectionPillProps) {
       data-assistant-ignore
       onPointerDown={(event) => event.preventDefault()}
       onClick={onAsk}
-      aria-label="Ask Claude about the selected text"
+      aria-label="Ask AI about the selected text"
       style={{ top, left, width: PILL_WIDTH }}
       className="animate-rise fixed z-40 inline-flex h-9 items-center justify-center gap-1.5 rounded-full bg-brand text-sm font-medium text-brand-ink shadow-[var(--shadow-card)] transition-opacity hover:opacity-90"
     >
       <Sparkles size={15} aria-hidden />
-      Ask Claude
+      Ask AI
     </button>
   );
 }

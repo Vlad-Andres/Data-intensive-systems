@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { ExternalLink, KeyRound, LoaderCircle, ShieldCheck } from "lucide-react";
-import { verifyApiKey } from "@/lib/assistant/claude";
+import { ASSISTANT_MODEL_LABEL, verifyApiKey } from "@/lib/assistant/gemini";
 import { storeApiKey } from "@/lib/assistant/credentials";
 
 export function ConnectForm() {
@@ -13,11 +13,6 @@ export function ConnectForm() {
 
   const connect = async () => {
     const candidate = apiKey.trim();
-    if (!candidate.startsWith("sk-ant-")) {
-      setError("That does not look like an Anthropic API key — they start with sk-ant-.");
-      return;
-    }
-
     setChecking(true);
     setError(null);
     try {
@@ -42,11 +37,11 @@ export function ConnectForm() {
       <div className="grid gap-1.5">
         <p className="flex items-center gap-2 text-sm font-semibold text-ink">
           <KeyRound size={16} className="text-brand" aria-hidden />
-          Connect your Anthropic API key
+          Connect a free Gemini API key
         </p>
         <p className="text-sm text-muted">
-          Questions go straight from your browser to Anthropic, answered from this lecture&apos;s
-          material. Usage is billed to your own API account.
+          Answers come from {ASSISTANT_MODEL_LABEL}, grounded in this lecture&apos;s material. A key
+          from Google AI Studio is free and needs no credit card.
         </p>
       </div>
 
@@ -56,7 +51,7 @@ export function ConnectForm() {
           type="password"
           value={apiKey}
           onChange={(event) => setApiKey(event.target.value)}
-          placeholder="sk-ant-…"
+          placeholder="Paste your Gemini API key"
           autoComplete="off"
           spellCheck={false}
           className="w-full rounded-xl border border-line bg-surface px-3 py-2 font-mono text-sm outline-none transition-colors focus:border-brand/60 placeholder:text-faint"
@@ -94,24 +89,24 @@ export function ConnectForm() {
       </button>
 
       <div className="grid gap-2 rounded-xl border border-line bg-sunken px-3 py-2.5 text-xs text-muted">
-        <p className="flex items-start gap-2">
-          <ShieldCheck size={14} className="mt-0.5 shrink-0 text-positive" aria-hidden />
-          The key stays in this browser and is sent only to api.anthropic.com — this site has no
-          server, and its security policy blocks requests to any other host.
-        </p>
         <p>
-          Create a key in the{" "}
+          Get a key from{" "}
           <a
-            href="https://console.anthropic.com/settings/keys"
+            href="https://aistudio.google.com/apikey"
             target="_blank"
             rel="noreferrer"
             className="inline-flex items-center gap-0.5 font-medium text-brand underline decoration-brand/40 underline-offset-2"
           >
-            Claude Console
+            Google AI Studio
             <ExternalLink size={11} aria-hidden />
           </a>
-          . Use a dedicated key in a workspace with a monthly spend limit. A Claude.ai Pro or Max
-          plan does not include API usage.
+          . On the free tier Google may use your questions to improve its products, so keep
+          personal information out of them.
+        </p>
+        <p className="flex items-start gap-2">
+          <ShieldCheck size={14} className="mt-0.5 shrink-0 text-positive" aria-hidden />
+          The key stays in this browser and is sent only to Google&apos;s Gemini API — this site has
+          no server, and its security policy blocks requests to any other host.
         </p>
       </div>
     </form>

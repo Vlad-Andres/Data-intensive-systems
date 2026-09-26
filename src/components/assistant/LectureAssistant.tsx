@@ -62,7 +62,7 @@ export function LectureAssistant({ slug, label, context, sectionTitles }: Lectur
           className="fixed right-4 bottom-4 z-40 inline-flex items-center gap-2 rounded-full bg-brand px-4 py-2.5 text-sm font-medium text-brand-ink shadow-[var(--shadow-card)] transition-opacity hover:opacity-90"
         >
           <Sparkles size={16} aria-hidden />
-          Ask Claude
+          Ask AI
         </button>
       )}
     </>
