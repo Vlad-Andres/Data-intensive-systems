@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ArrowUp, Quote, RotateCcw, Settings2, Sparkles, Square, X } from "lucide-react";
+import { ArrowUp, Check, Copy, Quote, RotateCcw, Settings2, Sparkles, Square, X } from "lucide-react";
 import { Markdown } from "@/components/content/Markdown";
 import { ConnectForm } from "@/components/assistant/ConnectForm";
 import type { ChatTurn } from "@/hooks/useAssistantChat";
@@ -36,6 +36,32 @@ function SelectionQuote({ selection }: { selection: AssistantSelection }) {
   );
 }
 
+function ErrorDetails({ details }: { details: string }) {
+  const [copied, setCopied] = useState(false);
+
+  async function copyDetails() {
+    await navigator.clipboard.writeText(details);
+    setCopied(true);
+  }
+
+  return (
+    <details className="text-xs">
+      <summary className="cursor-pointer text-faint transition-colors hover:text-brand">Technical details</summary>
+      <div className="mt-1.5 grid gap-1.5 rounded-xl border border-line bg-sunken px-3 py-2">
+        <pre className="font-mono text-[11px] leading-relaxed break-all whitespace-pre-wrap text-muted">{details}</pre>
+        <button
+          type="button"
+          onClick={copyDetails}
+          className="inline-flex items-center gap-1.5 justify-self-start font-medium text-muted transition-colors hover:text-brand"
+        >
+          {copied ? <Check size={13} aria-hidden /> : <Copy size={13} aria-hidden />}
+          {copied ? "Copied" : "Copy details"}
+        </button>
+      </div>
+    </details>
+  );
+}
+
 function AssistantTurn({ turn }: { turn: ChatTurn }) {
   const waiting = turn.status === "thinking" && turn.text.length === 0;
 
@@ -66,6 +92,7 @@ function AssistantTurn({ turn }: { turn: ChatTurn }) {
           ) : null}
         </p>
       ) : null}
+      {turn.status === "error" && turn.errorDetails ? <ErrorDetails details={turn.errorDetails} /> : null}
     </div>
   );
 }
