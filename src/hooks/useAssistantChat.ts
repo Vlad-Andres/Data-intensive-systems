@@ -16,6 +16,7 @@ export interface ChatTurn {
   status?: TurnStatus;
   error?: string;
   errorKind?: AssistantErrorKind;
+  errorDetails?: string;
 }
 
 const conversations = new Map<string, ChatTurn[]>();
@@ -79,7 +80,7 @@ export function useAssistantChat(slug: string, lectureContext: string) {
           assistantTurn.id,
           failure.kind === "aborted"
             ? { status: "stopped" }
-            : { status: "error", error: failure.message, errorKind: failure.kind },
+            : { status: "error", error: failure.message, errorKind: failure.kind, errorDetails: failure.diagnostics },
         );
       } finally {
         if (controller.current === request) controller.current = null;

@@ -1,4 +1,4 @@
-import type { Content } from "@google/genai";
+import type { Content, HttpOptions } from "@google/genai";
 
 export const ASSISTANT_MODEL = "gemini-3.8-flash";
 export const ASSISTANT_MODEL_LABEL = "Gemini 3.8 Flash";
@@ -9,6 +9,7 @@ export class AssistantError extends Error {
   constructor(
     readonly kind: AssistantErrorKind,
     message: string,
+    readonly diagnostics?: string,
   ) {
     super(message);
   }
@@ -63,13 +64,13 @@ function toAssistantError(
   return new AssistantError("other", `Something went wrong while talking to Gemini: ${detail}`);
 }
 
-async function createClient(apiKey: string, timeout?: number) {
+async function createClient(apiKey: string, httpOptions: HttpOptions) {
   const sdk = await loadSdk();
-  return { sdk, client: new sdk.GoogleGenAI({ apiKey, httpOptions: { timeout } }) };
+  return { sdk, client: new sdk.GoogleGenAI({ apiKey, httpOptions }) };
 }
 
 export async function verifyApiKey(apiKey: string) {
-  const { sdk, client } = await createClient(apiKey, 20_000);
+  const { sdk, client } = await createClient(apiKey, { timeout: 20_000 });
   try {
     await client.models.get({ model: ASSISTANT_MODEL });
   } catch (error) {
@@ -91,9 +92,72 @@ export interface Reply {
 }
 
 const BLOCKED_REASONS = new Set(["SAFETY", "RECITATION", "BLOCKLIST", "PROHIBITED_CONTENT", "SPII"]);
+const STREAM_TAIL_LENGTH = 2000;
+
+interface StreamRecord {
+  status?: number;
+  bytes: number;
+  tail: string;
+}
+
+function recordingFetch(record: StreamRecord): typeof fetch {
+  return async (input, init) => {
+    const response = await fetch(input, init);
+    record.status = response.status;
+    if (!response.body) return response;
+    const decoder = new TextDecoder();
+    const recordedBody = response.body.pipeThrough(
+      new TransformStream<Uint8Array, Uint8Array>({
+        transform(chunk, controller) {
+          record.bytes += chunk.byteLength;
+          record.tail = (record.tail + decoder.decode(chunk, { stream: true })).slice(-STREAM_TAIL_LENGTH);
+          controller.enqueue(chunk);
+        },
+      }),
+    );
+    return new Response(recordedBody, response);
+  };
+}
+
+function googleErrorInStream(sdk: Awaited<ReturnType<typeof loadSdk>>, streamTail: string) {
+  const lastEvent = streamTail.split(/\r\n\r\n|\n\n|\r\r/).pop() ?? "";
+  const start = lastEvent.indexOf("{");
+  const end = lastEvent.lastIndexOf("}");
+  if (start < 0 || end < start) return undefined;
+  try {
+    const body = JSON.parse(lastEvent.slice(start, end + 1));
+    const status = Number(body?.error?.code);
+    return status >= 400 ? new sdk.ApiError({ message: JSON.stringify(body), status }) : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+interface FailureContext {
+  error: unknown;
+  record: StreamRecord;
+  startedAt: number;
+  answerLength: number;
+  finishReason?: string;
+}
+
+function describeFailure({ error, record, startedAt, answerLength, finishReason }: FailureContext) {
+  return [
+    `model: ${ASSISTANT_MODEL}`,
+    `started: ${new Date(startedAt).toISOString()}`,
+    `elapsed: ${((Date.now() - startedAt) / 1000).toFixed(1)} s`,
+    `http status: ${record.status ?? "no response"}`,
+    `received: ${record.bytes} bytes, ${answerLength} characters of answer`,
+    `finish reason: ${finishReason ?? "none"}`,
+    `error: ${error instanceof Error ? `${error.name}: ${error.message}` : String(error)}`,
+    `stream tail: ${JSON.stringify(record.tail.slice(-600))}`,
+  ].join("\n");
+}
 
 export async function streamReply(request: ReplyRequest): Promise<Reply> {
-  const { sdk, client } = await createClient(request.apiKey);
+  const record: StreamRecord = { bytes: 0, tail: "" };
+  const startedAt = Date.now();
+  const { sdk, client } = await createClient(request.apiKey, { fetch: recordingFetch(record) });
   let text = "";
   let finishReason: string | undefined;
 
@@ -117,8 +181,14 @@ export async function streamReply(request: ReplyRequest): Promise<Reply> {
         request.onText(text);
       }
     }
+    if (!finishReason) {
+      throw new AssistantError("network", "Gemini's answer was cut off before it finished. Try again.");
+    }
   } catch (error) {
-    throw toAssistantError(sdk, error, request.signal);
+    const failure = toAssistantError(sdk, googleErrorInStream(sdk, record.tail) ?? error, request.signal);
+    if (failure.kind === "aborted") throw failure;
+    const diagnostics = describeFailure({ error, record, startedAt, answerLength: text.length, finishReason });
+    throw new AssistantError(failure.kind, failure.message, diagnostics);
   }
 
   if (!text && finishReason && BLOCKED_REASONS.has(finishReason)) {
