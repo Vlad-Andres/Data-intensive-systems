@@ -90,6 +90,29 @@ Progress (sections read, best quiz score) and the theme live in `localStorage` b
 sync and server rendering is unaffected. A small inline script in the root layout applies the
 stored theme before first paint. Nothing leaves the browser.
 
+### Ask Claude
+
+Every lecture page has an assistant: select any text and an **Ask Claude** button appears next
+to it, or use the button in the corner for general questions. Answers are grounded in that
+lecture.
+
+- **No server.** The browser calls `api.anthropic.com` directly through the official
+  `@anthropic-ai/sdk` (`dangerouslyAllowBrowser`), with the reader's own API key. The SDK is
+  code-split and only downloaded when the assistant is first used.
+- **Key storage.** Kept in `sessionStorage` by default (gone when the tab closes); "Remember on
+  this device" moves it to `localStorage`. The key is verified before it is stored and is only
+  ever sent in the request header to Anthropic.
+- **Content Security Policy.** Production builds ship a CSP meta tag (`src/lib/security.ts`) whose
+  `connect-src` and `img-src` only allow this origin and `api.anthropic.com`, so injected code
+  could not send the key anywhere else. `script-src` needs `'unsafe-inline'` because a static
+  export cannot use nonces.
+- **Context.** `src/lib/assistant/lectureContext.ts` serialises the whole lecture — sections,
+  worked examples, glossary, quiz answers and exercise solutions — at build time. It is sent as a
+  system block with a one-hour prompt-cache breakpoint, so follow-up questions read it from the
+  cache.
+- **Model.** Claude Opus 5 by default at `medium` effort, with server-side refusal fallbacks;
+  Sonnet 5 and Haiku 4.5 can be picked in the assistant's settings.
+
 ## Deployment
 
 `.github/workflows/deploy.yml` builds the site and publishes `./out` to GitHub Pages on every
