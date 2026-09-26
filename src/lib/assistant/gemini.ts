@@ -33,8 +33,9 @@ function toAssistantError(
   signal?: AbortSignal,
 ): AssistantError {
   if (error instanceof AssistantError) return error;
-  if (signal?.aborted || (error instanceof Error && error.name === "AbortError")) {
-    return new AssistantError("aborted", "Stopped.");
+  if (signal?.aborted) return new AssistantError("aborted", "Stopped.");
+  if (error instanceof Error && (error.name === "AbortError" || error.name === "TimeoutError")) {
+    return new AssistantError("network", "The connection to Gemini was interrupted. Try again.");
   }
   if (error instanceof sdk.ApiError) {
     const { message, details } = googleMessage(error.message);
@@ -58,10 +59,11 @@ function toAssistantError(
   if (error instanceof TypeError) {
     return new AssistantError("network", "Could not reach Google's Gemini API. Check your connection.");
   }
-  return new AssistantError("other", "Something went wrong while talking to Gemini.");
+  const detail = error instanceof Error ? error.message : String(error);
+  return new AssistantError("other", `Something went wrong while talking to Gemini: ${detail}`);
 }
 
-async function createClient(apiKey: string, timeout: number) {
+async function createClient(apiKey: string, timeout?: number) {
   const sdk = await loadSdk();
   return { sdk, client: new sdk.GoogleGenAI({ apiKey, httpOptions: { timeout } }) };
 }
@@ -91,7 +93,7 @@ export interface Reply {
 const BLOCKED_REASONS = new Set(["SAFETY", "RECITATION", "BLOCKLIST", "PROHIBITED_CONTENT", "SPII"]);
 
 export async function streamReply(request: ReplyRequest): Promise<Reply> {
-  const { sdk, client } = await createClient(request.apiKey, 60_000);
+  const { sdk, client } = await createClient(request.apiKey);
   let text = "";
   let finishReason: string | undefined;
 
