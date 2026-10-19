@@ -1,6 +1,6 @@
 import type { Concept } from "@/content/types";
 
-export const lecture02Concepts: Concept[] = [
+export const lecture03Concepts: Concept[] = [
   {
     id: "why-cluster",
     term: "Limits of a single machine",

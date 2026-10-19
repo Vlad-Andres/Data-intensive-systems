@@ -37,7 +37,7 @@ export default function HomePage() {
       <section id="lectures" className="grid scroll-mt-24 gap-5">
         <div className="flex flex-wrap items-baseline justify-between gap-2">
           <h2 className="text-xl font-semibold">Lectures</h2>
-          <p className="text-sm text-faint">Added as the course goes on — earlier lectures never change.</p>
+          <p className="text-sm text-faint">In the order of the course schedule.</p>
         </div>
 
         <div className="grid gap-4 md:grid-cols-2">
@@ -50,13 +50,6 @@ export default function HomePage() {
               exerciseCount={countExercises(entry)}
             />
           ))}
-
-          <Card className="grid place-content-center gap-2 border-dashed bg-transparent p-8 text-center shadow-none">
-            <p className="text-sm font-medium text-muted">Lecture {lectureIndex.length + 1}</p>
-            <p className="text-sm text-faint">
-              Drop in the next set of slides or chapters and this slot fills itself.
-            </p>
-          </Card>
         </div>
       </section>
 

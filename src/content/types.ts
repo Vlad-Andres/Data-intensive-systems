@@ -84,6 +84,11 @@ export interface Exercise {
   tasks: ExerciseTask[];
 }
 
+export interface RecallCard {
+  prompt: string;
+  answer: string;
+}
+
 export interface ExerciseSheet {
   id: string;
   title: string;
@@ -103,7 +108,9 @@ export type Block =
   | { kind: "timeline"; items: TimelineItem[] }
   | { kind: "interactive"; title: string; description?: string; component: ComponentType }
   | { kind: "list"; variant: "objectives" | "takeaways"; items: string[] }
-  | { kind: "exercises"; sheet: ExerciseSheet };
+  | { kind: "exercises"; sheet: ExerciseSheet }
+  | { kind: "recall"; cards: RecallCard[] }
+  | { kind: "practice"; id: string; tasks: ExerciseTask[] };
 
 export interface WorkedStep {
   title: string;

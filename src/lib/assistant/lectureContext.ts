@@ -1,27 +1,30 @@
-import type { Block, Concept, ExerciseSheet, Lecture, QuizQuestion } from "@/content/types";
+import type { Block, Concept, ExerciseSheet, ExerciseTask, Lecture, QuizQuestion } from "@/content/types";
 
 function table(headers: string[], rows: string[][]) {
   const line = (cells: string[]) => `| ${cells.map((cell) => cell.replace(/\|/g, "\\|")).join(" | ")} |`;
   return [line(headers), line(headers.map(() => "---")), ...rows.map(line)].join("\n");
 }
 
+function exerciseTasks(tasks: ExerciseTask[]) {
+  return tasks.map((task, taskIndex) => {
+    const label = String.fromCharCode(97 + taskIndex);
+    const answer =
+      task.check.mode === "select"
+        ? `Options: ${task.check.options.join(" · ")}\nCorrect: ${task.check.answer.join(" · ")}`
+        : task.check.mode === "text"
+          ? `Accepted answers: ${task.check.accept.join(", ")}`
+          : "Open question, self-assessed.";
+    return `**(${label})** ${task.prompt}\n${answer}\n\nOfficial solution:\n${task.solution}`;
+  });
+}
+
 function exerciseSheet(sheet: ExerciseSheet) {
   return sheet.exercises
     .map((exercise, exerciseIndex) => {
-      const tasks = exercise.tasks.map((task, taskIndex) => {
-        const label = String.fromCharCode(97 + taskIndex);
-        const answer =
-          task.check.mode === "select"
-            ? `Options: ${task.check.options.join(" · ")}\nCorrect: ${task.check.answer.join(" · ")}`
-            : task.check.mode === "text"
-              ? `Accepted answers: ${task.check.accept.join(", ")}`
-              : "Open question, self-assessed.";
-        return `**(${label})** ${task.prompt}\n${answer}\n\nOfficial solution:\n${task.solution}`;
-      });
       return [
         `### Exercise ${exerciseIndex + 1}: ${exercise.title}`,
         exercise.intro ?? "",
-        ...tasks,
+        ...exerciseTasks(exercise.tasks),
       ]
         .filter(Boolean)
         .join("\n\n");
@@ -64,6 +67,10 @@ function block(item: Block, concepts: Concept[]): string {
       return item.items.map((entry) => `- ${entry}`).join("\n");
     case "exercises":
       return `**${item.sheet.title}** (${item.sheet.source})\n\n${exerciseSheet(item.sheet)}`;
+    case "recall":
+      return `**Memory cards**\n\n${item.cards.map((card) => `- Q: ${card.prompt}\n  A: ${card.answer}`).join("\n")}`;
+    case "practice":
+      return `**Practice**\n\n${exerciseTasks(item.tasks).join("\n\n")}`;
   }
 }
 
