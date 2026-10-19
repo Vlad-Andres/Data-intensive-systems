@@ -60,7 +60,7 @@ export function LectureToc({ meta }: { meta: LectureMeta }) {
         />
       </div>
 
-      <ol className={cn("grid gap-0.5", open ? "grid" : "hidden lg:grid")}>
+      <ol className={cn("grid grid-cols-[minmax(0,1fr)] gap-0.5", open ? "grid" : "hidden lg:grid")}>
         {meta.outline.map((section, index) => {
           const isDone = completed.includes(section.id);
           const isActive = section.id === activeId;

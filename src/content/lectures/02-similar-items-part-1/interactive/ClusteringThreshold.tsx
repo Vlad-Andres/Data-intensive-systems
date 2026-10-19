@@ -26,8 +26,8 @@ const RECORDS: SourceRecord[] = [
 const SCORED_PAIRS: { a: string; b: string; score: number }[] = [
   { a: "P3", b: "P4", score: 1.0 },
   { a: "P1", b: "P2", score: 0.9 },
-  { a: "P1", b: "P5", score: 0.7 },
-  { a: "P2", b: "P5", score: 0.6 },
+  { a: "P2", b: "P5", score: 0.5 },
+  { a: "P1", b: "P5", score: 0.3 },
   { a: "P1", b: "P6", score: 0.3 },
   { a: "P5", b: "P6", score: 0.3 },
   { a: "P2", b: "P6", score: 0.2 },

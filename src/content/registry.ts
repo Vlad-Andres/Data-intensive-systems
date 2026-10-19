@@ -8,6 +8,12 @@ import { lecture03Concepts } from "./lectures/03-distributed-databases/concepts"
 import { sheet01 } from "./lectures/03-distributed-databases/exercises";
 import { lecture03Meta } from "./lectures/03-distributed-databases/meta";
 import { lecture03Quiz } from "./lectures/03-distributed-databases/quiz";
+import { lecture05Concepts } from "./lectures/05-similar-items-part-2/concepts";
+import { lecture05Meta } from "./lectures/05-similar-items-part-2/meta";
+import { lecture05Quiz } from "./lectures/05-similar-items-part-2/quiz";
+import { lecture06Concepts } from "./lectures/06-similar-items-part-3/concepts";
+import { lecture06Meta } from "./lectures/06-similar-items-part-3/meta";
+import { lecture06Quiz } from "./lectures/06-similar-items-part-3/quiz";
 import type { Concept, ExerciseSheet, LectureMeta, QuizQuestion } from "./types";
 
 export interface LectureIndexEntry {
@@ -25,6 +31,8 @@ export const lectureIndex: LectureIndexEntry[] = [
   { meta: lecture01Meta, concepts: lecture01Concepts, quiz: lecture01Quiz, exercises: [] },
   { meta: lecture02Meta, concepts: lecture02Concepts, quiz: lecture02Quiz, exercises: [] },
   { meta: lecture03Meta, concepts: lecture03Concepts, quiz: lecture03Quiz, exercises: [sheet01] },
+  { meta: lecture05Meta, concepts: lecture05Concepts, quiz: lecture05Quiz, exercises: [] },
+  { meta: lecture06Meta, concepts: lecture06Concepts, quiz: lecture06Quiz, exercises: [] },
 ].sort((a, b) => a.meta.number - b.meta.number);
 
 export const lectureMetas: LectureMeta[] = lectureIndex.map((entry) => entry.meta);

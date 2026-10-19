@@ -2,9 +2,151 @@ import type { QuizQuestion } from "@/content/types";
 
 export const lecture02Quiz: QuizQuestion[] = [
   {
+    id: "q-local-knowledge",
+    prompt: "Which of these is a case of *local knowledge*, rather than a text variation, causing two descriptions of one entity?",
+    options: [
+      { id: "a", text: "“Trans. Knowl. Data Eng.” abbreviating a journal name." },
+      { id: "b", text: "A typo turning “Smith” into “Smtih”." },
+      { id: "c", text: "One source stores a person as a publication author, another as an email sender, each with its own format and identifiers." },
+      { id: "d", text: "Writing “IBM” for “International Business Machines”." },
+    ],
+    answerId: "c",
+    explanation:
+      "Abbreviations, misspellings and acronyms are **text variations**. **Local knowledge** is the deeper cause: each source picks its own format, and there is no global coordination for identifier assignment.",
+  },
+  {
+    id: "q-levels",
+    prompt: "Co-author lists separate the different researchers called “Ling Chen” on DBLP. Which family of solutions is that?",
+    options: [
+      { id: "a", text: "Atomic similarity methods." },
+      { id: "b", text: "Similarity methods for sets." },
+      { id: "c", text: "Methods in uncertain data." },
+      { id: "d", text: "Edit distance with gaps." },
+    ],
+    answerId: "b",
+    explanation:
+      "The name string is identical, so no atomic similarity can tell the authors apart. Comparing the **sets** of co-authors (and venues) of two publications can: papers sharing co-authors such as Sourav S. Bhowmick belong to the same Ling Chen.",
+  },
+  {
+    id: "q-edit",
+    prompt: "With insert, delete and update each costing 1, what is the edit distance between “ekaterini” and “katerina”?",
+    options: [
+      { id: "a", text: "1" },
+      { id: "b", text: "2" },
+      { id: "c", text: "3" },
+      { id: "d", text: "9" },
+    ],
+    answerId: "b",
+    explanation:
+      "Delete the leading *e* and update the final *i* into *a*: two operations. (The slides draw it the other way round, as an insert and an update.)",
+  },
+  {
+    id: "q-jaro",
+    prompt: "What is the Jaro similarity of DEIS and DESI?",
+    options: [
+      { id: "a", text: "0.75" },
+      { id: "b", text: "0.8333" },
+      { id: "c", text: "0.9167" },
+      { id: "d", text: "1.0" },
+    ],
+    answerId: "c",
+    explanation:
+      "All $C = 4$ characters are common; *I* and *S* appear in swapped order, two mismatched positions, so $T = 2/2 = 1$. $Jaro = \\frac{1}{3}\\left(\\frac{4}{4} + \\frac{4}{4} + \\frac{4-1}{4}\\right) = \\frac{2.75}{3} \\approx 0.9167$.",
+  },
+  {
+    id: "q-jaccard",
+    prompt: "Encoded as bit vectors, C₁ = 10111 and C₂ = 10011. What is their Jaccard distance?",
+    options: [
+      { id: "a", text: "1/4" },
+      { id: "b", text: "3/4" },
+      { id: "c", text: "1/5" },
+      { id: "d", text: "3/5" },
+    ],
+    answerId: "a",
+    explanation:
+      "Intersection (bitwise AND) has 3 ones, union (bitwise OR) has 4, so the Jaccard similarity is $3/4$ and the distance is $1 - 3/4 = 1/4$.",
+  },
+  {
+    id: "q-axioms",
+    prompt: "Which of these is NOT one of the four axioms of a distance measure?",
+    options: [
+      { id: "a", text: "d(x, y) ≥ 0" },
+      { id: "b", text: "d(x, y) = d(y, x)" },
+      { id: "c", text: "d(x, y) ≤ 1" },
+      { id: "d", text: "d(x, y) ≤ d(x, z) + d(z, y)" },
+    ],
+    answerId: "c",
+    explanation:
+      "The axioms are non-negativity, $d(x,y) = 0$ exactly when $x = y$, symmetry, and the triangle inequality. Nothing bounds a distance by 1 — Euclidean and edit distances grow without limit.",
+  },
+  {
+    id: "q-norms",
+    prompt: "For a = (5, 5) and b = (9, 8), what are the L₂, L₁ and L∞ distances?",
+    options: [
+      { id: "a", text: "5, 7 and 4" },
+      { id: "b", text: "7, 5 and 3" },
+      { id: "c", text: "5, 7 and 7" },
+      { id: "d", text: "25, 7 and 4" },
+    ],
+    answerId: "a",
+    explanation:
+      "The differences are 4 and 3. $L_2 = \\sqrt{4^2 + 3^2} = 5$, $L_1 = 4 + 3 = 7$ (the Manhattan route along the axes), and $L_\\infty = \\max(4, 3) = 4$.",
+  },
+  {
+    id: "q-cosine",
+    prompt: "What is the cosine distance between [1, 2, −1] and [2, 1, 1]?",
+    options: [
+      { id: "a", text: "30°" },
+      { id: "b", text: "45°" },
+      { id: "c", text: "60°" },
+      { id: "d", text: "90°" },
+    ],
+    answerId: "c",
+    explanation:
+      "The dot product is $2 + 2 - 1 = 3$ and both vectors have length $\\sqrt{6}$, so $\\cos\\theta = 3/6 = 1/2$ and $\\theta = 60°$.",
+  },
+  {
+    id: "q-choice",
+    prompt: "You want to compare customers by the sets of products they bought. Which distance fits best?",
+    options: [
+      { id: "a", text: "Jaccard distance." },
+      { id: "b", text: "Edit distance." },
+      { id: "c", text: "L₂ distance." },
+      { id: "d", text: "Jaro similarity." },
+    ],
+    answerId: "a",
+    explanation:
+      "The data are sets, so Jaccard distance applies directly. Edit distance and Jaro are for strings; $L_2$ needs real-valued coordinates — there is no meaningful location of a set in a space.",
+  },
+  {
+    id: "q-non-euclidean",
+    prompt: "Why are sets and strings said to live in non-Euclidean spaces?",
+    options: [
+      { id: "a", text: "Because their distances violate the triangle inequality." },
+      { id: "b", text: "Because there is no notion of the average of two points — distances depend on properties of the points, not on a location." },
+      { id: "c", text: "Because they have infinitely many dimensions." },
+      { id: "d", text: "Because their distances are always between 0 and 1." },
+    ],
+    answerId: "b",
+    explanation:
+      "A Euclidean space has real-valued dimensions and dense points, so you can average two points. There is no average of two sets or two strings; their distance measures are still proper distances, just not based on location.",
+  },
+  {
+    id: "q-transitive",
+    prompt: "Deduplication accepts every pair scoring at least 0.6. P1–P2 scores 0.9 and P2–P5 scores 0.6, but P1–P5 was never compared. Where does P5 end up?",
+    options: [
+      { id: "a", text: "In its own cluster, since it was not compared with P1." },
+      { id: "b", text: "In the same cluster as P1 and P2, because clustering closes matches transitively." },
+      { id: "c", text: "It is deleted as a duplicate of P2." },
+      { id: "d", text: "It depends on the merge rule." },
+    ],
+    answerId: "b",
+    explanation:
+      "Clustering connects records through chains of accepted pairs, so P1, P2 and P5 form one cluster and are merged into one unified record. That is why the clusters a threshold produces need checking, not just the pairs.",
+  },
+  {
     id: "q-quadratic",
-    prompt:
-      "You must deduplicate one million records. Why is scoring every pair with a good similarity function not an option?",
+    prompt: "You must deduplicate one million records. Why is scoring every pair with a good similarity function not an option?",
     options: [
       { id: "a", text: "The similarity function itself is too inaccurate at that scale." },
       { id: "b", text: "There are about 5 × 10¹¹ pairs, which takes days even at a million comparisons per second." },
@@ -13,125 +155,6 @@ export const lecture02Quiz: QuizQuestion[] = [
     ],
     answerId: "b",
     explanation:
-      "$N(N-1)/2 \\approx 5 \\times 10^{11}$ pairs. At $10^6$ comparisons per second and $10^5$ seconds per day that is about five days — and ten million records would take more than a year. The signatures themselves fit in memory comfortably; the **pairs** are the problem.",
-  },
-  {
-    id: "q-shingles",
-    prompt: "What does representing a document by its k-shingles give you that a set of important words does not?",
-    options: [
-      { id: "a", text: "It makes the representation smaller than the document." },
-      { id: "b", text: "It removes the need for a distance measure." },
-      { id: "c", text: "It keeps local word order, so reordering paragraphs changes only the shingles crossing the boundaries." },
-      { id: "d", text: "It guarantees that no two documents share any shingle." },
-    ],
-    answerId: "c",
-    explanation:
-      "Shingles capture short sequences, so order matters locally. Changing one word only affects the shingles within distance $k$ of it, and reordering paragraphs only affects the $2k$ shingles that cross the boundaries. Note that shingle sets are **larger** than the document, which is exactly why minhashing follows.",
-  },
-  {
-    id: "q-k-size",
-    prompt: "What goes wrong if you pick the shingle size k too small — say k = 1 on web pages?",
-    options: [
-      { id: "a", text: "Almost every document contains almost every shingle, so unrelated documents look highly similar." },
-      { id: "b", text: "The shingle sets become too large to hash." },
-      { id: "c", text: "Jaccard similarity becomes negative." },
-      { id: "d", text: "Minhashing can no longer be applied." },
-    ],
-    answerId: "a",
-    explanation:
-      "k must be large enough that any given shingle is unlikely to appear in any given document. With $k=1$ nearly every page contains nearly every common character, so Jaccard similarity is high even when the pages share no phrase. Rules of thumb: $k=5$ for emails, $k=9$ for long articles.",
-  },
-  {
-    id: "q-minhash",
-    prompt: "What is the defining property of minhashing?",
-    options: [
-      { id: "a", text: "It compresses any set to exactly four bytes." },
-      { id: "b", text: "The probability that two columns have the same minhash value equals their Jaccard similarity." },
-      { id: "c", text: "It sorts the rows so that similar columns become adjacent." },
-      { id: "d", text: "It removes every type-d row from the matrix." },
-    ],
-    answerId: "b",
-    explanation:
-      "Looking down the permuted columns until the first 1 appears, the two minhashes agree exactly when that row is of type a (1,1) and disagree on types b and c. So $P[h(C_1)=h(C_2)] = a/(a+b+c) = SIM(C_1,C_2)$ — the same expression as Jaccard similarity.",
-  },
-  {
-    id: "q-banding",
-    prompt: "Under the banding technique, when do two columns become a candidate pair?",
-    options: [
-      { id: "a", text: "When they agree in at least one row of every band." },
-      { id: "b", text: "When their full signatures are identical." },
-      { id: "c", text: "When they agree in all r rows of at least one band." },
-      { id: "d", text: "When they land in the same bucket of the same band array more than b times." },
-    ],
-    answerId: "c",
-    explanation:
-      "Each band hashes the $r$-row slice of every column into its own bucket array, and identical slices collide. Agreeing in all $r$ rows of **any single** band is enough; the more similar two columns are, the likelier that is to happen somewhere.",
-  },
-  {
-    id: "q-threshold",
-    prompt: "You use signatures of length 64 split into b = 16 bands of r = 4 rows. Roughly where does the S-curve cross one half?",
-    options: [
-      { id: "a", text: "s ≈ 0.25" },
-      { id: "b", text: "s ≈ 0.50" },
-      { id: "c", text: "s ≈ 0.75" },
-      { id: "d", text: "s ≈ 0.94" },
-    ],
-    answerId: "b",
-    explanation:
-      "The threshold is approximately $(1/b)^{1/r}$. Here that is the fourth root of $1/16$, which is exactly $1/2$. Pairs above 0.5 are very likely to be candidates, pairs below are unlikely.",
-  },
-  {
-    id: "q-tuning",
-    prompt: "Keeping the signature length n = b · r fixed, you increase r and decrease b. What happens?",
-    options: [
-      { id: "a", text: "The threshold rises: fewer false positives, but more similar pairs are missed." },
-      { id: "b", text: "The threshold falls: more candidate pairs and more false positives." },
-      { id: "c", text: "Nothing changes, because n is unchanged." },
-      { id: "d", text: "The curve stops being an S-curve." },
-    ],
-    answerId: "a",
-    explanation:
-      "The threshold $(1/b)^{1/r}$ moves up as $r$ grows and $b$ shrinks — agreeing on more rows in fewer chances is harder. Choose a threshold **below** your target similarity if missing pairs is expensive, and above it if you care most about limiting the work of scoring candidates.",
-  },
-  {
-    id: "q-exact",
-    prompt: "Which technique finds every pair above the similarity bound, with no false negatives at all?",
-    options: [
-      { id: "a", text: "Minhashing with 400 hash functions." },
-      { id: "b", text: "Banding with a threshold well below the target." },
-      { id: "c", text: "Prefix indexing combined with length-based filtering." },
-      { id: "d", text: "Hashing every document on its first few characters." },
-    ],
-    answerId: "c",
-    explanation:
-      "Prefix indexing is exact: indexing a set under its first $\\lfloor (1-J)L_s \\rfloor + 1$ symbols provably cannot miss a pair at similarity $J$ or above. LSH always risks false negatives, and it is most useful precisely when the similarity you accept is relatively low.",
-  },
-  {
-    id: "q-blocking",
-    prompt:
-      "In the Company A versus Company B dispute, what played the role of the locality-sensitive hash functions?",
-    options: [
-      { id: "a", text: "Minhash signatures of the shingled records." },
-      { id: "b", text: "Sorting the records by name, then by address, then by phone, and scoring only exact ties." },
-      { id: "c", text: "Random hyperplanes over the record vectors." },
-      { id: "d", text: "A single hash over the concatenation of all three fields." },
-    ],
-    answerId: "b",
-    explanation:
-      "Three 'hash functions' sent records to the same bucket only when the name, the address or the phone matched exactly — implemented as three sort passes. It missed any true pair that agreed exactly on none of the three fields, which was accepted as a deliberate trade-off.",
-  },
-  {
-    id: "q-validation",
-    prompt:
-      "Perfect 300-point matches averaged a 10-day delay, random pairs 45 days, so the true-match fraction at average delay x is (45 − x)/35. A score band averages 31 days. What fraction of those pairs are real matches?",
-    options: [
-      { id: "a", text: "About 0.11" },
-      { id: "b", text: "About 0.40" },
-      { id: "c", text: "About 0.69" },
-      { id: "d", text: "It cannot be estimated without labelled data." },
-    ],
-    answerId: "b",
-    explanation:
-      "$(45 - 31)/35 = 14/35 = 0.4$. The trick needs only a field that is *not* part of the score and that differs on average between true and false pairs — creation dates here, but height or any similar attribute would work the same way.",
+      "$N(N-1)/2 \\approx 5 \\times 10^{11}$ pairs. At $10^6$ comparisons per second and $10^5$ seconds per day that is about five days — and ten million records take more than a year. That cost is the *problem for the next lecture*.",
   },
 ];
