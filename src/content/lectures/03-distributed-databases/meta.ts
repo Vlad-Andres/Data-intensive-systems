@@ -2,6 +2,7 @@ import type { LectureMeta, SectionOutline } from "@/content/types";
 
 export const lecture03Outline = [
   { id: "objectives", title: "Learning objectives", kind: "objectives" },
+  { id: "prerequisites", title: "Refresher: ER model and relational algebra", kind: "concepts" },
   { id: "why-clusters", title: "Why a cluster at all", kind: "intuition" },
   { id: "fragmentation", title: "Horizontal and vertical fragmentation", kind: "concepts" },
   { id: "reconstruction", title: "Correctness and reconstruction", kind: "visual" },
@@ -45,7 +46,12 @@ export const lecture03Meta: LectureMeta = {
   difficulty: "core",
   estimatedMinutes: 90,
   sources: [
-    { label: "Distributed Databases", kind: "slides", detail: "Course lecture deck, 76 slides" },
+    { label: "Distributed Databases", kind: "slides", detail: "Prof. Dr. Maximilian E. Schüle, Universität Bamberg" },
+    {
+      label: "Database Management Systems, Ch. 2 and 4",
+      kind: "chapter",
+      detail: "Ramakrishnan & Gehrke — ER model and relational algebra (prerequisite refresher)",
+    },
     {
       label: "Greenplum administrator guide",
       kind: "notes",

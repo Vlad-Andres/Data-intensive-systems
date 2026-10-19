@@ -11,9 +11,68 @@ import { TwoPhaseCommitSimulator } from "./interactive/TwoPhaseCommitSimulator";
 const objectives: Block[] = [
   {
     kind: "prose",
-    md: "Lecture 1 spread work across machines to find similar items. This lecture spreads the **data** itself, and asks the harder question that follows: once a relation lives on several machines, how do you still get one correct answer out of it?",
+    md: "A guest lecture by Prof. Dr. Maximilian E. Schüle (Universität Bamberg). Where the previous lectures were about finding similar items, this one spreads the **data** itself, and asks the harder question that follows: once a relation lives on several machines, how do you still get one correct answer out of it?",
   },
   { kind: "list", variant: "objectives", items: lecture03Meta.objectives },
+];
+
+const prerequisites: Block[] = [
+  {
+    kind: "info",
+    variant: "note",
+    title: "Prerequisite, not course material",
+    md: "The course expects you to know relational algebra, the ER model and SQL from the bachelor database course; they are not examined as such, but this lecture and its exercises use them constantly. This is a compact refresher from chapters 2 and 4 of Ramakrishnan & Gehrke.",
+  },
+  {
+    kind: "prose",
+    md: "**The ER model** describes an enterprise as **entities** (objects, grouped into **entity sets** that share **attributes**) and **relationships** between them (grouped into **relationship sets**, which may carry attributes of their own). A **key** is a minimal set of attributes that uniquely identifies an entity. Constraints refine the picture:\n\n- **Key (cardinality) constraints** — one-to-one, one-to-many, many-to-many: e.g. each department has at most one manager.\n- **Participation constraints** — *total* when every entity must take part in the relationship (every department has a manager), otherwise *partial*.\n- **Weak entities** — identified only together with an *owner* entity through an identifying relationship, using a *partial key* (a dependant of an employee).\n- **Class hierarchies (ISA)** — subclasses inherit attributes; *overlap* and *covering* constraints say whether an entity can be in several subclasses and whether every entity must be in one.\n- **Aggregation** — treat a relationship set as an entity set so it can take part in another relationship.\n\nER is used for *conceptual design*, one step of database design: requirements analysis, conceptual design, logical design (mapping to relations), schema refinement, physical design, and application and security design.",
+  },
+  {
+    kind: "prose",
+    md: "**Relational algebra** is a procedural query language: each query is a step-by-step composition of operators, every operator takes relation instances and returns one, so they nest freely. The textbook uses *Sailors(sid, sname, rating, age)*, *Boats(bid, bname, color)* and *Reserves(sid, bid, day)*.",
+  },
+  {
+    kind: "table",
+    headers: ["Operator", "Symbol", "What it does", "Example"],
+    rows: [
+      ["Selection", "σ", "Keeps the rows satisfying a condition", "σ rating>8 (Sailors)"],
+      ["Projection", "π", "Keeps the listed columns, removing duplicate rows", "π sname,rating (Sailors)"],
+      ["Union, intersection, difference", "∪ ∩ −", "Set operations on union-compatible relations (same number of fields, same domains)", "S1 ∪ S2"],
+      ["Cross-product", "×", "Every row of R combined with every row of S", "Sailors × Reserves"],
+      ["Renaming", "ρ", "Names a result or renames its fields", "ρ(Temp, σ bid=103 (Reserves))"],
+      ["Condition join", "⋈c", "σc(R × S)", "Sailors ⋈ Sailors.sid<Reserves.sid Reserves"],
+      ["Equijoin / natural join", "⋈", "Join on equality; the natural join equates all common fields and keeps one copy", "Sailors ⋈ Reserves"],
+      ["Division", "/", "Rows of A that are paired with every row of B — “for all” queries", "π sid,bid (Reserves) / π bid (Boats)"],
+    ],
+    caption: "The operators this lecture uses for fragmentation (σ, π), reconstruction (∪, ⋈) and semi-joins (⋉ = the join restricted to the left relation's fields).",
+  },
+  {
+    kind: "steps",
+    title: "Names of sailors who have reserved boat 103",
+    steps: [
+      { title: "Select the reservations", md: "$\\sigma_{bid=103}(Reserves)$ keeps the reservations of boat 103." },
+      { title: "Join with the sailors", md: "$\\sigma_{bid=103}(Reserves) \\bowtie Sailors$ attaches each sailor's details via the shared field *sid*." },
+      { title: "Project the names", md: "$\\pi_{sname}(\\sigma_{bid=103}(Reserves) \\bowtie Sailors)$. Pushing the selection below the join — rather than selecting after it — is exactly the kind of rewrite the distributed optimizer applies to fragments." },
+    ],
+  },
+  {
+    kind: "practice",
+    id: "l3-algebra",
+    tasks: [
+      {
+        id: "red-boats",
+        prompt: "Write a relational algebra expression for the names of sailors who have reserved a **red** boat.",
+        check: { mode: "open", palette: "algebra" },
+        solution: "$\\pi_{sname}(\\pi_{bid}(\\sigma_{color='red'}(Boats)) \\bowtie Reserves \\bowtie Sailors)$ — select red boats, keep their ids, join with Reserves and Sailors, project the names.",
+      },
+      {
+        id: "reconstruct",
+        prompt: "A relation is cut into fragments with σ. Which operator puts it back together?",
+        check: { mode: "select", options: ["∪", "⋈", "×", "−"], answer: ["∪"] },
+        solution: "**Union**: horizontal fragments are sets of rows. Vertical fragments, cut with π, are put back with a join ⋈.",
+      },
+    ],
+  },
 ];
 
 const whyClusters: Block[] = [
@@ -32,6 +91,13 @@ const whyClusters: Block[] = [
     md: "ACID costs performance because it needs synchronisation — that part is true. But BASE gives no consistent view of the data, which produces subtle bugs and confuses customers, and it is simply unusable for critical systems such as banking. Before choosing BASE, be sure you really need the performance **and** really do not need the guarantees. Otherwise you will end up implementing ACID in the application layer, where it is harder and slower.",
   },
   { kind: "concepts", ids: ["why-cluster", "acid-base"] },
+  {
+    kind: "recall",
+    cards: [
+      { prompt: "Name four limits of a single machine.", answer: "Space, performance, geo-locality (the speed of light) and redundancy." },
+      { prompt: "What does BASE stand for, and what does it give up?", answer: "Basically available, soft state, eventual consistency — it gives up a consistent view to synchronise less." },
+    ],
+  },
 ];
 
 const fragmentation: Block[] = [
@@ -62,6 +128,13 @@ const fragmentation: Block[] = [
     caption: "The whole of fragmentation in one table — worth memorising as a unit.",
   },
   { kind: "concepts", ids: ["fragmentation", "horizontal-fragmentation", "vertical-fragmentation"] },
+  {
+    kind: "recall",
+    cards: [
+      { prompt: "Which operators fragment and reconstruct a relation horizontally? Vertically?", answer: "Horizontal: selection σ, rebuilt with union ∪. Vertical: projection π, rebuilt with a join ⋈ on a shared key." },
+      { prompt: "What must every vertical fragment contain?", answer: "A common candidate key or superkey (or an artificial tuple-id), so the join back is lossless." },
+    ],
+  },
 ];
 
 const reconstruction: Block[] = [
@@ -103,6 +176,13 @@ const reconstruction: Block[] = [
     ],
   },
   { kind: "concepts", ids: ["fragmentation-correctness", "decomposition-predicates"] },
+  {
+    kind: "recall",
+    cards: [
+      { prompt: "Which correctness rules must a fragmentation satisfy, and which is optional?", answer: "Completeness and reconstructability are required; disjointness is optional." },
+      { prompt: "How many fragments do n simple predicates produce?", answer: "2ⁿ — one per combination of each predicate or its negation (some may be empty)." },
+    ],
+  },
 ];
 
 const derived: Block[] = [
@@ -140,6 +220,12 @@ const derived: Block[] = [
     md: "Derived fragmentation is the relational-algebra name for what a distributed system calls **sharding both tables on the join key**. Align the partitioning of the two relations and the join needs no communication; leave them unaligned and every fragment has to meet every other one.",
   },
   { kind: "concepts", ids: ["derived-fragmentation"] },
+  {
+    kind: "recall",
+    cards: [
+      { prompt: "What is derived fragmentation?", answer: "Fragmenting a second relation along the fragmentation of the first, with a semi-join, so joins become node-local." },
+    ],
+  },
 ];
 
 const sharding: Block[] = [
@@ -156,6 +242,13 @@ const sharding: Block[] = [
     md: "None of this should reach the user. **Data transparency** is the degree to which a user may remain unaware of how and where data items are stored, and it comes in three kinds:\n\n- **Fragmentation transparency** — the user queries the relation, not its fragments.\n- **Replication transparency** — the user does not choose which copy to read.\n- **Location transparency** — the user does not name a site.",
   },
   { kind: "concepts", ids: ["sharding", "allocation", "data-transparency"] },
+  {
+    kind: "recall",
+    cards: [
+      { prompt: "What is sharding?", answer: "Horizontal fragmentation across the machines of a cluster." },
+      { prompt: "Name the three kinds of data transparency.", answer: "Fragmentation, replication and location transparency." },
+    ],
+  },
 ];
 
 const optimization: Block[] = [
@@ -199,6 +292,12 @@ WHERE  v.gelesenVon = p.persNr
     ],
   },
   { kind: "concepts", ids: ["query-translation"] },
+  {
+    kind: "recall",
+    cards: [
+      { prompt: "What are the two roles in distributed query processing?", answer: "The query translator rewrites the query onto fragments; the optimizer then picks a plan given where those fragments live." },
+    ],
+  },
 ];
 
 const replication: Block[] = [
@@ -239,6 +338,13 @@ const replication: Block[] = [
       "W = 8, Qr = 4, Qw = 5. The write locked S1 and S3 (weight 5) and left S2 and S4 stale — but any read reaching weight 4 must include S1 or S3, so it still sees version 2.",
   },
   { kind: "concepts", ids: ["replication", "rowa", "quorum-consensus"] },
+  {
+    kind: "recall",
+    cards: [
+      { prompt: "State the two quorum conditions and what each guarantees.", answer: "Qr + Qw > W: every read overlaps the latest write. 2·Qw > W: two writes can never proceed at once." },
+      { prompt: "What is ROWA?", answer: "Read-one-write-all: read any single replica, write every replica." },
+    ],
+  },
 ];
 
 const twoPhaseCommit: Block[] = [
@@ -284,6 +390,13 @@ const twoPhaseCommit: Block[] = [
     md: "Four refinements are worth knowing by name. **Linear 2PC** organises the agents as a chain $A_1 \\to \\cdots \\to A_n$, using $2(n-1)$ messages instead of $4n$ at the cost of latency. **Presumed abort** interprets a missing log entry as abort, saving log writes and ACK messages. **Three-phase commit** inserts a pre-commit phase that removes the blocking, at the price of another round trip — rarely used in practice. **Consensus protocols** such as Paxos and Raft replicate the coordinator itself, so its crash no longer blocks anyone; this is what modern systems actually do.",
   },
   { kind: "concepts", ids: ["two-phase-commit", "2pc-blocking", "2pc-variants"] },
+  {
+    kind: "recall",
+    cards: [
+      { prompt: "What are the two phases of 2PC?", answer: "Voting: the coordinator collects prepare votes. Decision: it broadcasts commit (all yes) or abort to all agents." },
+      { prompt: "Why does 2PC block?", answer: "An agent in the prepared state has given up its right to decide and must wait for the coordinator, which may be down." },
+    ],
+  },
 ];
 
 const joins: Block[] = [
@@ -335,6 +448,13 @@ const joins: Block[] = [
     component: SemiJoinBloomLab,
   },
   { kind: "concepts", ids: ["join-types", "semi-join", "bloom-filter-join"] },
+  {
+    kind: "recall",
+    cards: [
+      { prompt: "Name the three ways of joining sharded data.", answer: "Co-located join, distributed join, broadcast join." },
+      { prompt: "What does a Bloom-filter join ship instead of join values, and what is the cost?", answer: "A bit vector; some tuples without a partner are sent anyway (false drops/false positives)." },
+    ],
+  },
 ];
 
 const systems: Block[] = [
@@ -406,6 +526,13 @@ PARTITION BY RANGE (date)
       "Sharding clicks by user_id rather than by the primary key, so that all of one user's clicks — and any join on user_id — stay on one leaf node.",
   },
   { kind: "concepts", ids: ["greenplum", "memsql"] },
+  {
+    kind: "recall",
+    cards: [
+      { prompt: "Greenplum: what is the difference between DISTRIBUTED BY and PARTITION BY?", answer: "DISTRIBUTED BY spreads rows across segments (sharding); PARTITION BY splits data within a segment, by list or range." },
+      { prompt: "How is MemSQL organised?", answer: "A MySQL-compatible distributed database of aggregator and leaf nodes; tables are sharded by key, and reference tables are replicated for joins." },
+    ],
+  },
 ];
 
 const consistency: Block[] = [
@@ -457,6 +584,13 @@ const consistency: Block[] = [
     md: "$Q_r + Q_w > W$ and $2 Q_w > W$ give strong consistency — a CP system. $Q_r + Q_w \\le W$ lets reads miss the latest write, which is eventual consistency and an AP system; this is exactly Dynamo's N/R/W configuration. $Q_w = W$ with $Q_r = 1$ is read one, write all: fast reads, expensive and fragile writes. $Q_w = 1$ gives fast writes, but readers have to inspect every replica.",
   },
   { kind: "concepts", ids: ["cap", "pacelc", "consistency-models"] },
+  {
+    kind: "recall",
+    cards: [
+      { prompt: "What does CAP say?", answer: "Under a network partition you must choose between consistency and availability." },
+      { prompt: "Expand PACELC.", answer: "If Partition: trade Availability against Consistency; Else: trade Latency against Consistency." },
+    ],
+  },
 ];
 
 const mistakes: Block[] = [
@@ -548,6 +682,7 @@ const exercises: Block[] = [
 
 export const lecture03Blocks: SectionBlocks<typeof lecture03Outline> = {
   objectives,
+  prerequisites,
   "why-clusters": whyClusters,
   fragmentation,
   reconstruction,
