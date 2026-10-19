@@ -1,6 +1,9 @@
-import { lecture01Concepts } from "./lectures/01-entity-resolution/concepts";
-import { lecture01Meta } from "./lectures/01-entity-resolution/meta";
-import { lecture01Quiz } from "./lectures/01-entity-resolution/quiz";
+import { lecture01Concepts } from "./lectures/01-introduction-and-indexes/concepts";
+import { lecture01Meta } from "./lectures/01-introduction-and-indexes/meta";
+import { lecture01Quiz } from "./lectures/01-introduction-and-indexes/quiz";
+import { lecture02Concepts } from "./lectures/02-similar-items-part-1/concepts";
+import { lecture02Meta } from "./lectures/02-similar-items-part-1/meta";
+import { lecture02Quiz } from "./lectures/02-similar-items-part-1/quiz";
 import { lecture03Concepts } from "./lectures/03-distributed-databases/concepts";
 import { sheet01 } from "./lectures/03-distributed-databases/exercises";
 import { lecture03Meta } from "./lectures/03-distributed-databases/meta";
@@ -20,6 +23,7 @@ export function countExercises(entry: LectureIndexEntry) {
 
 export const lectureIndex: LectureIndexEntry[] = [
   { meta: lecture01Meta, concepts: lecture01Concepts, quiz: lecture01Quiz, exercises: [] },
+  { meta: lecture02Meta, concepts: lecture02Concepts, quiz: lecture02Quiz, exercises: [] },
   { meta: lecture03Meta, concepts: lecture03Concepts, quiz: lecture03Quiz, exercises: [sheet01] },
 ].sort((a, b) => a.meta.number - b.meta.number);
 

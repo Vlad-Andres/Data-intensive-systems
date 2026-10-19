@@ -1,5 +1,5 @@
 import type { Block, SectionBlocks } from "@/content/types";
-import { lecture01Meta, lecture01Outline } from "./meta";
+import { lecture02Meta, lecture02Outline } from "./meta";
 import { BandTuner } from "./interactive/BandTuner";
 import { ClusteringThreshold } from "./interactive/ClusteringThreshold";
 import { ErPipeline } from "./interactive/ErPipeline";
@@ -13,7 +13,7 @@ const objectives: Block[] = [
     kind: "prose",
     md: "This lecture merges the entity-resolution slides with chapter 3 of *Mining of Massive Datasets*. The two halves fit together: the slides pose the problem, the chapter supplies the machinery that makes it tractable.",
   },
-  { kind: "list", variant: "objectives", items: lecture01Meta.objectives },
+  { kind: "list", variant: "objectives", items: lecture02Meta.objectives },
 ];
 
 const bigPicture: Block[] = [
@@ -499,7 +499,7 @@ const quiz: Block[] = [
 ];
 
 const summary: Block[] = [
-  { kind: "list", variant: "takeaways", items: lecture01Meta.takeaways },
+  { kind: "list", variant: "takeaways", items: lecture02Meta.takeaways },
   {
     kind: "table",
     headers: ["Quantity", "Formula", "Where it shows up"],
@@ -525,7 +525,7 @@ const summary: Block[] = [
   },
 ];
 
-export const lecture01Blocks: SectionBlocks<typeof lecture01Outline> = {
+export const lecture02Blocks: SectionBlocks<typeof lecture02Outline> = {
   objectives,
   "big-picture": bigPicture,
   "string-similarity": stringSimilarity,

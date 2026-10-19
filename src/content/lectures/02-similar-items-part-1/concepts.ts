@@ -1,6 +1,6 @@
 import type { Concept } from "@/content/types";
 
-export const lecture01Concepts: Concept[] = [
+export const lecture02Concepts: Concept[] = [
   {
     id: "entity-resolution",
     term: "Entity resolution",

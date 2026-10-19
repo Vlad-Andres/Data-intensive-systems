@@ -1,6 +1,6 @@
 import type { LectureMeta, SectionOutline } from "@/content/types";
 
-export const lecture01Outline = [
+export const lecture02Outline = [
   { id: "objectives", title: "Learning objectives", kind: "objectives" },
   { id: "big-picture", title: "One entity, a thousand names", kind: "intuition" },
   { id: "string-similarity", title: "Comparing strings", kind: "concepts" },
@@ -16,11 +16,11 @@ export const lecture01Outline = [
   { id: "summary", title: "Cheat sheet", kind: "summary" },
 ] as const satisfies readonly SectionOutline[];
 
-export type Lecture01SectionId = (typeof lecture01Outline)[number]["id"];
+export type Lecture02SectionId = (typeof lecture02Outline)[number]["id"];
 
-export const lecture01Meta: LectureMeta = {
+export const lecture02Meta: LectureMeta = {
   slug: "entity-resolution-and-matching",
-  number: 1,
+  number: 2,
   title: "Entity Resolution & Finding Similar Items",
   subtitle: "Shingling, minhashing and locality-sensitive hashing",
   summary:
@@ -63,5 +63,5 @@ export const lecture01Meta: LectureMeta = {
     "LSH trades exactness for speed — false negatives are real, and prefix indexing is the exact alternative when similarity must be very high.",
     "Record matching does not fit the plain set model: block first, score with field-aware rules, then cluster and merge.",
   ],
-  outline: lecture01Outline,
+  outline: lecture02Outline,
 };

@@ -1,6 +1,6 @@
 import type { QuizQuestion } from "@/content/types";
 
-export const lecture01Quiz: QuizQuestion[] = [
+export const lecture02Quiz: QuizQuestion[] = [
   {
     id: "q-quadratic",
     prompt:
