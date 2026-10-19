@@ -8,6 +8,9 @@ import { lecture03Concepts } from "./lectures/03-distributed-databases/concepts"
 import { sheet01 } from "./lectures/03-distributed-databases/exercises";
 import { lecture03Meta } from "./lectures/03-distributed-databases/meta";
 import { lecture03Quiz } from "./lectures/03-distributed-databases/quiz";
+import { lecture04Concepts } from "./lectures/04-in-database-ml/concepts";
+import { lecture04Meta } from "./lectures/04-in-database-ml/meta";
+import { lecture04Quiz } from "./lectures/04-in-database-ml/quiz";
 import { lecture05Concepts } from "./lectures/05-similar-items-part-2/concepts";
 import { lecture05Meta } from "./lectures/05-similar-items-part-2/meta";
 import { lecture05Quiz } from "./lectures/05-similar-items-part-2/quiz";
@@ -31,6 +34,7 @@ export const lectureIndex: LectureIndexEntry[] = [
   { meta: lecture01Meta, concepts: lecture01Concepts, quiz: lecture01Quiz, exercises: [] },
   { meta: lecture02Meta, concepts: lecture02Concepts, quiz: lecture02Quiz, exercises: [] },
   { meta: lecture03Meta, concepts: lecture03Concepts, quiz: lecture03Quiz, exercises: [sheet01] },
+  { meta: lecture04Meta, concepts: lecture04Concepts, quiz: lecture04Quiz, exercises: [] },
   { meta: lecture05Meta, concepts: lecture05Concepts, quiz: lecture05Quiz, exercises: [] },
   { meta: lecture06Meta, concepts: lecture06Concepts, quiz: lecture06Quiz, exercises: [] },
 ].sort((a, b) => a.meta.number - b.meta.number);
