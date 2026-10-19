@@ -17,6 +17,9 @@ import { lecture05Quiz } from "./lectures/05-similar-items-part-2/quiz";
 import { lecture06Concepts } from "./lectures/06-similar-items-part-3/concepts";
 import { lecture06Meta } from "./lectures/06-similar-items-part-3/meta";
 import { lecture06Quiz } from "./lectures/06-similar-items-part-3/quiz";
+import { lecture07Concepts } from "./lectures/07-mapreduce/concepts";
+import { lecture07Meta } from "./lectures/07-mapreduce/meta";
+import { lecture07Quiz } from "./lectures/07-mapreduce/quiz";
 import type { Concept, ExerciseSheet, LectureMeta, QuizQuestion } from "./types";
 
 export interface LectureIndexEntry {
@@ -37,6 +40,7 @@ export const lectureIndex: LectureIndexEntry[] = [
   { meta: lecture04Meta, concepts: lecture04Concepts, quiz: lecture04Quiz, exercises: [] },
   { meta: lecture05Meta, concepts: lecture05Concepts, quiz: lecture05Quiz, exercises: [] },
   { meta: lecture06Meta, concepts: lecture06Concepts, quiz: lecture06Quiz, exercises: [] },
+  { meta: lecture07Meta, concepts: lecture07Concepts, quiz: lecture07Quiz, exercises: [] },
 ].sort((a, b) => a.meta.number - b.meta.number);
 
 export const lectureMetas: LectureMeta[] = lectureIndex.map((entry) => entry.meta);
