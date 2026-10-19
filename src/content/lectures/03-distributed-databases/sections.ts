@@ -1,6 +1,6 @@
 import type { Block, SectionBlocks } from "@/content/types";
 import { sheet01 } from "./exercises";
-import { lecture02Meta, lecture02Outline } from "./meta";
+import { lecture03Meta, lecture03Outline } from "./meta";
 import { FragmentationLab } from "./interactive/FragmentationLab";
 import { GreenplumExplorer } from "./interactive/GreenplumExplorer";
 import { JoinStrategyExplorer } from "./interactive/JoinStrategyExplorer";
@@ -13,7 +13,7 @@ const objectives: Block[] = [
     kind: "prose",
     md: "Lecture 1 spread work across machines to find similar items. This lecture spreads the **data** itself, and asks the harder question that follows: once a relation lives on several machines, how do you still get one correct answer out of it?",
   },
-  { kind: "list", variant: "objectives", items: lecture02Meta.objectives },
+  { kind: "list", variant: "objectives", items: lecture03Meta.objectives },
 ];
 
 const whyClusters: Block[] = [
@@ -506,7 +506,7 @@ const quiz: Block[] = [
 ];
 
 const summary: Block[] = [
-  { kind: "list", variant: "takeaways", items: lecture02Meta.takeaways },
+  { kind: "list", variant: "takeaways", items: lecture03Meta.takeaways },
   {
     kind: "table",
     headers: ["Idea", "Rule or formula", "Where it shows up"],
@@ -546,7 +546,7 @@ const exercises: Block[] = [
   { kind: "exercises", sheet: sheet01 },
 ];
 
-export const lecture02Blocks: SectionBlocks<typeof lecture02Outline> = {
+export const lecture03Blocks: SectionBlocks<typeof lecture03Outline> = {
   objectives,
   "why-clusters": whyClusters,
   fragmentation,

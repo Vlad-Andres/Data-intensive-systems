@@ -1,8 +1,8 @@
 import { lecture01 } from "./lectures/01-entity-resolution";
-import { lecture02 } from "./lectures/02-distributed-databases";
+import { lecture03 } from "./lectures/03-distributed-databases";
 import type { Lecture } from "./types";
 
-const lectures: Lecture[] = [lecture01, lecture02].sort((a, b) => a.meta.number - b.meta.number);
+const lectures: Lecture[] = [lecture01, lecture03].sort((a, b) => a.meta.number - b.meta.number);
 
 export function allLectures() {
   return lectures;

@@ -8,6 +8,8 @@ import { HighlightList } from "@/components/content/HighlightList";
 import { InfoBox } from "@/components/content/InfoBox";
 import { InteractivePanel } from "@/components/content/InteractivePanel";
 import { Markdown } from "@/components/content/Markdown";
+import { MemoryCards } from "@/components/content/MemoryCards";
+import { PracticeSet } from "@/components/content/PracticeSet";
 import { Timeline } from "@/components/content/Timeline";
 import { WorkedExample } from "@/components/content/WorkedExample";
 
@@ -62,6 +64,12 @@ export function BlockRenderer({ block, concepts }: BlockRendererProps) {
 
     case "exercises":
       return <ExerciseSheetView sheet={block.sheet} />;
+
+    case "recall":
+      return <MemoryCards cards={block.cards} />;
+
+    case "practice":
+      return <PracticeSet id={block.id} tasks={block.tasks} />;
 
     case "interactive": {
       const Interactive = block.component;
