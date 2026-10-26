@@ -1,12 +1,12 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import { Check, RotateCcw, X } from "lucide-react";
 import { RangeField } from "@/components/ui/RangeField";
 import { Stat } from "@/components/ui/Stat";
 import { cn } from "@/lib/cn";
 
-interface Site {
+export interface Site {
   id: string;
   weight: number;
   value: number;
@@ -20,18 +20,29 @@ const INITIAL_SITES: Site[] = [
   { id: "S4", weight: 2, value: 1000, version: 1 },
 ];
 
-const TOTAL_WEIGHT = INITIAL_SITES.reduce((sum, site) => sum + site.weight, 0);
+interface QuorumLabProps {
+  initialSites?: Site[];
+  initialReadQuorum?: number;
+  initialWriteQuorum?: number;
+  instructions?: ReactNode;
+}
 
-export function QuorumLab() {
-  const [sites, setSites] = useState(INITIAL_SITES);
-  const [readQuorum, setReadQuorum] = useState(4);
-  const [writeQuorum, setWriteQuorum] = useState(5);
+export function QuorumLab({
+  initialSites = INITIAL_SITES,
+  initialReadQuorum = 4,
+  initialWriteQuorum = 5,
+  instructions,
+}: QuorumLabProps) {
+  const totalWeight = initialSites.reduce((sum, site) => sum + site.weight, 0);
+  const [sites, setSites] = useState(initialSites);
+  const [readQuorum, setReadQuorum] = useState(initialReadQuorum);
+  const [writeQuorum, setWriteQuorum] = useState(initialWriteQuorum);
   const [mode, setMode] = useState<"read" | "write">("write");
   const [locked, setLocked] = useState<string[]>([]);
   const [outcome, setOutcome] = useState<string | null>(null);
 
-  const overlapHolds = readQuorum + writeQuorum > TOTAL_WEIGHT;
-  const writeHolds = 2 * writeQuorum > TOTAL_WEIGHT;
+  const overlapHolds = readQuorum + writeQuorum > totalWeight;
+  const writeHolds = 2 * writeQuorum > totalWeight;
   const configValid = overlapHolds && writeHolds;
 
   const lockedWeight = sites
@@ -85,7 +96,7 @@ export function QuorumLab() {
           label="Read quorum Qr"
           value={readQuorum}
           min={1}
-          max={TOTAL_WEIGHT}
+          max={totalWeight}
           display={`Qr = ${readQuorum}`}
           onChange={(value) => {
             setReadQuorum(value);
@@ -96,7 +107,7 @@ export function QuorumLab() {
           label="Write quorum Qw"
           value={writeQuorum}
           min={1}
-          max={TOTAL_WEIGHT}
+          max={totalWeight}
           display={`Qw = ${writeQuorum}`}
           onChange={(value) => {
             setWriteQuorum(value);
@@ -107,8 +118,8 @@ export function QuorumLab() {
 
       <div className="grid gap-2 sm:grid-cols-2">
         {[
-          { label: "Qr + Qw > W", detail: `${readQuorum} + ${writeQuorum} > ${TOTAL_WEIGHT}`, met: overlapHolds, why: "every read overlaps the latest write" },
-          { label: "2 · Qw > W", detail: `${2 * writeQuorum} > ${TOTAL_WEIGHT}`, met: writeHolds, why: "two writes can never proceed at once" },
+          { label: "Qr + Qw > W", detail: `${readQuorum} + ${writeQuorum} > ${totalWeight}`, met: overlapHolds, why: "every read overlaps the latest write" },
+          { label: "2 · Qw > W", detail: `${2 * writeQuorum} > ${totalWeight}`, met: writeHolds, why: "two writes can never proceed at once" },
         ].map((rule) => (
           <div
             key={rule.label}
@@ -190,7 +201,7 @@ export function QuorumLab() {
       </div>
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-        <Stat label="Total weight W" value={String(TOTAL_WEIGHT)} />
+        <Stat label="Total weight W" value={String(totalWeight)} />
         <Stat
           label="Locked weight"
           value={`${lockedWeight} / ${required}`}
@@ -217,7 +228,7 @@ export function QuorumLab() {
         <button
           type="button"
           onClick={() => {
-            setSites(INITIAL_SITES);
+            setSites(initialSites);
             setLocked([]);
             setOutcome(null);
           }}
@@ -241,8 +252,12 @@ export function QuorumLab() {
         </p>
       ) : (
         <p className="text-sm text-muted">
-          Set Qr = 4 and Qw = 5 for the lecture example. Then try Qr = 2 with Qw = 3: the rules break,
-          and you can write to S1 and S3 and afterwards read a stale value from S2 and S4.
+          {instructions ?? (
+            <>
+              Set Qr = 4 and Qw = 5 for the lecture example. Then try Qr = 2 with Qw = 3: the rules break,
+              and you can write to S1 and S3 and afterwards read a stale value from S2 and S4.
+            </>
+          )}
         </p>
       )}
     </div>

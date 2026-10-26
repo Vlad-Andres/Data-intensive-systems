@@ -26,6 +26,9 @@ import { lecture08Quiz } from "./lectures/08-apache-spark/quiz";
 import { lecture09Concepts } from "./lectures/09-distributed-file-systems/concepts";
 import { lecture09Meta } from "./lectures/09-distributed-file-systems/meta";
 import { lecture09Quiz } from "./lectures/09-distributed-file-systems/quiz";
+import { lecture10Concepts } from "./lectures/10-nosql/concepts";
+import { lecture10Meta } from "./lectures/10-nosql/meta";
+import { lecture10Quiz } from "./lectures/10-nosql/quiz";
 import type { Concept, ExerciseSheet, LectureMeta, QuizQuestion } from "./types";
 
 export interface LectureIndexEntry {
@@ -49,6 +52,7 @@ export const lectureIndex: LectureIndexEntry[] = [
   { meta: lecture07Meta, concepts: lecture07Concepts, quiz: lecture07Quiz, exercises: [] },
   { meta: lecture08Meta, concepts: lecture08Concepts, quiz: lecture08Quiz, exercises: [] },
   { meta: lecture09Meta, concepts: lecture09Concepts, quiz: lecture09Quiz, exercises: [] },
+  { meta: lecture10Meta, concepts: lecture10Concepts, quiz: lecture10Quiz, exercises: [] },
 ].sort((a, b) => a.meta.number - b.meta.number);
 
 export const lectureMetas: LectureMeta[] = lectureIndex.map((entry) => entry.meta);
