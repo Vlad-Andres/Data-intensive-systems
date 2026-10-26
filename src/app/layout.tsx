@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "katex/dist/katex.min.css";
 import "./globals.css";
 import { SiteFooter } from "@/components/layout/SiteFooter";
+import { ServiceWorkerRegistration } from "@/components/layout/ServiceWorkerRegistration";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { lectureIndex, lectureMetas } from "@/content/registry";
 import { buildSearchRecords } from "@/lib/search";
@@ -15,6 +16,10 @@ export const metadata: Metadata = {
   },
   description:
     "An interactive companion for the Data Intensive Systems course: visual explanations, playgrounds and quizzes, one lecture at a time.",
+  appleWebApp: {
+    capable: true,
+    title: "DIS Study",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -40,6 +45,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
         </main>
         <SiteFooter />
+        <ServiceWorkerRegistration />
       </body>
     </html>
   );
