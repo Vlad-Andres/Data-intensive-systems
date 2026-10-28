@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { ExternalLink, KeyRound, LoaderCircle, ShieldCheck } from "lucide-react";
-import { ASSISTANT_MODEL_LABEL, verifyApiKey } from "@/lib/assistant/gemini";
+import { verifyApiKey } from "@/lib/assistant/gemini";
 import { storeApiKey } from "@/lib/assistant/credentials";
 
 export function ConnectForm() {
@@ -40,7 +40,7 @@ export function ConnectForm() {
           Connect a free Gemini API key
         </p>
         <p className="text-sm text-muted">
-          Answers come from {ASSISTANT_MODEL_LABEL}, grounded in this lecture&apos;s material. A key
+          Answers come from Google&apos;s Gemini, grounded in this lecture&apos;s material. A key
           from Google AI Studio is free and needs no credit card.
         </p>
       </div>
