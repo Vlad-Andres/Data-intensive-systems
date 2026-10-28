@@ -5,8 +5,10 @@ import { ArrowUp, Check, Copy, Quote, RotateCcw, Settings2, Sparkles, Square, X 
 import { Markdown } from "@/components/content/Markdown";
 import { ConnectForm } from "@/components/assistant/ConnectForm";
 import type { ChatTurn } from "@/hooks/useAssistantChat";
-import { ASSISTANT_MODEL_LABEL } from "@/lib/assistant/gemini";
+import { useAssistantModel } from "@/hooks/useAssistantModel";
+import { ASSISTANT_MODELS, assistantModelLabel, type AssistantModelId } from "@/lib/assistant/gemini";
 import { clearApiKey, type KeyStatus } from "@/lib/assistant/credentials";
+import { storeAssistantModel } from "@/lib/assistant/modelPreference";
 import type { AssistantSelection } from "@/lib/assistant/prompt";
 import { cn } from "@/lib/cn";
 
@@ -62,6 +64,58 @@ function ErrorDetails({ details }: { details: string }) {
   );
 }
 
+function ModelPicker() {
+  const selectedModel = useAssistantModel();
+
+  return (
+    <fieldset className="grid gap-2">
+      <legend className="mb-2 text-sm font-medium text-ink">Model</legend>
+      {ASSISTANT_MODELS.map((model) => (
+        <label
+          key={model.id}
+          className={cn(
+            "flex cursor-pointer items-start gap-2.5 rounded-xl border px-3 py-2.5 transition-colors",
+            selectedModel === model.id ? "border-brand/50 bg-brand-soft/50" : "border-line bg-surface hover:border-brand/40",
+          )}
+        >
+          <input
+            type="radio"
+            name="assistant-model"
+            value={model.id}
+            checked={selectedModel === model.id}
+            onChange={() => storeAssistantModel(model.id)}
+            className="mt-1 accent-brand"
+          />
+          <span className="grid gap-0.5">
+            <span className="text-sm font-medium text-ink">{model.label}</span>
+            <span className="text-xs text-faint">{model.note}</span>
+          </span>
+        </label>
+      ))}
+      <p className="text-xs text-faint">Both run at their lowest thinking level, which keeps answers quick.</p>
+    </fieldset>
+  );
+}
+
+function SwitchModelButton({ failedModel }: { failedModel: AssistantModelId }) {
+  const selectedModel = useAssistantModel();
+  const alternative = ASSISTANT_MODELS.find((model) => model.id !== failedModel);
+  if (!alternative) return null;
+  if (selectedModel !== failedModel) {
+    return <span className="ml-2 font-medium">Switched to {assistantModelLabel(selectedModel)} — ask again.</span>;
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={() => storeAssistantModel(alternative.id)}
+      className="ml-2 font-medium underline underline-offset-2"
+    >
+      Switch to {assistantModelLabel(alternative.id)}
+    </button>
+  );
+}
+
 function AssistantTurn({ turn }: { turn: ChatTurn }) {
   const waiting = turn.status === "thinking" && turn.text.length === 0;
 
@@ -90,6 +144,7 @@ function AssistantTurn({ turn }: { turn: ChatTurn }) {
               Reconnect
             </button>
           ) : null}
+          {turn.errorKind === "busy" && turn.model ? <SwitchModelButton failedModel={turn.model} /> : null}
         </p>
       ) : null}
       {turn.status === "error" && turn.errorDetails ? <ErrorDetails details={turn.errorDetails} /> : null}
@@ -192,10 +247,7 @@ export function ChatPanel({
         <ConnectForm />
       ) : view === "settings" ? (
         <div className="grid content-start gap-4 overflow-y-auto p-4">
-          <p className="text-sm text-muted">
-            Answers come from <span className="font-medium text-ink">{ASSISTANT_MODEL_LABEL}</span> at
-            its lowest thinking level, which keeps them quick.
-          </p>
+          <ModelPicker />
 
           <div className="grid gap-2 rounded-xl border border-line bg-sunken px-3 py-2.5">
             <p className="text-sm text-muted">

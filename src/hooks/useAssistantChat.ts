@@ -2,8 +2,9 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Content } from "@google/genai";
-import { AssistantError, streamReply, type AssistantErrorKind } from "@/lib/assistant/gemini";
+import { AssistantError, streamReply, type AssistantErrorKind, type AssistantModelId } from "@/lib/assistant/gemini";
 import { readApiKey } from "@/lib/assistant/credentials";
+import { readAssistantModel } from "@/lib/assistant/modelPreference";
 import { buildSystem, formatQuestion, type AssistantSelection } from "@/lib/assistant/prompt";
 
 export type TurnStatus = "thinking" | "streaming" | "done" | "truncated" | "stopped" | "error";
@@ -14,6 +15,7 @@ export interface ChatTurn {
   text: string;
   selection?: AssistantSelection;
   status?: TurnStatus;
+  model?: AssistantModelId;
   error?: string;
   errorKind?: AssistantErrorKind;
   errorDetails?: string;
@@ -56,8 +58,9 @@ export function useAssistantChat(slug: string, lectureContext: string) {
       const apiKey = readApiKey();
       if (!apiKey || busy) return;
 
+      const model = readAssistantModel();
       const userTurn: ChatTurn = { id: crypto.randomUUID(), role: "user", text: question, selection };
-      const assistantTurn: ChatTurn = { id: crypto.randomUUID(), role: "assistant", text: "", status: "thinking" };
+      const assistantTurn: ChatTurn = { id: crypto.randomUUID(), role: "assistant", text: "", status: "thinking", model };
       const history = [...turns, userTurn];
       setTurns([...history, assistantTurn]);
 
@@ -67,6 +70,7 @@ export function useAssistantChat(slug: string, lectureContext: string) {
       try {
         const reply = await streamReply({
           apiKey,
+          model,
           system,
           contents: toContents(history),
           signal: request.signal,

@@ -1,3 +1,8 @@
+const basePath =
+  process.env.GITHUB_ACTIONS && process.env.GITHUB_REPOSITORY
+    ? `/${process.env.GITHUB_REPOSITORY.split("/")[1]}`
+    : "";
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: "export",
@@ -5,11 +10,13 @@ const nextConfig = {
     unoptimized: true,
   },
   trailingSlash: true,
-  ...(process.env.GITHUB_ACTIONS &&
-    process.env.GITHUB_REPOSITORY && {
-      basePath: `/${process.env.GITHUB_REPOSITORY.split("/")[1]}`,
-      assetPrefix: `/${process.env.GITHUB_REPOSITORY.split("/")[1]}/`,
-    }),
+  env: {
+    NEXT_PUBLIC_BASE_PATH: basePath,
+  },
+  ...(basePath && {
+    basePath,
+    assetPrefix: `${basePath}/`,
+  }),
 };
 
 export default nextConfig;

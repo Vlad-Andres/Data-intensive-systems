@@ -1,9 +1,19 @@
 import type { Content, HttpOptions } from "@google/genai";
 
-export const ASSISTANT_MODEL = "gemini-3.8-flash";
-export const ASSISTANT_MODEL_LABEL = "Gemini 3.8 Flash";
+export const ASSISTANT_MODELS = [
+  { id: "gemini-3.8-flash", label: "Gemini 3.8 Flash", note: "Newest and strongest, but often overloaded on the free tier." },
+  { id: "gemini-3.5-flash", label: "Gemini 3.5 Flash", note: "Slightly older, and usually available when 3.8 is busy." },
+] as const;
 
-export type AssistantErrorKind = "auth" | "rate" | "network" | "aborted" | "blocked" | "other";
+export type AssistantModelId = (typeof ASSISTANT_MODELS)[number]["id"];
+
+export const DEFAULT_ASSISTANT_MODEL: AssistantModelId = "gemini-3.8-flash";
+
+export function assistantModelLabel(model: AssistantModelId) {
+  return ASSISTANT_MODELS.find((candidate) => candidate.id === model)?.label ?? model;
+}
+
+export type AssistantErrorKind = "auth" | "rate" | "busy" | "network" | "aborted" | "blocked" | "other";
 
 export class AssistantError extends Error {
   constructor(
@@ -30,6 +40,7 @@ function googleMessage(raw: string) {
 
 function toAssistantError(
   sdk: Awaited<ReturnType<typeof loadSdk>>,
+  model: AssistantModelId,
   error: unknown,
   signal?: AbortSignal,
 ): AssistantError {
@@ -44,7 +55,7 @@ function toAssistantError(
       return new AssistantError("auth", "Google rejected this API key. Reconnect with a valid key.");
     }
     if (error.status === 401 || error.status === 403) {
-      return new AssistantError("auth", `This key cannot use ${ASSISTANT_MODEL_LABEL}. ${message}`.trim());
+      return new AssistantError("auth", `This key cannot use ${assistantModelLabel(model)}. ${message}`.trim());
     }
     if (error.status === 429) {
       return new AssistantError(
@@ -53,7 +64,10 @@ function toAssistantError(
       );
     }
     if (error.status >= 500) {
-      return new AssistantError("other", "Gemini is busy right now. Try again in a moment.");
+      return new AssistantError(
+        "busy",
+        `${assistantModelLabel(model)} is overloaded at Google right now. Try again later, or switch to another model.`,
+      );
     }
     return new AssistantError("other", message || `Google returned an error (${error.status}).`);
   }
@@ -72,14 +86,15 @@ async function createClient(apiKey: string, httpOptions: HttpOptions) {
 export async function verifyApiKey(apiKey: string) {
   const { sdk, client } = await createClient(apiKey, { timeout: 20_000 });
   try {
-    await client.models.get({ model: ASSISTANT_MODEL });
+    await client.models.get({ model: DEFAULT_ASSISTANT_MODEL });
   } catch (error) {
-    throw toAssistantError(sdk, error);
+    throw toAssistantError(sdk, DEFAULT_ASSISTANT_MODEL, error);
   }
 }
 
 export interface ReplyRequest {
   apiKey: string;
+  model: AssistantModelId;
   system: string;
   contents: Content[];
   signal: AbortSignal;
@@ -134,6 +149,7 @@ function googleErrorInStream(sdk: Awaited<ReturnType<typeof loadSdk>>, streamTai
 }
 
 interface FailureContext {
+  model: AssistantModelId;
   error: unknown;
   record: StreamRecord;
   startedAt: number;
@@ -141,9 +157,9 @@ interface FailureContext {
   finishReason?: string;
 }
 
-function describeFailure({ error, record, startedAt, answerLength, finishReason }: FailureContext) {
+function describeFailure({ model, error, record, startedAt, answerLength, finishReason }: FailureContext) {
   return [
-    `model: ${ASSISTANT_MODEL}`,
+    `model: ${model}`,
     `started: ${new Date(startedAt).toISOString()}`,
     `elapsed: ${((Date.now() - startedAt) / 1000).toFixed(1)} s`,
     `http status: ${record.status ?? "no response"}`,
@@ -163,7 +179,7 @@ export async function streamReply(request: ReplyRequest): Promise<Reply> {
 
   try {
     const stream = await client.models.generateContentStream({
-      model: ASSISTANT_MODEL,
+      model: request.model,
       contents: request.contents,
       config: {
         systemInstruction: request.system,
@@ -185,9 +201,16 @@ export async function streamReply(request: ReplyRequest): Promise<Reply> {
       throw new AssistantError("network", "Gemini's answer was cut off before it finished. Try again.");
     }
   } catch (error) {
-    const failure = toAssistantError(sdk, googleErrorInStream(sdk, record.tail) ?? error, request.signal);
+    const failure = toAssistantError(sdk, request.model, googleErrorInStream(sdk, record.tail) ?? error, request.signal);
     if (failure.kind === "aborted") throw failure;
-    const diagnostics = describeFailure({ error, record, startedAt, answerLength: text.length, finishReason });
+    const diagnostics = describeFailure({
+      model: request.model,
+      error,
+      record,
+      startedAt,
+      answerLength: text.length,
+      finishReason,
+    });
     throw new AssistantError(failure.kind, failure.message, diagnostics);
   }
 
