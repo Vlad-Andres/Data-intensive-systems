@@ -51,6 +51,8 @@ function block(item: Block, concepts: Concept[]): string {
       return `\`\`\`${item.lang}\n${item.code}\n\`\`\`${item.caption ? `\n${item.caption}` : ""}`;
     case "table":
       return `${table(item.headers, item.rows)}${item.caption ? `\n\n${item.caption}` : ""}`;
+    case "figure":
+      return `[Figure: ${item.alt}]${item.caption ? ` ${item.caption}` : ""}`;
     case "steps":
       return [
         `**Worked example: ${item.title}**`,

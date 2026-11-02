@@ -104,6 +104,7 @@ export type Block =
   | { kind: "formula"; tex: string; caption?: string }
   | { kind: "code"; lang: string; code: string; caption?: string }
   | { kind: "table"; headers: string[]; rows: string[][]; caption?: string }
+  | { kind: "figure"; src: string; alt: string; width: number; height: number; caption?: string }
   | { kind: "steps"; title: string; intro?: string; steps: WorkedStep[] }
   | { kind: "timeline"; items: TimelineItem[] }
   | { kind: "interactive"; title: string; description?: string; component: ComponentType }
