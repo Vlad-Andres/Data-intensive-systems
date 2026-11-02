@@ -30,7 +30,7 @@ export const lecture02Concepts: Concept[] = [
     term: "Edit distance",
     short: "The cheapest sequence of character edits that turns one string into another.",
     detail:
-      "In the Levenshtein formulation on the slides, delete, insert and update each cost 1 — turning *ekaterini* into *katerina* costs 2. The book uses an insert/delete-only variant, where $d(x,y) = |x| + |y| - 2 \\cdot |LCS(x,y)|$. Both are proper distance measures.",
+      "In the Levenshtein formulation, delete, insert and update each cost 1 — turning *ekaterini* into *katerina* costs 2. The book uses an insert/delete-only variant, where $d(x,y) = |x| + |y| - 2 \\cdot |LCS(x,y)|$. Both are proper distance measures.",
     tags: ["atomic similarity", "distance"],
   },
   {

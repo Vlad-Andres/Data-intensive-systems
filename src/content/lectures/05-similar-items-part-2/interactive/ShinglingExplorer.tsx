@@ -9,7 +9,7 @@ import { cn } from "@/lib/cn";
 type TokenMode = "characters" | "words";
 
 const PRESETS = [
-  { label: "Slide example", a: "abcab", b: "abfef", k: 2, mode: "characters" as TokenMode },
+  { label: "Small example", a: "abcab", b: "abfef", k: 2, mode: "characters" as TokenMode },
   { label: "Book example", a: "abcdabd", b: "abcdabd", k: 2, mode: "characters" as TokenMode },
   {
     label: "One word changed",

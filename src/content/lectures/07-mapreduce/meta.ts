@@ -19,7 +19,7 @@ export const lecture07Meta: LectureMeta = {
   title: "MapReduce",
   subtitle: "Map, shuffle, reduce — and the classic algorithms written in it",
   summary:
-    "When data outgrows one machine, scalable means “can make use of thousands of cheap computers” and “one pass over the data”. MapReduce makes that programmable with two functions: map turns each input into key-value pairs, the system groups them by key, and reduce combines each group. This lecture builds the model from the slides' examples, explains how Hadoop executes a job and survives failures, and works through the algorithms you must be able to write: word count, an inverted index, relational operators and joins, and matrix multiplication.",
+    "When data outgrows one machine, scalable means “can make use of thousands of cheap computers” and “one pass over the data”. MapReduce makes that programmable with two functions: map turns each input into key-value pairs, the system groups them by key, and reduce combines each group. This lecture builds the model from small examples, explains how Hadoop executes a job and survives failures, and works through the algorithms you must be able to write: word count, an inverted index, relational operators and joins, and matrix multiplication.",
   topics: ["Scalability", "Map", "Shuffle", "Reduce", "Combiners", "Hadoop execution", "Inverted index", "Joins", "Matrix multiplication"],
   difficulty: "core",
   estimatedMinutes: 80,

@@ -8,7 +8,7 @@ import { StringSimilarityLab } from "./interactive/StringSimilarityLab";
 const objectives: Block[] = [
   {
     kind: "prose",
-    md: "*Finding Similar Items at Scale* runs over three lectures with one body of study material: the Entity Resolution and Matching slides plus chapter 3 of *Mining of Massive Datasets* (§3.1.1–§3.4, §3.5 and §3.8.1–§3.8.3). This first part follows the Entity Resolution slides: what the problem is, why it is unavoidable, at which levels it occurs, and which similarity and distance measures decide it — with their formulas and the situations they suit.",
+    md: "*Finding Similar Items at Scale* runs over three lectures with one body of study material, built on chapter 3 of *Mining of Massive Datasets* (§3.1.1–§3.4, §3.5 and §3.8.1–§3.8.3). This first part is about entity resolution: what the problem is, why it is unavoidable, at which levels it occurs, and which similarity and distance measures decide it — with their formulas and the situations they suit.",
   },
   { kind: "list", variant: "objectives", items: lecture02Meta.objectives },
 ];
@@ -64,7 +64,7 @@ const bigPicture: Block[] = [
 const levels: Block[] = [
   {
     kind: "prose",
-    md: "Solutions to entity resolution follow various directions. The slides group them into **four categories**, which also tell you at which **level** two descriptions are being compared:",
+    md: "Solutions to entity resolution follow various directions. They fall into **four categories**, which also tell you at which **level** two descriptions are being compared:",
   },
   {
     kind: "table",
@@ -78,7 +78,7 @@ const levels: Block[] = [
   },
   {
     kind: "prose",
-    md: "In practice the data structures being compared are usually **records**, and records combine all of these levels. The slides show two customer records:\n\n- *Jonathan Smith*, age 43, born `17/05/1983`, `12 Baker St.`, London `NW1 6XE`, `United Kingdom`, phone `07700 900123`, `jsmith@gmail.com`, Senior Software Developer at *Acme Corporation*, income 78,500, 3 children, customer id `UK-88219`.\n- *John Smith*, age 42, born `1983-05-17`, `12 Baker Street`, London `NW1 6XE`, `UK`, phone `+44 7700 900123`, `john.smith@gmail.com`, Software Engineer at *Acme Ltd.*, income 72,000, married, 2 children, customer id `C104582`.\n\nAlmost every field differs — yet the date of birth, address, postcode and phone are the same values in different **formats**, which is local knowledge at work. A second pair shows the harder case of **sparse** records with different attributes: one has a phone number and an occupation, the other an email and an employer, and only name, age, city and postcode can be compared directly.",
+    md: "In practice the data structures being compared are usually **records**, and records combine all of these levels. Take two customer records:\n\n- *Jonathan Smith*, age 43, born `17/05/1983`, `12 Baker St.`, London `NW1 6XE`, `United Kingdom`, phone `07700 900123`, `jsmith@gmail.com`, Senior Software Developer at *Acme Corporation*, income 78,500, 3 children, customer id `UK-88219`.\n- *John Smith*, age 42, born `1983-05-17`, `12 Baker Street`, London `NW1 6XE`, `UK`, phone `+44 7700 900123`, `john.smith@gmail.com`, Software Engineer at *Acme Ltd.*, income 72,000, married, 2 children, customer id `C104582`.\n\nAlmost every field differs — yet the date of birth, address, postcode and phone are the same values in different **formats**, which is local knowledge at work. A second pair shows the harder case of **sparse** records with different attributes: one has a phone number and an occupation, the other an email and an employer, and only name, age, city and postcode can be compared directly.",
   },
   {
     kind: "info",
@@ -132,7 +132,7 @@ const stringSimilarity: Block[] = [
     kind: "info",
     variant: "note",
     title: "Two definitions of edit distance",
-    md: "The slides define edit distance with insert, delete **and** update. The book (§3.5.5) uses insert and delete only, which makes $d(x,y) = |x| + |y| - 2|LCS(x,y)|$ with LCS the longest common subsequence. For *abcde* and *acfdeg* the LCS is *acde*, so the distance is $5 + 6 - 8 = 3$. Both versions are distance measures; know which one a question means.",
+    md: "The Levenshtein edit distance allows insert, delete **and** update. The book (§3.5.5) uses insert and delete only, which makes $d(x,y) = |x| + |y| - 2|LCS(x,y)|$ with LCS the longest common subsequence. For *abcde* and *acfdeg* the LCS is *acde*, so the distance is $5 + 6 - 8 = 3$. Both versions are distance measures; know which one a question means.",
   },
   { kind: "concepts", ids: ["edit-distance", "gap-distance", "jaro"] },
   {
@@ -218,7 +218,7 @@ const distances: Block[] = [
       ["L₁ norm (Manhattan)", "Sum of the absolute differences in each dimension — the distance if you had to travel along the coordinates only", "4 + 3 = 7"],
       ["L∞ norm", "The maximum of the differences in any dimension", "max(4, 3) = 4"],
     ],
-    caption: "Examples of Euclidean distances from the slides.",
+    caption: "Examples of Euclidean distances for a = (5, 5) and b = (9, 8).",
   },
   {
     kind: "table",
@@ -283,7 +283,7 @@ const distances: Block[] = [
         id: "measure-choice",
         prompt: "Which of these are non-Euclidean distance measures? Select all that apply.",
         check: { mode: "select", options: ["L1", "L2", "Jaccard", "Edit", "Hamming", "L∞"], answer: ["Edit", "Hamming", "Jaccard"] },
-        solution: "**Jaccard**, **edit** and **Hamming** distance are defined on sets, strings and bit vectors, which have no locations to average. The Lᵣ norms are the Euclidean distances. (Cosine distance appears in both lists on the slides.)",
+        solution: "**Jaccard**, **edit** and **Hamming** distance are defined on sets, strings and bit vectors, which have no locations to average. The Lᵣ norms are the Euclidean distances. (Cosine distance is sometimes listed among both.)",
       },
     ],
   },
@@ -313,7 +313,7 @@ const deduplication: Block[] = [
       ["P5", "Gree", "51519", "55k"],
       ["P6", "Chuck", "51519", "30k"],
     ],
-    caption: "The relation with duplicates from the slides (example by Ihab Ilyas). The clean relation has three records: Green 51519 39k, Peter 30528 40k, Chuck 51519 30k.",
+    caption: "A relation with duplicates (example by Ihab Ilyas). The clean relation has three records: Green 51519 39k, Peter 30528 40k, Chuck 51519 30k.",
   },
   {
     kind: "interactive",
@@ -386,7 +386,7 @@ const mistakes: Block[] = [
     kind: "info",
     variant: "pitfall",
     title: "Mixing up the two edit distances",
-    md: "With updates allowed (Levenshtein, the slides), changing one character costs 1. With inserts and deletes only (the book), it costs 2. Check which definition is in play.",
+    md: "With updates allowed (Levenshtein), changing one character costs 1. With inserts and deletes only (the book), it costs 2. Check which definition is in play.",
   },
   {
     kind: "info",
@@ -421,7 +421,7 @@ const summary: Block[] = [
     kind: "table",
     headers: ["Measure", "Formula", "Use it for"],
     rows: [
-      ["Edit distance (slides)", "# inserts, deletes, updates", "Strings with typos"],
+      ["Edit distance (Levenshtein)", "# inserts, deletes, updates", "Strings with typos"],
       ["Edit distance (book)", "|x| + |y| − 2·|LCS(x, y)|", "Strings, inserts and deletes only"],
       ["Gap distance", "1 + o + 8e for knowledge and data → knowl. data", "Abbreviations"],
       ["Jaro similarity", "⅓(C/|s₁| + C/|s₂| + (C−T)/C)", "Short strings, names"],

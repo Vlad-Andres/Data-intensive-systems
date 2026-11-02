@@ -25,7 +25,7 @@ export const lecture01Quiz: QuizQuestion[] = [
     ],
     answerId: "c",
     explanation:
-      "1 ZB = $10^{21}$ bytes = 1,000 exabytes = 1,000,000 petabytes = one billion terabytes. The slides estimate the total for 2025 at 200 ZB.",
+      "1 ZB = $10^{21}$ bytes = 1,000 exabytes = 1,000,000 petabytes = one billion terabytes. The estimated total for 2025 is 200 ZB.",
   },
   {
     id: "q-data-model",

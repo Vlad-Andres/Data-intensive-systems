@@ -38,7 +38,7 @@ export const lecture02Quiz: QuizQuestion[] = [
     ],
     answerId: "b",
     explanation:
-      "Delete the leading *e* and update the final *i* into *a*: two operations. (The slides draw it the other way round, as an insert and an update.)",
+      "Delete the leading *e* and update the final *i* into *a*: two operations. (Drawn the other way round, it is an insert and an update.)",
   },
   {
     id: "q-jaro",

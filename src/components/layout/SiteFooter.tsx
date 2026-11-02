@@ -5,7 +5,7 @@ export function SiteFooter() {
         <p className="font-medium text-muted">DIS Study Playground</p>
         <p>
           A personal, interactive companion for the Data Intensive Systems course. Content is
-          derived from the course slides and the assigned book chapters; progress is stored locally
+          built from the course material and the assigned book chapters; progress is stored locally
           in your browser.
         </p>
       </div>

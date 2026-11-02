@@ -55,12 +55,12 @@ export const lecture03Meta: LectureMeta = {
     {
       label: "Greenplum administrator guide",
       kind: "notes",
-      detail: "DDL for distribution and partitioning, cited by the slides",
+      detail: "DDL for distribution and partitioning",
     },
     {
       label: "MemSQL distributed SQL",
       kind: "notes",
-      detail: "Shard keys and reference tables, cited by the slides",
+      detail: "Shard keys and reference tables",
     },
   ],
   objectives: [

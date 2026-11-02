@@ -51,7 +51,7 @@ export const lecture05Quiz: QuizQuestion[] = [
     ],
     answerId: "a",
     explanation:
-      "k must be large enough that any given shingle is unlikely to appear in any given document. With $k = 1$ nearly every page contains nearly every common character. The slides suggest $k = 5$ for short documents and $k = 10$ for long ones; the book $k = 5$ for emails and $k = 9$ for research articles.",
+      "k must be large enough that any given shingle is unlikely to appear in any given document. With $k = 1$ nearly every page contains nearly every common character. A rule of thumb is $k = 5$ for short documents and $k = 10$ for long ones; the book $k = 5$ for emails and $k = 9$ for research articles.",
   },
   {
     id: "q-hashed",
@@ -94,7 +94,7 @@ export const lecture05Quiz: QuizQuestion[] = [
   },
   {
     id: "q-signature-similarity",
-    prompt: "In the slides' example, columns 1 and 3 have Jaccard similarity 0.75 but their three-row signatures agree in only 2 of 3 rows. What does that show?",
+    prompt: "In the running example, columns 1 and 3 have Jaccard similarity 0.75 but their three-row signatures agree in only 2 of 3 rows. What does that show?",
     options: [
       { id: "a", text: "Minhashing is biased and underestimates similarity." },
       { id: "b", text: "Signature similarity equals the Jaccard similarity only in expectation; short signatures have large errors." },
