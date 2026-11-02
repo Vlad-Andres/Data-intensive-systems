@@ -5,7 +5,7 @@ import { RdfStorageLab } from "./interactive/RdfStorageLab";
 const objectives: Block[] = [
   {
     kind: "prose",
-    md: "The second NoSQL lecture is about data whose value lies in its **connections**. It follows the slides through four sources: the property graph model, **RDF** and how to store it with relational technology (Velegrakis, *Relational Technologies, Metadata and RDF*, Section 1.4–1.5), **Neo4j** with Cypher, Gremlin and REST (*Seven Databases in Seven Weeks*, Chapter 6), and how a native graph database works inside (*Graph Databases*, Chapter 6). For Cypher, the slides point to the Cypher manual and the Neo4j chapter as self-study material.",
+    md: "The second NoSQL lecture is about data whose value lies in its **connections**. It covers the property graph model, **RDF** and how to store it with relational technology, **Neo4j** with its query languages Cypher and Gremlin, and how a native graph database works inside. For more Cypher than this page covers, the official Cypher manual is the reference.",
   },
   { kind: "list", variant: "objectives", items: lecture11Meta.objectives },
 ];
@@ -17,7 +17,7 @@ const whyGraphs: Block[] = [
   },
   {
     kind: "table",
-    headers: ["Kind of network", "Example from the slides"],
+    headers: ["Kind of network", "Example"],
     rows: [
       ["Social networks", "The Facebook social graph — four degrees of separation (Backstrom et al., 2011)"],
       ["Media networks", "Links between political blogs, showing a polarised network (Adamic and Glance, 2005)"],
@@ -31,6 +31,14 @@ const whyGraphs: Block[] = [
     variant: "note",
     title: "The first ever graph",
     md: "Euler's **Seven Bridges of Königsberg** (1735): can you return to your starting point after crossing every bridge exactly once? Modelling the land masses as nodes and the bridges as edges turned the city into a graph — and showed it is impossible, because every land mass touches an odd number of bridges.",
+  },
+  {
+    kind: "figure",
+    src: "graph/konigsberg.png",
+    alt: "Map of Königsberg with its seven bridges highlighted, and the graph Euler drew from it: four land masses as nodes, seven bridges as edges.",
+    width: 960,
+    height: 700,
+    caption: "The Seven Bridges of Königsberg (Euler, 1735): cross every bridge exactly once and return to the start.",
   },
   {
     kind: "prose",
@@ -52,8 +60,16 @@ const propertyGraph: Block[] = [
     md: "**The property graph model** has three ingredients:\n\n- **Nodes** represent objects and can carry **labels**.\n- **Relationships** relate two nodes, have a label used as a **type**, and have a **direction**.\n- **Properties** are name–value pairs that describe characteristics, on nodes *or* on relationships.",
   },
   {
+    kind: "figure",
+    src: "graph/property-graph.png",
+    alt: "Property graph: Jo (name, age 26) marriedTo Mary (age 28) with property in: 2005; Jo livesIn The Mill (in New York, built in 2007).",
+    width: 790,
+    height: 650,
+    caption: "A small property graph: nodes A, B and C with properties, and two typed, directed relationships.",
+  },
+  {
     kind: "table",
-    headers: ["Element", "In the slide's example"],
+    headers: ["Element", "In the example"],
     rows: [
       ["Node A", "name: Jo, age: 26"],
       ["Node B", "name: Mary, age: 28"],
@@ -65,6 +81,22 @@ const propertyGraph: Block[] = [
   {
     kind: "prose",
     md: "Neo4j is called **whiteboard friendly**: virtually any diagram of boxes and lines on a whiteboard can be stored as it is. Compare a wine-suggestion app modelled relationally — tables categories, wines, articles and the join tables wines_categories and wines_articles — with the whiteboard version: *Prancing Wolf* –produced→ *2007* –grape_type→ *Riesling*, and *Wine Expert* –reported_on→ *2007*. As the saying goes, on a long enough timeline all fields become optional; a graph provides **values and structure only where necessary**, so there is no schema to adjust when a wine turns out to have no vintage.\n\nIn Neo4j a label is **not a type**: two nodes labeled Wine can have completely different properties, and types must be enforced by the application if needed.",
+  },
+  {
+    kind: "figure",
+    src: "graph/relational-wine-schema.jpg",
+    alt: "Relational schema for a wine app: tables categories, wines, articles and join tables wines_categories and wines_articles.",
+    width: 1424,
+    height: 504,
+    caption: "The wine app as relational tables and join tables…",
+  },
+  {
+    kind: "figure",
+    src: "graph/wine-whiteboard.jpg",
+    alt: "Hand-drawn graph: Prancing Wolf produced 2007, Wine Expert reported on 2007, 2007 has grape type Riesling.",
+    width: 974,
+    height: 542,
+    caption: "…and the same data as drawn on a whiteboard, which is exactly how it is stored in a graph.",
   },
   { kind: "concepts", ids: ["property-graph"] },
   {
@@ -83,7 +115,15 @@ const rdf: Block[] = [
   },
   {
     kind: "prose",
-    md: "**RDF Schema** (RDFS) adds typing on top:\n\n- **rdfs:Class** groups resources with a common structure; rdf:type links a resource to its classes, and every resource is an instance of rdf:Thing.\n- **rdfs:subClassOf** orders classes (instances of a sub-class are instances of the super-class) and **rdfs:subPropertyOf** orders properties.\n- **rdfs:domain** and **rdfs:range** restrict which classes a property may connect.\n\nRDF also has an **XML syntax**. The slides' couple example — *Couple* with husband *John* (full name John Smith) and wife *Mary* (Mary Wilkinson) — shows the problem with storing RDF as XML: the XML tree adds rdf:RDF, Description, rdf:about and rdf:resource nodes that are not part of the RDF graph, and XML queries follow root-to-element paths while RDF queries traverse a graph.",
+    md: "**RDF Schema** (RDFS) adds typing on top:\n\n- **rdfs:Class** groups resources with a common structure; rdf:type links a resource to its classes, and every resource is an instance of rdf:Thing.\n- **rdfs:subClassOf** orders classes (instances of a sub-class are instances of the super-class) and **rdfs:subPropertyOf** orders properties.\n- **rdfs:domain** and **rdfs:range** restrict which classes a property may connect.\n\nRDF also has an **XML syntax**. Take a couple — *Couple* with husband *John* (full name John Smith) and wife *Mary* (Mary Wilkinson) — shown below as an RDF graph (top) and as the tree of its XML syntax (bottom). It shows the problem with storing RDF as XML: the XML tree adds rdf:RDF, Description, rdf:about and rdf:resource nodes that are not part of the RDF graph, and XML queries follow root-to-element paths while RDF queries traverse a graph.",
+  },
+  {
+    kind: "figure",
+    src: "graph/rdf-couple.jpg",
+    alt: "Top: RDF graph Couple with John (John Smith) and Mary (Mary Wilkinson). Bottom: XML tree with rdf:RDF, Description, mns:husband, rdf:resource and rdf:about nodes.",
+    width: 1552,
+    height: 852,
+    caption: "The same RDF data as a graph (top) and as the tree of its XML syntax (bottom): the XML tree has many extra nodes.",
   },
   {
     kind: "info",
@@ -123,7 +163,23 @@ const relationalStorage: Block[] = [
   },
   {
     kind: "prose",
-    md: "**Vertical table.** The straightforward scheme: each tuple is one triple. *Does Calvanese have publications?* becomes the selection SELECT subject FROM Statements WHERE predicate = 'author' AND object = 'Calvanese' — fast with indexes. *In which journals did Mecca and Atzeni publish together?* needs **three copies** of Statements joined on subject. Schema triples live in the same table, so a *direct* sub-class is easy to find but sub-class in general means combining many triples.\n\n**Graph schema – vertical data** (RDFSuite) exploits RDF Schema: tables Class, Property (with domain and range), SubClass and SubProperty, a hard-coded Type table for built-ins, and data tables **Instance**(URI, classid) and **PropertyInstance**(from, name, to). The slides' example: a Truck (100) and a Car (200) with brand, privateLicence and businessLicence. A variant uses one table per class and per property (brand, privateLicence, businessLicence…).\n\n**Property table.** Cluster properties that most resources share — type, title and year — into the columns of one table; resource 4 gets NULL for year. Everything else goes into an **excess table** with the vertical layout. *The article titled LAURIN from 2001* is then a single selection. **Multi-valued** properties (author) cannot be columns in first normal form and always land in the excess table. Variants: several property tables (journal and file always appear together), or **class property tables**, one per RDFS class (Article, Book) — where a shared property such as title appears in several tables and *all years* becomes a UNION.\n\n**Vertical partitioning** is the column-store idea: one table per predicate, k tables for k properties. URIs are keys only for single-valued properties, so indexes on the URI columns are needed; sorted by URI, tables merge-join efficiently and the values of a multi-valued property sit together.\n\n**Smart indexing** targets exploratory queries on heterogeneous data. A triple's three parts can be combined in 3! = **6 orders**; for each order (say subject–predicate–object) build a list of subjects, each pointing to a list of its predicates, each pointing to the list of objects — see the slide's s1…sq diagram. The object lists of s-p-o and p-s-o are the same, so they are stored once. In relational form this needs two-column tables for the first two levels and single-column tables for the last. **RDF-3X** builds the same six indexes from scratch, compresses them and adds aggregate indexes.",
+    md: "**Vertical table.** The straightforward scheme: each tuple is one triple. *Does Calvanese have publications?* becomes the selection SELECT subject FROM Statements WHERE predicate = 'author' AND object = 'Calvanese' — fast with indexes. *In which journals did Mecca and Atzeni publish together?* needs **three copies** of Statements joined on subject. Schema triples live in the same table, so a *direct* sub-class is easy to find but sub-class in general means combining many triples.\n\n**Graph schema – vertical data** (RDFSuite) exploits RDF Schema: tables Class, Property (with domain and range), SubClass and SubProperty, a hard-coded Type table for built-ins, and data tables **Instance**(URI, classid) and **PropertyInstance**(from, name, to). In the example below, a Truck (100) and a Car (200) with brand, privateLicence and businessLicence. A variant uses one table per class and per property (brand, privateLicence, businessLicence…).\n\n**Property table.** Cluster properties that most resources share — type, title and year — into the columns of one table; resource 4 gets NULL for year. Everything else goes into an **excess table** with the vertical layout. *The article titled LAURIN from 2001* is then a single selection. **Multi-valued** properties (author) cannot be columns in first normal form and always land in the excess table. Variants: several property tables (journal and file always appear together), or **class property tables**, one per RDFS class (Article, Book) — where a shared property such as title appears in several tables and *all years* becomes a UNION.\n\n**Vertical partitioning** is the column-store idea: one table per predicate, k tables for k properties. URIs are keys only for single-valued properties, so indexes on the URI columns are needed; sorted by URI, tables merge-join efficiently and the values of a multi-valued property sit together.\n\n**Smart indexing** targets exploratory queries on heterogeneous data. A triple's three parts can be combined in 3! = **6 orders**; for each order (say subject–predicate–object) build a list of subjects, each pointing to a list of its predicates, each pointing to the list of objects — see the diagram below. The object lists of s-p-o and p-s-o are the same, so they are stored once. In relational form this needs two-column tables for the first two levels and single-column tables for the last. **RDF-3X** builds the same six indexes from scratch, compresses them and adds aggregate indexes.",
+  },
+  {
+    kind: "figure",
+    src: "graph/graph-schema-vertical-data.png",
+    alt: "Tables Class, Property, Subclass, Subproperty, Instance, PropertyInstance and Type with URIs for Vehicle, Truck, Car, licences and the brands MAN and VW.",
+    width: 1208,
+    height: 1046,
+    caption: "Graph schema – vertical data: schema tables (top), data tables (bottom).",
+  },
+  {
+    kind: "figure",
+    src: "graph/smart-indexing.png",
+    alt: "A list of subjects s1…sq; s1 points to its predicates p1…pk; each predicate points to a vertical list of objects.",
+    width: 1148,
+    height: 794,
+    caption: "One of the six smart-indexing structures: subject → predicates → objects.",
   },
   {
     kind: "interactive",
@@ -188,7 +244,7 @@ RETURN m.title, m.released ORDER BY m.released DESC;
 
 // co-actors: any outgoing relationship to a movie, then ACTED_IN coming back in
 MATCH (:Person {name:"Tom Hanks"})-->(:Movie)<-[:ACTED_IN]-(x:Person) RETURN x.name;`,
-    caption: "Reading with MATCH, WHERE and RETURN (slides, Neo4j movie graph).",
+    caption: "Reading with MATCH, WHERE and RETURN on the Neo4j movie graph.",
   },
   {
     kind: "code",
@@ -240,7 +296,15 @@ MATCH (e:EphemeralNode) DELETE e;                              // then the node`
 const gremlinRest: Block[] = [
   {
     kind: "prose",
-    md: "**Gremlin** is a graph **traversal** language built on a Java project called **Pipes**: a query is a pipeline of steps over **g**, the variable that represents the graph, and it always returns a **set**. The slides use the wine graph: *Wine Expert Monthly* (1) –reported_on→ *Prancing Wolf Ice Wine 2007* (0) –grape_type→ *riesling* (2).",
+    md: "**Gremlin** is a graph **traversal** language built on a Java project called **Pipes**: a query is a pipeline of steps over **g**, the variable that represents the graph, and it always returns a **set**. The examples use a small wine graph: *Wine Expert Monthly* (1) –reported_on→ *Prancing Wolf Ice Wine 2007* (0) –grape_type→ *riesling* (2).",
+  },
+  {
+    kind: "figure",
+    src: "graph/gremlin-wine-graph.jpg",
+    alt: "Wine graph: Wine Expert Monthly reported_on Prancing Wolf Ice Wine 2007; three Prancing Wolf wines have grape_type riesling and are produced by Prancing Wolf Winery.",
+    width: 1306,
+    height: 334,
+    caption: "The wine graph after adding the winery and two more wines.",
   },
   {
     kind: "code",
@@ -264,8 +328,16 @@ alice.bothE('friends').bothV.name   // both directions: Alice, Patty`,
     caption: "Gremlin steps: outE, inE, inV, outV, out, in, both, bothE, bothV, filter; next() takes one element of a pipeline.",
   },
   {
+    kind: "figure",
+    src: "graph/gremlin-friends-graph.png",
+    alt: "Patty is friends with Tom and Alice; Tom likes the Kabinett and the ice wine and trusts Wine Expert Monthly; Alice likes the ice wine.",
+    width: 1230,
+    height: 440,
+    caption: "The social part of the wine graph used by the bothE example.",
+  },
+  {
     kind: "prose",
-    md: "The last pipe — out along grape_type, back in along grape_type, then filter out the ice wine itself — replaces a nested Java loop over the wine's grape_type relationships: the same traversal written imperatively. The slides' query catalogue groups Gremlin operations into **load** (g.loadGraphSON), **create** (addVertex, addEdge, setProperty), **read** (g.V.count(), g.E.label.dedup(), g.V.has(name, value)), **update**, **delete** (removeVertex, removeEdge, removeProperty) and **traversal** (v.in(), v.out(), v.both('l'), degree filters, breadth-first loops and shortest paths). Several actions can be grouped into one transaction by switching the graph's transaction mode to manual (setTransactionMode with Mode.MANUAL).\n\n**REST.** Neo4j also exposes a REST interface on port 7474 under the path /db/data/, returning JSON with the URLs for nodes, relationships, indexes, Cypher and transactions — language-agnostic access from machines without Java. A POST to /db/data/node creates a node; /node/{id}/relationships creates a relationship; /node/{id}/paths finds a path with an algorithm such as shortestPath, allPaths, allSimplePaths or dijkstra. Everything is an object with its own URL, such as relationship 0.\n\n**Indexes** in the REST API are a separate service: a key-value (hash) index maps a key to a node URL, and a **Lucene**-based full-text index answers queries like name:P*. Cypher queries can also be sent over REST, to the cypher endpoint.",
+    md: "The last pipe — out along grape_type, back in along grape_type, then filter out the ice wine itself — replaces a nested Java loop over the wine's grape_type relationships: the same traversal written imperatively. Gremlin operations fall into six groups: into **load** (g.loadGraphSON), **create** (addVertex, addEdge, setProperty), **read** (g.V.count(), g.E.label.dedup(), g.V.has(name, value)), **update**, **delete** (removeVertex, removeEdge, removeProperty) and **traversal** (v.in(), v.out(), v.both('l'), degree filters, breadth-first loops and shortest paths). Several actions can be grouped into one transaction by switching the graph's transaction mode to manual (setTransactionMode with Mode.MANUAL).\n\n**REST.** Neo4j also exposes a REST interface on port 7474 under the path /db/data/, returning JSON with the URLs for nodes, relationships, indexes, Cypher and transactions — language-agnostic access from machines without Java. A POST to /db/data/node creates a node; /node/{id}/relationships creates a relationship; /node/{id}/paths finds a path with an algorithm such as shortestPath, allPaths, allSimplePaths or dijkstra. Everything is an object with its own URL, such as relationship 0.\n\n**Indexes** in the REST API are a separate service: a key-value (hash) index maps a key to a node URL, and a **Lucene**-based full-text index answers queries like name:P*. Cypher queries can also be sent over REST, to the cypher endpoint.",
   },
   { kind: "concepts", ids: ["gremlin"] },
   {
@@ -284,6 +356,22 @@ const internals: Block[] = [
     md: "**Native graph processing.** A graph database processes graphs natively if it has **index-free adjacency**: every node keeps direct references to its adjacent nodes and acts as a **micro-index** of its neighbourhood. A non-native engine links nodes through **global indexes**. Finding Alice's friends then costs an O(log n) index lookup, and finding *who is friends with Alice* — the opposite direction — needs one lookup per candidate, or a reverse index for every traversal direction. With index-free adjacency, relationships are physically stored, both directions are equally cheap, and bidirectional joins are effectively **precomputed**.",
   },
   {
+    kind: "figure",
+    src: "graph/index-lookup.png",
+    alt: "Non-native processing: a global index of (person, friend) pairs points to the nodes Alice, Bob, Charlie and Davina.",
+    width: 1478,
+    height: 1152,
+    caption: "Non-native processing: every hop goes through a global index.",
+  },
+  {
+    kind: "figure",
+    src: "graph/friend-relationships.jpg",
+    alt: "Native processing: Alice, Bob, Charlie and Davina connected directly by FRIEND relationships in both directions.",
+    width: 1440,
+    height: 482,
+    caption: "Native processing: relationships are stored, so a hop in either direction is a direct pointer.",
+  },
+  {
     kind: "formula",
     tex: "\\text{global index: } O(m \\log n) \\qquad\\text{vs}\\qquad \\text{index-free adjacency: } O(m)",
     caption: "Cost of traversing m relationships in a graph of n nodes. Query time depends on the part of the graph searched, not on its total size.",
@@ -291,6 +379,14 @@ const internals: Block[] = [
   {
     kind: "prose",
     md: "**Native graph storage.** Neo4j keeps the graph in **separate store files** for nodes, relationships, labels and properties — the graph's **structure** is separate from its **property data**, which makes traversals fast even though the files look nothing like the user's view of the graph. Node and relationship stores use **fixed-size records**, so a record's position is simply **id × record size**: O(1) instead of an O(log n) search.",
+  },
+  {
+    kind: "figure",
+    src: "graph/neo4j-architecture.png",
+    alt: "Neo4j architecture: Traversal API, Core API and Cypher on top; lock manager, transaction management, page cache, transaction log and record files; disks at the bottom.",
+    width: 1564,
+    height: 888,
+    caption: "Neo4j's architecture, from the APIs down to the files on disk.",
   },
   {
     kind: "table",
@@ -303,6 +399,14 @@ const internals: Block[] = [
     ],
   },
   {
+    kind: "figure",
+    src: "graph/record-layout.jpg",
+    alt: "Byte layout of a node record (inUse, nextRelId, nextPropId, labels, extra) and a relationship record (firstNode, secondNode, relationshipType, previous and next relationship ids for both nodes, nextPropId, firstInChainMarker).",
+    width: 1456,
+    height: 560,
+    caption: "Node and relationship record layouts. This figure shows an earlier record format (15-byte nodes, 34-byte relationships); Neo4j 2.2 shrank node records to 9 bytes, but the fields are the same.",
+  },
+  {
     kind: "steps",
     title: "Following one relationship",
     steps: [
@@ -313,8 +417,24 @@ const internals: Block[] = [
     ],
   },
   {
+    kind: "figure",
+    src: "graph/relationship-chains.png",
+    alt: "Node 1 (Person, name Bob, age 25) and Node 2 (Person, name Alice) linked by a LIKES relationship record that holds the previous and next relationship pointers for its start and end node.",
+    width: 1496,
+    height: 778,
+    caption: "How a graph is physically stored: node records, a relationship record with its chain pointers, labels and property records.",
+  },
+  {
     kind: "prose",
-    md: "**Caching.** Disks are slow next to memory, so Neo4j (from 2.2) uses an off-heap **LRU-K page cache**: each store is divided into regions, a fixed number of regions per store is cached, and pages are evicted by a least-frequently-used policy nuanced by popularity — unpopular pages leave first even if popular ones have not been touched recently. (The slides simply call it an LRU cache.)\n\n**APIs** form a stack, from expressive and declarative at the top to precise, imperative and *bare metal* at the bottom:\n\n- **Cypher** — declarative pattern matching; tolerant to changes in the graph's structure.\n- **Traversal Framework** — declarative Java: which relationship types and directions to follow, breadth- or depth-first, and an evaluator deciding at each node whether to include it and continue.\n- **Core API** — imperative Java over nodes, relationships, properties and labels; lazily evaluated for reads and transactional for writes. Often the fastest, but verbose and tightly coupled to the graph's structure.\n- **Kernel API** — transaction event handlers that react to transactions as they flow through the kernel, e.g. marking a node as logically deleted instead of deleting it.",
+    md: "**Caching.** Disks are slow next to memory, so Neo4j (from 2.2) uses an off-heap **LRU-K page cache**: each store is divided into regions, a fixed number of regions per store is cached, and pages are evicted by a least-frequently-used policy nuanced by popularity — unpopular pages leave first even if popular ones have not been touched recently.\n\n**APIs** form a stack, from expressive and declarative at the top to precise, imperative and *bare metal* at the bottom:\n\n- **Cypher** — declarative pattern matching; tolerant to changes in the graph's structure.\n- **Traversal Framework** — declarative Java: which relationship types and directions to follow, breadth- or depth-first, and an evaluator deciding at each node whether to include it and continue.\n- **Core API** — imperative Java over nodes, relationships, properties and labels; lazily evaluated for reads and transactional for writes. Often the fastest, but verbose and tightly coupled to the graph's structure.\n- **Kernel API** — transaction event handlers that react to transactions as they flow through the kernel, e.g. marking a node as logically deleted instead of deleting it.",
+  },
+  {
+    kind: "figure",
+    src: "graph/api-stack.png",
+    alt: "API stack: user code on top; Cypher beside the Traverser API and the Core API; the kernel at the bottom.",
+    width: 1026,
+    height: 464,
+    caption: "Neo4j's API stack.",
   },
   { kind: "concepts", ids: ["index-free-adjacency", "record-stores"] },
   {
@@ -353,7 +473,31 @@ const dependability: Block[] = [
   },
   {
     kind: "prose",
-    md: "**Availability.** Neo4j clusters are **master-slave**, with a **complete replica** of the graph on every machine. Writes go to the master and are replicated to the slaves at frequent intervals; some slaves may lag behind by milliseconds. The classic topology is **write-master, read-slaves**: writes scale only up to one machine, reads almost linearly. Neo4j also allows **writing through slaves**: the slave first catches up with the master, then commits synchronously on both — durable on two instances, at the cost of write latency; every write still passes through the master. **Graph-local**, idiomatic queries that start from a few significant nodes spread the load, use the caches well and reduce contention. For load balancing the slides add: **separate reads and writes**, and **cache sharding** — send requests for the same part of the graph to the same instance.\n\n**HA cluster.** Masters are elected automatically, and a returning old master rejoins as a slave. Coordination used to rely on **ZooKeeper** — set unique ids for the coordinators, configure them, start all three, and point each Neo4j server in HA mode at them — but newer versions coordinate themselves. A write to one slave is not immediately synchronised with the others, so the cluster as a whole is **eventually consistent**: in CAP terms Neo4j HA is **AP** and recommended for read-mostly workloads. neo4j-admin takes full and incremental **backups**.",
+    md: "**Availability.** Neo4j clusters are **master-slave**, with a **complete replica** of the graph on every machine. Writes go to the master and are replicated to the slaves at frequent intervals; some slaves may lag behind by milliseconds. The classic topology is **write-master, read-slaves**: writes scale only up to one machine, reads almost linearly. Neo4j also allows **writing through slaves**: the slave first catches up with the master, then commits synchronously on both — durable on two instances, at the cost of write latency; every write still passes through the master. **Graph-local**, idiomatic queries that start from a few significant nodes spread the load, use the caches well and reduce contention. Two load-balancing techniques help: **separate reads and writes**, and **cache sharding** — send requests for the same part of the graph to the same instance.\n\n**HA cluster.** Masters are elected automatically, and a returning old master rejoins as a slave. Coordination used to rely on **ZooKeeper** — set unique ids for the coordinators, configure them, start all three, and point each Neo4j server in HA mode at them — but newer versions coordinate themselves. A write to one slave is not immediately synchronised with the others, so the cluster as a whole is **eventually consistent**: in CAP terms Neo4j HA is **AP** and recommended for read-mostly workloads. neo4j-admin takes full and incremental **backups**.",
+  },
+  {
+    kind: "figure",
+    src: "graph/ha-coordinators.png",
+    alt: "Three coordinator servers connected to each other and, through a cluster interface, to Neo4j 1 (master), Neo4j 2 (slave) and Neo4j 3 (slave).",
+    width: 1126,
+    height: 924,
+    caption: "A ZooKeeper-style coordinated HA cluster: three coordinators, one master and two slaves.",
+  },
+  {
+    kind: "figure",
+    src: "graph/read-write-balancing.jpg",
+    alt: "The application sends write requests to a write load balancer that targets the master and read requests to a read load balancer spread over all instances.",
+    width: 1264,
+    height: 950,
+    caption: "Separating reads and writes: writes go to the master, reads to any instance.",
+  },
+  {
+    kind: "figure",
+    src: "graph/cache-sharding.jpg",
+    alt: "A load balancer sends requests for A, B and C to different servers, each of which keeps the matching part of the graph in its cache.",
+    width: 1320,
+    height: 1032,
+    caption: "Cache sharding: requests for the same part of the graph go to the same instance, so its cache stays warm.",
   },
   {
     kind: "table",
@@ -365,8 +509,16 @@ const dependability: Block[] = [
     ],
   },
   {
+    kind: "figure",
+    src: "graph/publishing-graph.jpg",
+    alt: "Alice WROTE the newest article; each article points to the previous one with PREV.",
+    width: 1426,
+    height: 536,
+    caption: "Constant-time reads and writes: the newest article is one WROTE hop away, older ones follow PREV.",
+  },
+  {
     kind: "prose",
-    md: "Beyond one cluster, a graph must be **sharded by the application** with synthetic keys, like MongoDB: traversals inside one instance stay fast, but hops between instances cost as much as a join. Mozilla's Pancake stored many small per-user graphs, which shard trivially. Automatically partitioning an arbitrary graph across machines with few cross-machine traversals is **NP-hard** in general — the *holy grail* of graph scalability.\n\n**Strengths and weaknesses** (slides and *Seven Databases*): open source, scales well, typeless and schemaless, Lucene lookups, Cypher and REST, constant-time traversals, HA for read-heavy sites. But HA **replicates the whole graph, not subgraphs**, which limits graph size; the node/relationship naming differs from vertex/edge; and the Enterprise features (HA, backups) need a commercial or AGPL licence.",
+    md: "Beyond one cluster, a graph must be **sharded by the application** with synthetic keys, like MongoDB: traversals inside one instance stay fast, but hops between instances cost as much as a join. Mozilla's Pancake stored many small per-user graphs, which shard trivially. Automatically partitioning an arbitrary graph across machines with few cross-machine traversals is **NP-hard** in general — the *holy grail* of graph scalability.\n\n**Strengths and weaknesses:** open source, scales well, typeless and schemaless, Lucene lookups, Cypher and REST, constant-time traversals, HA for read-heavy sites. But HA **replicates the whole graph, not subgraphs**, which limits graph size; the node/relationship naming differs from vertex/edge; and the Enterprise features (HA, backups) need a commercial or AGPL licence.",
   },
   { kind: "concepts", ids: ["neo4j-ha"] },
   {

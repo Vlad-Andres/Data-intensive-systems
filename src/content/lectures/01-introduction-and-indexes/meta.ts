@@ -67,7 +67,7 @@ export const lecture01Meta: LectureMeta = {
     "Decide between a hash index and a B+ tree for a workload, and name what the B+ tree brings.",
   ],
   takeaways: [
-    "Assessment is a final test (40%, multiple choice or short answers) and a project (60%, 10 points of which come from the presentation); the slides define what you must know, the study material the detail.",
+    "Assessment is a final test (40%, multiple choice or short answers) and a project (60%, 10 points of which come from the presentation).",
     "Data arrives in three waves — employees, internet users, machines — and data-intensive systems are the infrastructure in the middle of big data, machine learning and AI.",
     "A data model has structures, constraints and operations; ACID stands for atomic, consistent, isolated and durable.",
     "TF.IDF = (f_ij / max_k f_kj) · log₂(N / n_i): a word scores high when it is frequent in this document and rare in the collection.",

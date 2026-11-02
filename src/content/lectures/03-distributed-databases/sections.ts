@@ -498,7 +498,7 @@ PARTITION BY RANGE (date)
     EVERY (INTERVAL '1 month'),
     DEFAULT PARTITION outlying_dates );`,
     caption:
-      "The fragmentation example from the slides: sharded across segments by trans_id, then range-partitioned by month and list-subpartitioned by region inside each segment.",
+      "A fragmentation example: sharded across segments by trans_id, then range-partitioned by month and list-subpartitioned by region inside each segment.",
   },
   {
     kind: "interactive",

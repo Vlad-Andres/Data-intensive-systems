@@ -5,7 +5,7 @@ import { LazyEvaluationLab } from "./interactive/LazyEvaluationLab";
 const objectives: Block[] = [
   {
     kind: "prose",
-    md: "This lecture is a first glimpse of Apache Spark — its basic principles, how it was created, how it differs from Hadoop MapReduce and what it offers. It covers **slides 1–42**. Expected knowledge: **Spark vs Hadoop** (the difference), **how Spark operates**, **what RDDs are**, **what DataFrames are**, and how they are used. The books (*Learning Apache Spark with Python*, *Spark: The Definitive Guide*, the Spark tutorial) are the main references for the labs and the project.",
+    md: "This lecture is a first glimpse of Apache Spark — its basic principles, how it was created, how it differs from Hadoop MapReduce and what it offers. Expected knowledge: **Spark vs Hadoop** (the difference), **how Spark operates**, **what RDDs are**, **what DataFrames are**, and how they are used. The books (*Learning Apache Spark with Python*, *Spark: The Definitive Guide*, the Spark tutorial) are the main references for the labs and the project.",
   },
   { kind: "list", variant: "objectives", items: lecture08Meta.objectives },
 ];
@@ -140,7 +140,7 @@ const rdds: Block[] = [
     code: `x = rdd.map(f).map(g)        # no computation
 print(x.reduce(h))           # the computation starts from rdd
 print(x.map(k).count())      # the computation starts from rdd — again`,
-    caption: "The slides' lazy-evaluation example.",
+    caption: "Lazy evaluation in action.",
   },
   {
     kind: "info",
@@ -175,12 +175,12 @@ const rddOperations: Block[] = [
       ["map(tokenize)", "{“coffee panda”, “happy panda”, “happiest panda party”}", "[[“coffee”, “panda”], [“happy”, “panda”], [“happiest”, “panda”, “party”]]"],
       ["flatMap(tokenize)", "same", "{“coffee”, “panda”, “happy”, “panda”, “happiest”, “panda”, “party”}"],
       ["RDD1.distinct()", "RDD1 = {coffee, coffee, panda, monkey, tea}", "{coffee, panda, monkey, tea}"],
-      ["RDD1.union(RDD2)", "RDD2 = {coffee, money, kitty}", "{coffee, coffee, coffee, panda, monkey, tea, kitty}"],
+      ["RDD1.union(RDD2)", "RDD2 = {coffee, monkey, kitty}", "{coffee, coffee, coffee, panda, monkey, monkey, tea, kitty}"],
       ["RDD1.intersection(RDD2)", "", "{coffee, monkey}"],
       ["RDD1.subtract(RDD2)", "", "{panda, tea}"],
       ["users.cartesian(venues)", "{User(1), User(2), User(3)} × {Betabrand, Asha Tea House, Ritual}", "all 9 (user, venue) pairs"],
     ],
-    caption: "Transformations from the slides: map and filter, map vs flatMap, and “list-like” set operations. (The slides' RDD2 is printed as {coffee, money, kitty}; with “monkey” the intersection is {coffee, monkey}.)",
+    caption: "Common transformations: map and filter, map vs flatMap, and “list-like” set operations.",
   },
   {
     kind: "table",
@@ -212,7 +212,7 @@ data.map(lambda x: (x[0], (x[1], 1))) \\
     .reduceByKey(lambda a, b: (a[0] + b[0], a[1] + b[1])) \\
     .map(lambda kv: (kv[0], kv[1][0] / kv[1][1])) \\
     .collect()`,
-    caption: "Write less code. The slides show WordCount in Scala; this is the same in Python.",
+    caption: "Write less code: word count and a per-key average, each in a few lines of Python.",
   },
   {
     kind: "practice",

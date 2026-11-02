@@ -5,7 +5,7 @@ import { ClusteringLab } from "./interactive/ClusteringLab";
 const objectives: Block[] = [
   {
     kind: "prose",
-    md: "A second guest lecture by Prof. Dr. Maximilian E. Schüle (Universität Bamberg). What the course expects you to know is **the idea of in-database machine learning and its benefits**. The slides then show, step by step, that SQL is enough to express real learning algorithms — read those parts for understanding, not to memorise the queries.",
+    md: "A second guest lecture by Prof. Dr. Maximilian E. Schüle (Universität Bamberg). What the course expects you to know is **the idea of in-database machine learning and its benefits**. The rest of the lecture shows, step by step, that SQL is enough to express real learning algorithms — read those parts for understanding, not to memorise the queries.",
   },
   { kind: "list", variant: "objectives", items: lecture04Meta.objectives },
 ];
@@ -48,12 +48,12 @@ const why: Block[] = [
 const kMeans: Block[] = [
   {
     kind: "prose",
-    md: "The slides start with data mining. **k-means** (MacQueen 1967, Steinhaus 1957) groups points into $k$ clusters:\n\n1. select $k$ points as initial centres;\n2. assign each point to the nearest centre;\n3. compute each new centre as the middle (mean) of its cluster;\n4. repeat from step 2 until the clusters converge.\n\nThe running example has eight points: A(1, 5), B(3, 5), C(6, 1), D(7, 2), E(8, 1), F(8, 9), G(10, 8), H(12, 10), with $k = 3$ and initial centres A, B and H.",
+    md: "We start with data mining. **k-means** (MacQueen 1967, Steinhaus 1957) groups points into $k$ clusters:\n\n1. select $k$ points as initial centres;\n2. assign each point to the nearest centre;\n3. compute each new centre as the middle (mean) of its cluster;\n4. repeat from step 2 until the clusters converge.\n\nThe running example has eight points: A(1, 5), B(3, 5), C(6, 1), D(7, 2), E(8, 1), F(8, 9), G(10, 8), H(12, 10), with $k = 3$ and initial centres A, B and H.",
   },
   {
     kind: "interactive",
-    title: "k-means and DBSCAN on the slides' points",
-    description: "Step through k-means from the slides' initial centres, or switch to DBSCAN and move ε and minPts.",
+    title: "k-means and DBSCAN on eight points",
+    description: "Step through k-means from the initial centres A, B and H, or switch to DBSCAN and move ε and minPts.",
     component: ClusteringLab,
   },
   {
@@ -68,8 +68,8 @@ const kMeans: Block[] = [
   {
     kind: "info",
     variant: "note",
-    title: "A slip on the slide",
-    md: "The slide computes $C_2$'s $y$ as $(5 + 2 + 3 + 1)/4 = 2.75$, but the $y$-values of B, C, D and E are 5, 1, 2 and 1, giving $9/4 = 2.25$.",
+    title: "Check the arithmetic",
+    md: "The $y$-values of B, C, D and E are 5, 1, 2 and 1, so $C_2$'s $y$ is $9/4 = 2.25$. Adding the wrong values — $(5 + 2 + 3 + 1)/4 = 2.75$ — is an easy slip.",
   },
   {
     kind: "formula",
@@ -130,7 +130,7 @@ const kMeansSql: Block[] = [
     where iter < 100
     group by cid, iter)              -- new centre = mean of the cluster
 select * from clusters;`,
-    caption: "k-means in SQL, from the slides. The NOT EXISTS subquery is the formal definition of cluster(c); min(cid) breaks ties.",
+    caption: "k-means in SQL. The NOT EXISTS subquery is the formal definition of cluster(c); min(cid) breaks ties.",
   },
   {
     kind: "info",
@@ -151,7 +151,7 @@ select * from clusters;`,
 const dbscan: Block[] = [
   {
     kind: "prose",
-    md: "**DBSCAN** — Density-Based Spatial Clustering of Applications with Noise (Ester, Kriegel, Sander, Xu, KDD 1996) — has two parameters: $\\varepsilon$, a distance, and $minPts$, the minimal number of points to form a cluster. In the slides' formulation:\n\n1. every point forms a single cluster;\n2. merge clusters that are less than $\\varepsilon$ away;\n3. repeat until the clusters converge;\n4. mark every point in a cluster with fewer than $minPts$ points as **noise**.\n\nThe slides leave the example table empty as an exercise. With $\\varepsilon = 2.5$ and $minPts = 2$, the points give {A, B}, {C, D, E} and {F, G}, while H — 2.83 from G — is noise. Try it in the playground above.",
+    md: "**DBSCAN** — Density-Based Spatial Clustering of Applications with Noise (Ester, Kriegel, Sander, Xu, KDD 1996) — has two parameters: $\\varepsilon$, a distance, and $minPts$, the minimal number of points to form a cluster. In this simplified formulation:\n\n1. every point forms a single cluster;\n2. merge clusters that are less than $\\varepsilon$ away;\n3. repeat until the clusters converge;\n4. mark every point in a cluster with fewer than $minPts$ points as **noise**.\n\nTry it on the eight points: with $\\varepsilon = 2.5$ and $minPts = 2$, the points give {A, B}, {C, D, E} and {F, G}, while H — 2.83 from G — is noise. Try it in the playground above.",
   },
   {
     kind: "table",
@@ -181,7 +181,7 @@ const gradientDescent: Block[] = [
   {
     kind: "formula",
     tex: "m_{a,b}(x) = a \\cdot x + b \\approx y \\qquad l_{x,y}(a,b) = (a x + b - y)^2 \\qquad \\nabla l_{x,y}(a,b) = \\begin{pmatrix} 2(ax + b - y) \\cdot x \\\\ 2(ax + b - y) \\end{pmatrix}",
-    caption: "The model, its loss, and the manually derived gradient (Eq. 4–6 on the slides).",
+    caption: "The model, its loss, and the manually derived gradient.",
   },
   {
     kind: "formula",
@@ -204,7 +204,7 @@ with recursive gd (id, a, b) as (
     where id < 5
     group by id, a, b)
 select * from gd order by id;`,
-    caption: "Gradient descent (mini-batch) as a recursive query: five iterations, two weights, γ = 0.05. The slides render the minus signs as “=”.",
+    caption: "Gradient descent (mini-batch) as a recursive query: five iterations, two weights, γ = 0.05.",
   },
   {
     kind: "info",
@@ -267,7 +267,7 @@ const autodiff: Block[] = [
     kind: "info",
     variant: "note",
     title: "Inside the database",
-    md: "The slides show the C++ of a research database system (Umbra) implementing both modes on its expression trees, which is what lets a query take a lambda expression for the loss and derive its gradient automatically.",
+    md: "A research database system, Umbra, implements both modes in C++ on its expression trees, which is what lets a query take a lambda expression for the loss and derive its gradient automatically.",
   },
   { kind: "concepts", ids: ["autodiff"] },
   {
@@ -392,7 +392,7 @@ const mistakes: Block[] = [
     kind: "info",
     variant: "pitfall",
     title: "Averaging the wrong points in k-means",
-    md: "A new centre is the mean of the points **currently assigned** to it — recompute the assignment first. The slide's own arithmetic slips here.",
+    md: "A new centre is the mean of the points **currently assigned** to it — recompute the assignment first.",
   },
   {
     kind: "info",

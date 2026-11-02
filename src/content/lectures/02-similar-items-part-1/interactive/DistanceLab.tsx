@@ -7,7 +7,7 @@ import { TextField } from "@/components/ui/TextField";
 import { cn } from "@/lib/cn";
 
 const PRESETS = [
-  { label: "Slide example", x: "5, 5", y: "9, 8" },
+  { label: "Worked example", x: "5, 5", y: "9, 8" },
   { label: "Book cosine", x: "1, 2, -1", y: "2, 1, 1" },
   { label: "Bit vectors", x: "1, 0, 1, 0, 1", y: "1, 1, 1, 1, 0" },
 ];

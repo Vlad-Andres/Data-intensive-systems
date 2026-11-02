@@ -111,7 +111,7 @@ export function ClusteringLab() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-[auto_minmax(0,1fr)] md:items-start">
-        <svg viewBox={`-10 -10 ${PLOT_WIDTH + 20} ${PLOT_HEIGHT + 20}`} className="w-full max-w-sm rounded-xl border border-line bg-sunken" role="img" aria-label="The eight points of the slides and their clusters">
+        <svg viewBox={`-10 -10 ${PLOT_WIDTH + 20} ${PLOT_HEIGHT + 20}`} className="w-full max-w-sm rounded-xl border border-line bg-sunken" role="img" aria-label="The eight points and their clusters">
           {mode === "dbscan"
             ? POINTS.map((point) => {
                 const at = toScreen(point);
@@ -203,8 +203,8 @@ export function ClusteringLab() {
 
       <p className="text-sm text-muted">
         {mode === "kmeans"
-          ? "Starting from the slides' centres A, B and H, the first iteration assigns {A}, {B, C, D, E}, {F, G, H} and moves C₂ to the mean of its four points. Keep stepping until no centre moves."
-          : "The slides' simplified DBSCAN: start with every point as its own cluster, merge clusters closer than ε, and mark clusters with fewer than minPts points as noise. Unlike k-means, nobody fixes the number of clusters in advance. The dashed circles have diameter ε."}
+          ? "Starting from the centres A, B and H, the first iteration assigns {A}, {B, C, D, E}, {F, G, H} and moves C₂ to the mean of its four points. Keep stepping until no centre moves."
+          : "A simplified DBSCAN: start with every point as its own cluster, merge clusters closer than ε, and mark clusters with fewer than minPts points as noise. Unlike k-means, nobody fixes the number of clusters in advance. The dashed circles have diameter ε."}
       </p>
     </div>
   );

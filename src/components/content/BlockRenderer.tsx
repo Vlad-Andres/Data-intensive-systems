@@ -3,6 +3,7 @@ import { CodeBlock } from "@/components/content/CodeBlock";
 import { ConceptCard } from "@/components/content/ConceptCard";
 import { DataTable } from "@/components/content/DataTable";
 import { ExerciseSheetView } from "@/components/content/ExerciseSheetView";
+import { FigureImage } from "@/components/content/FigureImage";
 import { Formula } from "@/components/content/Formula";
 import { HighlightList } from "@/components/content/HighlightList";
 import { InfoBox } from "@/components/content/InfoBox";
@@ -52,6 +53,11 @@ export function BlockRenderer({ block, concepts }: BlockRendererProps) {
 
     case "table":
       return <DataTable headers={block.headers} rows={block.rows} caption={block.caption} />;
+
+    case "figure":
+      return (
+        <FigureImage src={block.src} alt={block.alt} width={block.width} height={block.height} caption={block.caption} />
+      );
 
     case "steps":
       return <WorkedExample title={block.title} intro={block.intro} steps={block.steps} />;

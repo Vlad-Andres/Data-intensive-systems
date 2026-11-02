@@ -20,7 +20,7 @@ export const lecture05Meta: LectureMeta = {
   title: "Finding Similar Items at Scale — Part 2",
   subtitle: "Shingling, Jaccard similarity and minhash signatures",
   summary:
-    "Part 2 follows the first half of the Matching slides. To find similar items without comparing them whole, see every entity as a set: shingle documents into k-grams, compare the sets with Jaccard similarity, and compress each set into a short minhash signature that preserves that similarity in expectation — computed in one pass with row hashing.",
+    "To find similar items without comparing them whole, see every entity as a set: shingle documents into k-grams, compare the sets with Jaccard similarity, and compress each set into a short minhash signature that preserves that similarity in expectation — computed in one pass with row hashing.",
   topics: [
     "Applications of set similarity",
     "Collaborative filtering",

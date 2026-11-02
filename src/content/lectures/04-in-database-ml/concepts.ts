@@ -30,7 +30,7 @@ export const lecture04Concepts: Concept[] = [
     term: "DBSCAN",
     short: "Density-Based Spatial Clustering of Applications with Noise: clusters are dense regions, sparse points are noise.",
     detail:
-      "Two parameters: the distance $\\varepsilon$ and $minPts$, the minimal number of points to form a cluster. In the slides' version every point starts as its own cluster, clusters less than $\\varepsilon$ apart are merged until nothing changes, and clusters with fewer than $minPts$ points are marked as noise.",
+      "Two parameters: the distance $\\varepsilon$ and $minPts$, the minimal number of points to form a cluster. In a simplified version every point starts as its own cluster, clusters less than $\\varepsilon$ apart are merged until nothing changes, and clusters with fewer than $minPts$ points are marked as noise.",
     tags: ["clustering"],
   },
   {

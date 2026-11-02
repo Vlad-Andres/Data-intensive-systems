@@ -6,7 +6,7 @@ import { ErPipeline } from "./interactive/ErPipeline";
 const objectives: Block[] = [
   {
     kind: "prose",
-    md: "Part 3 of *Finding Similar Items at Scale* uses the same study material as Parts 1 and 2. It follows the second half of the Matching slides with §3.4 and §3.8.1–§3.8.3 of *Mining of Massive Datasets*: make similar signatures collide, analyse how well that works, and apply it to real entity resolution.",
+    md: "Part 3 of *Finding Similar Items at Scale* uses the same study material as Parts 1 and 2. It covers §3.4 and §3.8.1–§3.8.3 of *Mining of Massive Datasets*: make similar signatures collide, analyse how well that works, and apply it to real entity resolution.",
   },
   { kind: "list", variant: "objectives", items: lecture06Meta.objectives },
 ];
@@ -48,8 +48,8 @@ const banding: Block[] = [
   {
     kind: "info",
     variant: "note",
-    title: "Reading the slide's band figure",
-    md: "In one band, columns 2 and 6 land in the same bucket: they are **probably identical** in this band and become a candidate pair. Columns 6 and 7 land in different buckets: they are **surely different** in this band — but they may still meet in another band.",
+    title: "One band, two outcomes",
+    md: "Suppose that in one band columns 2 and 6 land in the same bucket: they are **probably identical** in this band and become a candidate pair. Columns 6 and 7 land in different buckets: they are **surely different** in this band — but they may still meet in another band.",
   },
   { kind: "concepts", ids: ["banding"] },
   {
@@ -189,7 +189,7 @@ const pipeline: Block[] = [
   {
     kind: "info",
     variant: "note",
-    title: "The slides' picture",
+    title: "The big picture",
     md: "**Document** → the set of strings of length $k$ that appear in it (**shingling**) → **signatures**: short integer vectors that represent the sets and reflect their similarity (**minhashing**) → **locality-sensitive hashing** → **candidate pairs**: those pairs of signatures that we need to test for similarity.",
   },
 ];
@@ -197,7 +197,7 @@ const pipeline: Block[] = [
 const lshFamilies: Block[] = [
   {
     kind: "prose",
-    md: "The slides state the general condition behind LSH (the theory is MMDS §3.6, beyond the required sections — know the definition). Consider a space $S$ of points with distance measure $d$. A family of hash functions is **$(d_1, d_2, p_1, p_2)$-sensitive** if, for any two points $x$ and $y$ and every $h$ in the family:",
+    md: "LSH rests on a general condition (the theory is MMDS §3.6, beyond the required sections — know the definition). Consider a space $S$ of points with distance measure $d$. A family of hash functions is **$(d_1, d_2, p_1, p_2)$-sensitive** if, for any two points $x$ and $y$ and every $h$ in the family:",
   },
   {
     kind: "formula",
@@ -267,8 +267,8 @@ const highSimilarity: Block[] = [
   {
     kind: "info",
     variant: "note",
-    title: "Slide-level topic",
-    md: "The last Matching slide lists these methods: finding identical items (hash on the first few letters, hash the whole document, hash fixed positions only), representing sets as strings, length-based filtering and prefix indexing. They are MMDS §3.9, outside the required book sections, so know the ideas rather than every detail.",
+    title: "Know the ideas",
+    md: "For very high similarity there are further methods: finding identical items (hash on the first few letters, hash the whole document, hash fixed positions only), representing sets as strings, length-based filtering and prefix indexing. They are MMDS §3.9, outside the required book sections, so know the ideas rather than every detail.",
   },
   {
     kind: "prose",

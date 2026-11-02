@@ -7,7 +7,7 @@ import { HashSpreadLab } from "./interactive/HashSpreadLab";
 const objectives: Block[] = [
   {
     kind: "prose",
-    md: "The first lecture has two halves. The introduction slides set out the course — goals, literature, assessment, plan — and place data-intensive systems in the landscape of big data, data science and AI. The second half is a refresher the rest of the course depends on: §1.3 of *Mining of Massive Datasets* up to §1.3.4, and the hash and B+ tree indexes from the database textbook.",
+    md: "The first lecture has two halves. The introduction sets out the course — goals, literature, assessment, plan — and place data-intensive systems in the landscape of big data, data science and AI. The second half is a refresher the rest of the course depends on: §1.3 of *Mining of Massive Datasets* up to §1.3.4, and the hash and B+ tree indexes from the database textbook.",
   },
   { kind: "list", variant: "objectives", items: lecture01Meta.objectives },
 ];
@@ -20,8 +20,8 @@ const course: Block[] = [
   {
     kind: "info",
     variant: "insight",
-    title: "What are the slides for?",
-    md: "The slides define **what** you are expected to know; the study material supplies the **detail**. Each lecture on this site follows its slides first and uses the book chapters and papers only as far as the course description asks.",
+    title: "How to use this site",
+    md: "Each lecture page covers **what** you are expected to know, at the level of **detail** the course description asks for from the book chapters and papers. Work through the sections in order, answer the memory cards and practice questions at the end of each section, and finish with the quiz.",
   },
   {
     kind: "table",
@@ -91,7 +91,7 @@ const course: Block[] = [
       { prompt: "How are the 100 points of the course split?", answer: "Final test 40% (multiple choice or short answers); project 60%, of which 10 points come from the presentation." },
       { prompt: "What is the project about?", answer: "A computationally intensive data-processing task that you make more efficient with distributed techniques and NoSQL technologies. Everyone gets the same topic." },
       { prompt: "Which two styles does the course combine?", answer: "A guided tour of important trends and technologies, and a deep dive into selected must-know algorithms, techniques and technologies." },
-      { prompt: "What do the slides define, and what does the study material add?", answer: "The slides define which topics you must know; the study material supplies the level of detail." },
+      { prompt: "How is the course assessed?", answer: "A final test (40%, multiple choice or short answers) and a project (60%, of which 10 points come from the presentation)." },
     ],
   },
 ];
@@ -99,7 +99,7 @@ const course: Block[] = [
 const bigData: Block[] = [
   {
     kind: "prose",
-    md: "*Data is the new gold.* Banking and securities, insurance, transportation, education, manufacturing, energy and utilities, healthcare, media and entertainment all run on large data — and the slides list what exploiting it makes possible:",
+    md: "*Data is the new gold.* Banking and securities, insurance, transportation, education, manufacturing, energy and utilities, healthcare, media and entertainment all run on large data — and exploiting it makes possible:",
   },
   {
     kind: "table",
@@ -128,7 +128,7 @@ const bigData: Block[] = [
   },
   {
     kind: "prose",
-    md: "The *Internet minute* infographics make the volume concrete: in every 60 seconds there are millions of searches, messages, video views and app downloads, and every year's figures exceed the last. Global data generated annually has grown from a couple of zettabytes in 2010 to a total the slides estimate at **200 ZB for 2025**.",
+    md: "The *Internet minute* infographics make the volume concrete: in every 60 seconds there are millions of searches, messages, video views and app downloads, and every year's figures exceed the last. Global data generated annually has grown from a couple of zettabytes in 2010 to an estimated **200 ZB for 2025**.",
   },
   {
     kind: "table",
@@ -139,23 +139,23 @@ const bigData: Block[] = [
       ["petabytes (PB)", "1,000,000"],
       ["terabytes (TB)", "1 billion"],
     ],
-    caption: "The slides add that 200 ZB is roughly 1,800 iPhones' worth of storage for every person on earth.",
+    caption: "200 ZB is roughly 1,800 iPhones' worth of storage for every person on earth.",
   },
   {
     kind: "info",
     variant: "note",
     title: "Checking the streaming claim",
-    md: "The slides say streaming 1 ZB nonstop over a 100 Mbps connection would take about 285 million years. The arithmetic gives $8 \\times 10^{21}$ bits $/ 10^8$ bits/s $= 8 \\times 10^{13}$ s, about **2.5 million years** at 100 Mbps; 285 million years corresponds to roughly a 1 Mbps line. Either way: no single machine can even read this data, let alone process it.",
+    md: "A popular claim says streaming 1 ZB nonstop over a 100 Mbps connection would take about 285 million years. The arithmetic gives $8 \\times 10^{21}$ bits $/ 10^8$ bits/s $= 8 \\times 10^{13}$ s, about **2.5 million years** at 100 Mbps; 285 million years corresponds to roughly a 1 Mbps line. Either way: no single machine can even read this data, let alone process it.",
   },
   {
     kind: "prose",
-    md: "Why is so much stored? The **catalyst** is cost: storage prices keep going down, at the core (data centres), at the edge and at the endpoints. *We became greedy and started to store everything* — and, as the slides insist, **we do not need to do so**. The consequence is visible in space consumption: demand for data-centre capacity could more than triple by 2030, and storage demand is outpacing supply. *It seems that we are already running out of (storage) space.*",
+    md: "Why is so much stored? The **catalyst** is cost: storage prices keep going down, at the core (data centres), at the edge and at the endpoints. *We became greedy and started to store everything* — and **we do not need to do so**. The consequence is visible in space consumption: demand for data-centre capacity could more than triple by 2030, and storage demand is outpacing supply. *It seems that we are already running out of (storage) space.*",
   },
   {
     kind: "recall",
     cards: [
       { prompt: "What are the three successive sources of data, and which one makes data *big*?", answer: "Employees and data engineers, then internet users, then machine-generated data (click-logs, sensors, cellphones, network monitors…). Machine-generated data makes it big." },
-      { prompt: "How many bytes is a zettabyte, and what is the slides' estimate for 2025?", answer: "$10^{21}$ bytes; about 200 ZB of data in total by 2025." },
+      { prompt: "How many bytes is a zettabyte, and how much data is estimated for 2025?", answer: "$10^{21}$ bytes; about 200 ZB of data in total by 2025." },
       { prompt: "What is the catalyst for the large volume of stored data?", answer: "Storage costs keep going down, so we became greedy and store everything — although we do not need to." },
     ],
   },
@@ -175,7 +175,7 @@ const dataScience: Block[] = [
       ["Hacking skills ∩ substantive expertise (no math)", "The danger zone"],
       ["All three", "Data science"],
     ],
-    caption: "The DBA and software engineer start from hacking skills, the statistician from math, the business analyst from expertise. The slides place this course at the centre.",
+    caption: "The DBA and software engineer start from hacking skills, the statistician from math, the business analyst from expertise. This course sits at the centre.",
   },
   {
     kind: "prose",
@@ -281,7 +281,7 @@ const background: Block[] = [
     kind: "info",
     variant: "note",
     title: "“No indexes, please — I'm allergic to them”",
-    md: "The slides close the background with a comic: a query with one SELECT on a very big table, eight joins, five subqueries and a GROUP BY, sent to MySQL without indexes — and its author is still waiting at the counter long after everyone else. The rest of this lecture is about the indexes that would have saved them.",
+    md: "A well-known comic sums up the background: a query with one SELECT on a very big table, eight joins, five subqueries and a GROUP BY, sent to MySQL without indexes — and its author is still waiting at the counter long after everyone else. The rest of this lecture is about the indexes that would have saved them.",
   },
   { kind: "concepts", ids: ["data-model", "acid"] },
   {
@@ -449,7 +449,7 @@ const hashIndexes: Block[] = [
     kind: "interactive",
     title: "Extendible hashing, step by step",
     description:
-      "The file from the slides and the textbook: global depth 2, four buckets of four entries. Insert keys and watch which ones fit, which split a bucket, and which double the directory.",
+      "The textbook's file: global depth 2, four buckets of four entries. Insert keys and watch which ones fit, which split a bucket, and which double the directory.",
     component: ExtendibleHashingLab,
   },
   {
@@ -544,7 +544,7 @@ const bPlusTrees: Block[] = [
   },
   {
     kind: "prose",
-    md: "The slides summarise its shape in two lines:\n\n- **Leaf pages contain data entries** and are chained (previous and next).\n- **Non-leaf pages have index entries**, used only to direct searches: $P_0, K_1, P_1, K_2, P_2, \\ldots, K_m, P_m$.\n\nPointer $P_i$ leads to the subtree whose keys $K$ satisfy $K_i \\le K < K_{i+1}$; $P_0$ covers keys below $K_1$ and $P_m$ keys of at least $K_m$. The doubly linked leaves are called the **sequence set**.",
+    md: "Its shape in two lines:\n\n- **Leaf pages contain data entries** and are chained (previous and next).\n- **Non-leaf pages have index entries**, used only to direct searches: $P_0, K_1, P_1, K_2, P_2, \\ldots, K_m, P_m$.\n\nPointer $P_i$ leads to the subtree whose keys $K$ satisfy $K_i \\le K < K_{i+1}$; $P_0$ covers keys below $K_1$ and $P_m$ keys of at least $K_m$. The doubly linked leaves are called the **sequence set**.",
   },
   {
     kind: "table",
@@ -575,13 +575,13 @@ def tree_search(node, key):
   },
   {
     kind: "prose",
-    md: "Take the slides' example tree: the root holds 17, its children 5, 13 and 27, 30, and the leaves 2* 3* | 5* 7* 8* | 14* 16* | 22* 24* | 27* 29* | 33* 34* 38* 39*. **Find 28\\*?** Go right of 17, between 27 and 30, to leaf 27* 29* — 28* is not there, so it is not in the tree. **29\\*?** Same leaf, found. **All > 15\\* and < 30\\*?** Descend once to the leaf for 15, then follow the chain: 16*, 22*, 24*, 27*, 29*, stopping at 33*.",
+    md: "Take this example tree: the root holds 17, its children 5, 13 and 27, 30, and the leaves 2* 3* | 5* 7* 8* | 14* 16* | 22* 24* | 27* 29* | 33* 34* 38* 39*. **Find 28\\*?** Go right of 17, between 27 and 30, to leaf 27* 29* — 28* is not there, so it is not in the tree. **29\\*?** Same leaf, found. **All > 15\\* and < 30\\*?** Descend once to the leaf for 15, then follow the chain: 16*, 22*, 24*, 27*, 29*, stopping at 33*.",
   },
   {
     kind: "interactive",
     title: "B+ tree of order 2",
     description:
-      "The textbook's tree (root 13 17 24 30). Insert keys to see leaf and index splits, find a key to see the root-to-leaf path, or run the slide's range query along the leaf chain.",
+      "The textbook's tree (root 13 17 24 30). Insert keys to see leaf and index splits, find a key to see the root-to-leaf path, or run a range query along the leaf chain.",
     component: BPlusTreeLab,
   },
   {

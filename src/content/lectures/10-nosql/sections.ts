@@ -5,7 +5,7 @@ import { ReplicaQuorumLab } from "./interactive/ReplicaQuorumLab";
 const objectives: Block[] = [
   {
     kind: "prose",
-    md: "This lecture asks what lies beyond relational databases, and why storage had to scale up. The slides follow Martin Fowler's introduction to NoSQL; the study material is **NoSQL Distilled** by Sadalage and Fowler, and for the exam **Chapters 1, 2, 3 and 5**: why NoSQL, aggregate data models, more details on data models, and consistency. Distribution models (Chapter 4) and the later chapters are not exam material.",
+    md: "This lecture asks what lies beyond relational databases, and why storage had to scale up. It follows **NoSQL Distilled** by Sadalage and Fowler — for the exam **Chapters 1, 2, 3 and 5**: why NoSQL, aggregate data models, more details on data models, and consistency. Distribution models (Chapter 4) and the later chapters are not exam material.",
   },
   { kind: "list", variant: "objectives", items: lecture10Meta.objectives },
 ];
@@ -13,7 +13,7 @@ const objectives: Block[] = [
 const relationalValue: Block[] = [
   {
     kind: "prose",
-    md: "**Why would we want a database at all?** The slides list four problems it solves:\n\n1. **Sharing** — concurrent access by multiple readers and writers.\n2. **Data model enforcement** — all applications see clean, organized data.\n3. **Scale** — work with data sets too large to fit in memory.\n4. **Flexibility** — use the data in new, unanticipated ways.\n\nA **data model** has three components: **structures**, **constraints** and **operations**. A raw genome annotation file has none of them — a stream of lines whose meaning lives only in the program that reads it.",
+    md: "**Why would we want a database at all?** It solves four problems:\n\n1. **Sharing** — concurrent access by multiple readers and writers.\n2. **Data model enforcement** — all applications see clean, organized data.\n3. **Scale** — work with data sets too large to fit in memory.\n4. **Flexibility** — use the data in new, unanticipated ways.\n\nA **data model** has three components: **structures**, **constraints** and **operations**. A raw genome annotation file has none of them — a stream of lines whose meaning lives only in the program that reads it.",
   },
   {
     kind: "prose",
@@ -46,6 +46,14 @@ const impedanceMismatch: Block[] = [
     md: "Application developers' biggest frustration with relational databases is the **impedance mismatch**: the difference between the relational model and the **in-memory data structures** of the program. Relational tuples must hold **simple values** — no nested records, no lists. An order on screen is one structure: an id, a customer, a list of line items, and payment details. In the database it is split into rows of **orders**, **customers**, **order lines** and **credit cards**, and has to be translated back and forth on every save and load.",
   },
   {
+    kind: "figure",
+    src: "nosql/order-impedance.jpg",
+    alt: "An order with id 1001, customer Ann, three line items and payment details, with arrows to the rows it becomes in the orders, customers, order lines and credit cards tables.",
+    width: 1136,
+    height: 850,
+    caption: "Impedance mismatch: one order in memory becomes rows in four tables.",
+  },
+  {
     kind: "info",
     variant: "note",
     title: "Why object databases did not win",
@@ -64,11 +72,35 @@ const impedanceMismatch: Block[] = [
 const integration: Block[] = [
   {
     kind: "prose",
-    md: "**The need for integration.** An organization has many sources of data. The slides show two classic architectures:\n\n- A **data warehouse**: data cleaning and ETL tools (extract–transform–load) copy the sources into one relational warehouse, used for OLAP, decision support, data cubes and data mining.\n- **Virtual integration**: data stays in the sources (relational databases, Excel files, web sites, web services), each with a local schema; users query a **global schema**, and **schema mappings** translate the queries to the sources.",
+    md: "**The need for integration.** An organization has many sources of data. Two classic architectures bring them together:\n\n- A **data warehouse**: data cleaning and ETL tools (extract–transform–load) copy the sources into one relational warehouse, used for OLAP, decision support, data cubes and data mining.\n- **Virtual integration**: data stays in the sources (relational databases, Excel files, web sites, web services), each with a local schema; users query a **global schema**, and **schema mappings** translate the queries to the sources.",
+  },
+  {
+    kind: "figure",
+    src: "nosql/data-warehouse.jpg",
+    alt: "Data sources feed a relational warehouse through data cleaning and ETL tools; users and applications use it for OLAP, decision support, data cubes and data mining.",
+    width: 1030,
+    height: 560,
+    caption: "Data warehouse architecture.",
+  },
+  {
+    kind: "figure",
+    src: "nosql/virtual-integration.jpg",
+    alt: "Users and applications query a global schema; schema mappings connect it to the local schemas of the data sources (relational databases, Excel files, web sites, web services).",
+    width: 1040,
+    height: 680,
+    caption: "Virtual integration architecture: the data stays in the sources.",
   },
   {
     kind: "prose",
-    md: "Within applications, the book contrasts two roles for a database:\n\n- An **integration database** is shared by several applications, usually built by separate teams. Everybody sees a consistent set of data, but the schema becomes far more complex than any one application needs, every change needs coordination, an index that helps one application can hurt another's inserts, and the database must enforce integrity itself because it cannot trust the applications.\n- An **application database** is accessed only by a single application codebase owned by one team. The team evolves the schema and keeps integrity in its own code. Other applications integrate through **services** — web services exchanging richer structures (XML or JSON documents with nested records and lists) over HTTP.\n\nOnce the database is hidden behind services, the outside world no longer cares how the data is stored — so the team is free to use a **non-relational** store. The slides' speculative retailer is an example: user sessions, financial data, shopping cart, recommendations, product catalog, reporting, analytics and activity logs could each use a different store.",
+    md: "Within applications, the book contrasts two roles for a database:\n\n- An **integration database** is shared by several applications, usually built by separate teams. Everybody sees a consistent set of data, but the schema becomes far more complex than any one application needs, every change needs coordination, an index that helps one application can hurt another's inserts, and the database must enforce integrity itself because it cannot trust the applications.\n- An **application database** is accessed only by a single application codebase owned by one team. The team evolves the schema and keeps integrity in its own code. Other applications integrate through **services** — web services exchanging richer structures (XML or JSON documents with nested records and lists) over HTTP.\n\nOnce the database is hidden behind services, the outside world no longer cares how the data is stored — so the team is free to use a **non-relational** store. The speculative retailer's web application below is an example: user sessions, financial data, shopping cart, recommendations, product catalog, reporting, analytics and activity logs could each use a different store.",
+  },
+  {
+    kind: "figure",
+    src: "nosql/polyglot-retailer.jpg",
+    alt: "A speculative retailer's web application with separate stores for user sessions, financial data, shopping cart, recommendations, product catalog, reporting, analytics and user activity logs.",
+    width: 1136,
+    height: 850,
+    caption: "Polyglot persistence: each part of the application can use the store that suits it.",
   },
   { kind: "concepts", ids: ["integration-database", "polyglot-persistence"] },
   {
@@ -113,7 +145,15 @@ const clusters: Block[] = [
 const aggregates: Block[] = [
   {
     kind: "prose",
-    md: "The relational model splits data into **tuples**, which cannot nest. **Aggregate orientation** recognizes that we often want to operate on a more complex unit — a record with nested lists and records. The term comes from Domain-Driven Design: an **aggregate** is *a collection of related objects that we wish to treat as a unit* for data manipulation and consistency. We update aggregates atomically and communicate with the store in terms of aggregates.\n\nThe order from the impedance-mismatch slide is exactly that: stored as one **Order 1001** aggregate instead of rows in four tables. In UML the order **contains** its line items (the black diamond, composition).",
+    md: "The relational model splits data into **tuples**, which cannot nest. **Aggregate orientation** recognizes that we often want to operate on a more complex unit — a record with nested lists and records. The term comes from Domain-Driven Design: an **aggregate** is *a collection of related objects that we wish to treat as a unit* for data manipulation and consistency. We update aggregates atomically and communicate with the store in terms of aggregates.\n\nThe order from the impedance-mismatch figure is exactly that: stored as one **Order 1001** aggregate instead of rows in four tables. In UML the order **contains** its line items (the black diamond, composition).",
+  },
+  {
+    kind: "figure",
+    src: "nosql/order-aggregate.jpg",
+    alt: "The order with id 1001, customer Ann, line items and payment details stored as a single Order 1001 aggregate in the database.",
+    width: 1136,
+    height: 850,
+    caption: "The whole order stored as one aggregate.",
   },
   {
     kind: "code",
@@ -141,7 +181,15 @@ const aggregates: Block[] = [
   },
   {
     kind: "prose",
-    md: "**Consequences of aggregate orientation.**\n\n- **Aggregate-ignorant** models — relational and graph — do not know about aggregates. That is not bad: if the same data is used in many contexts, there may be no good boundary. Orders make good aggregates for customers and order processing, but to analyze product sales over months you would have to dig into every order (the slides' product / revenue / prior revenue table).\n- **Clusters**: an aggregate tells the database which data is used together and should live **on the same node** — the clinching reason for aggregates.\n- **Transactions**: aggregate-oriented databases support **atomic updates of a single aggregate**, not ACID transactions across aggregates; atomicity across aggregates must be handled in the application. Graph and other aggregate-ignorant databases usually support ACID.",
+    md: "**Consequences of aggregate orientation.**\n\n- **Aggregate-ignorant** models — relational and graph — do not know about aggregates. That is not bad: if the same data is used in many contexts, there may be no good boundary. Orders make good aggregates for customers and order processing, but to analyze product sales over months you would have to dig into every order (a product / revenue / prior revenue report like the one below).\n- **Clusters**: an aggregate tells the database which data is used together and should live **on the same node** — the clinching reason for aggregates.\n- **Transactions**: aggregate-oriented databases support **atomic updates of a single aggregate**, not ACID transactions across aggregates; atomicity across aggregates must be handled in the application. Graph and other aggregate-ignorant databases usually support ACID.",
+  },
+  {
+    kind: "figure",
+    src: "nosql/product-revenue.jpg",
+    alt: "Table of products with revenue and prior revenue.",
+    width: 1136,
+    height: 850,
+    caption: "A product sales report: this cuts across every order aggregate.",
   },
   { kind: "concepts", ids: ["aggregate"] },
   {
@@ -172,8 +220,24 @@ const aggregateModels: Block[] = [
     md: "Four families of NoSQL databases: **key-value** (Redis, Riak, Project Voldemort), **document** (MongoDB, CouchDB, RavenDB), **column-family** (Cassandra, HBase) and **graph** (Neo4j). The first three are **aggregate-oriented**.\n\n**Key-value and document stores** both hold many aggregates, each under a key.\n\n- In a **key-value** store the value — the aggregate — is **opaque**: a blob the database does not look into. You can store anything (up to a size limit), but you can only **look it up by key** and get the whole aggregate.\n- In a **document** store the database **sees the structure** of the aggregate. It limits what you can store, but you can **query on fields**, **retrieve part** of a document, and **index** its contents. There is no schema: the next order document may carry a field such as \"discount-code\" that the others lack.\n\nThe line is blurry: key-value stores add **metadata** (Riak can attach customer_id:7231 to a value for indexing and links; Redis splits values into lists and sets), and document stores use an **id** field for key-style lookups. Still, value == aggregate and document == aggregate.",
   },
   {
+    kind: "figure",
+    src: "nosql/document-no-schema.jpg",
+    alt: "Two order documents: the first has id, customer_id and line items; the second also has a discount-code field the first lacks.",
+    width: 1136,
+    height: 850,
+    caption: "Documents have no schema: the second order carries a field the first does not.",
+  },
+  {
     kind: "prose",
     md: "**Column-family stores** follow Google's Bigtable (HBase, Cassandra). Think of a **two-level map**: a **row key** (1234) selects the aggregate, and inside it **column families** group **columns** (column key → column value) that are usually accessed together.",
+  },
+  {
+    kind: "figure",
+    src: "nosql/column-family.jpg",
+    alt: "Row key 1234 points to the profile column family (name, billingAddress, payment) and the orders column family (OR1001 to OR1004); each column has a column key and a column value.",
+    width: 1136,
+    height: 850,
+    caption: "Customer 1234 in a column-family store.",
   },
   {
     kind: "table",
@@ -258,7 +322,7 @@ const moreModels: Block[] = [
 const consistency: Block[] = [
   {
     kind: "prose",
-    md: "**ACID** — the relational answer (slides):\n\n- **Atomic**: a transaction is carried out completely or the database reverts to the state before it started.\n- **Consistent**: a processed transaction never endangers the structural integrity of the database.\n- **Isolated**: transactions cannot compromise each other while in progress.\n- **Durable**: once complete, the data persists through network or power outages.\n\nThe book's point: the real core is atomicity across many rows and tables. Consistency in a cluster is much more involved than *ACID or not*.",
+    md: "**ACID** — the relational answer:\n\n- **Atomic**: a transaction is carried out completely or the database reverts to the state before it started.\n- **Consistent**: a processed transaction never endangers the structural integrity of the database.\n- **Isolated**: transactions cannot compromise each other while in progress.\n- **Durable**: once complete, the data persists through network or power outages.\n\nThe book's point: the real core is atomicity across many rows and tables. Consistency in a cluster is much more involved than *ACID or not*.",
   },
   {
     kind: "prose",
@@ -266,13 +330,21 @@ const consistency: Block[] = [
   },
   {
     kind: "steps",
-    title: "Nick and Mary: the business transaction problem (slides)",
+    title: "Nick and Mary: the business transaction problem",
     steps: [
       { title: "Both read", md: "Nick and Mary each GET the same record through their browsers and servers; both see **version v101**." },
       { title: "Both think", md: "They edit for a while. Holding a database transaction open during this user interaction would block others — so no lock is held." },
       { title: "Nick posts", md: "Nick POSTs his change with version stamp v101. It matches the stored version, so the update is applied and the record becomes **v102**." },
       { title: "Mary posts", md: "Mary POSTs with v101, but the record is now v102: the **offline lock** (a version stamp check) rejects her update instead of silently overwriting Nick's." },
     ],
+  },
+  {
+    kind: "figure",
+    src: "nosql/offline-lock.jpg",
+    alt: "Sequence diagram: Nick and Mary both get version v101; Nick posts with v101 and the record becomes v102; Mary's post with v101 is checked against the version stamp.",
+    width: 1136,
+    height: 850,
+    caption: "Offline lock with a version stamp.",
   },
   {
     kind: "prose",
@@ -293,11 +365,27 @@ const consistency: Block[] = [
 const cap: Block[] = [
   {
     kind: "prose",
-    md: "**The effect of replication** (slides). Nick and Mary write to one database: no problem. Replicate it, and the link between the replicas can break. Then either the system **refuses** the writes until it can coordinate — *consistency guaranteed* — or it **accepts** both on their own sides — *availability guaranteed*, at the cost of divergence.\n\n**The CAP theorem** (Brewer 2000, proven by Gilbert and Lynch 2002):\n\n- **Consistency** — do all applications see the same data?\n- **Availability** — if some nodes fail, does everything still work? In CAP: every request to a non-failing node gets a response.\n- **Partition tolerance** — if nodes cannot talk to each other (a *split brain*), does everything still work?\n\nYou cannot have them all. A **single server** is CA — it cannot partition. A cluster must tolerate partitions, so the real statement is: **under a partition, choose consistency or availability** — and it is not binary: you can trade a little consistency for some availability.",
+    md: "**The effect of replication.** Nick and Mary write to one database: no problem. Replicate it, and the link between the replicas can break. Then either the system **refuses** the writes until it can coordinate — *consistency guaranteed* — or it **accepts** both on their own sides — *availability guaranteed*, at the cost of divergence.\n\n**The CAP theorem** (Brewer 2000, proven by Gilbert and Lynch 2002):\n\n- **Consistency** — do all applications see the same data?\n- **Availability** — if some nodes fail, does everything still work? In CAP: every request to a non-failing node gets a response.\n- **Partition tolerance** — if nodes cannot talk to each other (a *split brain*), does everything still work?\n\nYou cannot have them all. A **single server** is CA — it cannot partition. A cluster must tolerate partitions, so the real statement is: **under a partition, choose consistency or availability** — and it is not binary: you can trade a little consistency for some availability.",
+  },
+  {
+    kind: "figure",
+    src: "nosql/replication-consistency.jpg",
+    alt: "Two replicas with a broken link between them; both Nick's and Mary's writes are refused.",
+    width: 1300,
+    height: 400,
+    caption: "Partition, option 1: refuse writes — consistency guaranteed.",
+  },
+  {
+    kind: "figure",
+    src: "nosql/replication-availability.jpg",
+    alt: "Two replicas with a broken link between them; Nick and Mary can both still write to their own replica.",
+    width: 1300,
+    height: 400,
+    caption: "Partition, option 2: accept writes on both sides — availability guaranteed, the replicas may diverge.",
   },
   {
     kind: "table",
-    headers: ["Side of the triangle", "Systems (slide, after S. Tiwari)"],
+    headers: ["Side of the triangle", "Systems (after S. Tiwari)"],
     rows: [
       ["C + P", "Bigtable, HBase, Hypertable"],
       ["A + P", "Dynamo, Riak, Voldemort, Cassandra, CouchDB"],
@@ -305,12 +393,20 @@ const cap: Block[] = [
     ],
   },
   {
-    kind: "prose",
-    md: "**Hotel booking across London and Mumbai.** Insisting on consistency means London must reach Mumbai before confirming Martin's booking — if the link breaks, nobody can book. Making Mumbai the master for that hotel lets Pramod still book; London users can read (possibly stale) but not book. Accepting bookings on both sides keeps availability but risks double-booking the last room — which a hotel may tolerate, since it overbooks for no-shows anyway. The classic case is Dynamo's **shopping cart**: always writable; divergent carts are **merged** at checkout. Such decisions need **domain experts**. Reads are similar: a trading system cannot tolerate stale prices, a news site can serve pages minutes old.\n\nThe book prefers to see the trade-off as **consistency versus latency**: involving more nodes improves consistency but increases response time; *availability* is then the limit of latency we tolerate before treating data as unavailable — the slides' *response time* under availability.",
+    kind: "figure",
+    src: "nosql/cap-triangle.png",
+    alt: "CAP triangle: Bigtable, HBase and Hypertable on the C–P side; Dynamo, Riak, Voldemort, Cassandra and CouchDB on the A–P side; RDBMS on the C–A side.",
+    width: 670,
+    height: 507,
+    caption: "Where systems sit in the CAP triangle.",
   },
   {
     kind: "prose",
-    md: "**BASE.** The slides: *RDBMS = ACID, NoSQL = BASE (well… almost)*.\n\n- **Basically Available** — rather than enforcing immediate consistency, data is spread and replicated across the nodes so it stays available.\n- **Soft state** — without immediate consistency, values may change over time; consistency is delegated to developers.\n- **Eventually consistent** — consistency is reached eventually; until then reads are possible but may not reflect reality.\n\nThe book finds the acronym even more contrived than ACID, and notes that Brewer saw ACID versus BASE as a **spectrum**. And the slides' last word on models: aggregate-oriented stores lean towards BASE, while **graph databases are ACID**.",
+    md: "**Hotel booking across London and Mumbai.** Insisting on consistency means London must reach Mumbai before confirming Martin's booking — if the link breaks, nobody can book. Making Mumbai the master for that hotel lets Pramod still book; London users can read (possibly stale) but not book. Accepting bookings on both sides keeps availability but risks double-booking the last room — which a hotel may tolerate, since it overbooks for no-shows anyway. The classic case is Dynamo's **shopping cart**: always writable; divergent carts are **merged** at checkout. Such decisions need **domain experts**. Reads are similar: a trading system cannot tolerate stale prices, a news site can serve pages minutes old.\n\nThe book prefers to see the trade-off as **consistency versus latency**: involving more nodes improves consistency but increases response time; *availability* is then the limit of latency we tolerate before treating data as unavailable — which is why availability is often read as *response time*.",
+  },
+  {
+    kind: "prose",
+    md: "**BASE.** A common shorthand: *RDBMS = ACID, NoSQL = BASE (well… almost)*.\n\n- **Basically Available** — rather than enforcing immediate consistency, data is spread and replicated across the nodes so it stays available.\n- **Soft state** — without immediate consistency, values may change over time; consistency is delegated to developers.\n- **Eventually consistent** — consistency is reached eventually; until then reads are possible but may not reflect reality.\n\nThe book finds the acronym even more contrived than ACID, and notes that Brewer saw ACID versus BASE as a **spectrum**. And in terms of data models: aggregate-oriented stores lean towards BASE, while **graph databases are ACID**.",
   },
   { kind: "concepts", ids: ["cap"] },
   {

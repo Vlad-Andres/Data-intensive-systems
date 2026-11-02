@@ -73,7 +73,7 @@ def reduce(output_key, intermediate_values):
     for v in intermediate_values:
         result += v
     emit(output_key, result)`,
-    caption: "“What does this do?” — the slide's example from Google: word count.",
+    caption: "“What does this do?” — Google's classic example: word count.",
   },
   {
     kind: "interactive",
@@ -91,7 +91,7 @@ def reduce(output_key, intermediate_values):
   },
   {
     kind: "steps",
-    title: "Count friends — the slides' social-network example",
+    title: "Count friends — a social-network example",
     intro: "Input: friendship pairs in both directions — (Jim, Sue), (Sue, Jim), (Lin, Joe), (Joe, Lin), (Jim, Kai), (Kai, Jim), (Jim, Lin), (Lin, Jim). Desired output: Jim 3, Lin 2, Sue 1, Kai 1, Joe 1.",
     steps: [
       { title: "Map", md: "For each pair (person, friend) emit (person, 1)." },
@@ -142,7 +142,7 @@ const execution: Block[] = [
   },
   {
     kind: "prose",
-    md: "**Hadoop in one slide**: data on HDFS is divided into input partitions, one map per partition, the map outputs are shuffled across the network, sorted in parallel, reduced, and written back to HDFS as output partitions.\n\n**Failures** (MMDS §2.2.6) are the normal case when thousands of components run for hours. The master pings workers periodically. If a **map worker** fails, all its map tasks are redone — even completed ones, because their output sat on that node's local disk — and the reduce tasks are told where to read instead. If a **reduce worker** fails, its running tasks are simply rescheduled. Only the failure of the **master** forces the whole job to restart.",
+    md: "**Hadoop at a glance**: data on HDFS is divided into input partitions, one map per partition, the map outputs are shuffled across the network, sorted in parallel, reduced, and written back to HDFS as output partitions.\n\n**Failures** (MMDS §2.2.6) are the normal case when thousands of components run for hours. The master pings workers periodically. If a **map worker** fails, all its map tasks are redone — even completed ones, because their output sat on that node's local disk — and the reduce tasks are told where to read instead. If a **reduce worker** fails, its running tasks are simply rescheduled. Only the failure of the **master** forces the whole job to restart.",
   },
   {
     kind: "prose",
@@ -162,7 +162,7 @@ const execution: Block[] = [
 const invertedIndex: Block[] = [
   {
     kind: "prose",
-    md: "An **inverted index** lists, for every word, the documents that contain it — the core of every search engine. From the slides:",
+    md: "An **inverted index** lists, for every word, the documents that contain it — the core of every search engine. For example:",
   },
   {
     kind: "table",
@@ -217,7 +217,7 @@ const relational: Block[] = [
   },
   {
     kind: "steps",
-    title: "The slides' join: Employee ⋈ Assigned Departments",
+    title: "A join: Employee ⋈ Assigned Departments",
     intro: "Employee(Name, SSN) = {(Sue, 999999999), (Tony, 777777777)}; Assigned Departments(EmpSSN, DepName) = {(999999999, Accounts), (777777777, Sales), (777777777, Marketing)}.",
     steps: [
       { title: "Before map: lump the tuples together", md: "Tag every tuple with its relation and put them in one dataset: (Employee, Sue, 999999999), …, (Department, 777777777, Marketing). The tags let the reducer tell the relations apart." },
@@ -252,7 +252,7 @@ const matrices: Block[] = [
   },
   {
     kind: "prose",
-    md: "**One MapReduce step** (MMDS §2.3.10, and the slides' worked example). Let $A$ be $m \\times n$ and $B$ be $n \\times p$. The key is the **output coordinate** $(i, k)$; one reducer per output cell computes $\\sum_j A[i,j] B[j,k]$.",
+    md: "**One MapReduce step** (MMDS §2.3.10, with a worked example below). Let $A$ be $m \\times n$ and $B$ be $n \\times p$. The key is the **output coordinate** $(i, k)$; one reducer per output cell computes $\\sum_j A[i,j] B[j,k]$.",
   },
   {
     kind: "code",
@@ -275,7 +275,7 @@ def reduce(key, values):
   },
   {
     kind: "steps",
-    title: "The slides' worked example",
+    title: "Worked example",
     intro: "$A = \\begin{pmatrix} 1 & 2 & 0 \\\\ -1 & 3 & 2 \\end{pmatrix}$, $B = \\begin{pmatrix} 4 & 0 \\\\ 0 & 5 \\\\ 6 & 7 \\end{pmatrix}$, so $m = 2$, $n = 3$, $p = 2$. Zeros are not stored.",
     steps: [
       { title: "Routing", md: "A[2,3] = 2 emits ((2,1), (A,3,2)) and ((2,2), (A,3,2)). B[3,2] = 7 emits ((1,2), (B,3,7)) and ((2,2), (B,3,7)). They meet at key (2,2)." },

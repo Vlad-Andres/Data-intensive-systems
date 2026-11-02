@@ -300,7 +300,7 @@ export function BPlusTreeLab() {
       ) : (
         <p className="text-sm text-muted">
           This is the textbook tree of order 2. Insert 8* to watch the leaf split copy 5 up, the full root split push 17
-          up, and the tree grow a level. Use Find for an equality search and the range button for the slide&apos;s
+          up, and the tree grow a level. Use Find for an equality search and the range button for
           “all entries above 15* and below 30*”.
         </p>
       )}

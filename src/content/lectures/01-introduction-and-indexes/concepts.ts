@@ -30,7 +30,7 @@ export const lecture01Concepts: Concept[] = [
     term: "Data model",
     short: "Three components: structures, constraints and operations.",
     detail:
-      "In the relational model the structures are relations, the constraints are keys, foreign keys and domains, and the operations are relational algebra and SQL. Every database family on the slides — relational, document, key-value, columnar, graph, time-series, object-oriented, in-memory, vector — makes a different choice for each of the three.",
+      "In the relational model the structures are relations, the constraints are keys, foreign keys and domains, and the operations are relational algebra and SQL. Every database family — relational, document, key-value, columnar, graph, time-series, object-oriented, in-memory, vector — makes a different choice for each of the three.",
     tags: ["background"],
   },
   {

@@ -19,7 +19,7 @@ export const lecture08Meta: LectureMeta = {
   title: "Introduction to Apache Spark",
   subtitle: "From Hadoop to Spark: RDDs, lazy evaluation and DataFrames",
   summary:
-    "Hadoop made MapReduce on commodity clusters practical, but writes every intermediate result to disk — slow for iterative and interactive work. Spark keeps data in memory, builds an execution graph and computes it lazily. This lecture (slides 1–42) covers the Hadoop ecosystem and its limits, how Spark is built and how it runs, RDDs with their transformations and actions, and the structured DataFrame and Dataset APIs with their optimized execution.",
+    "Hadoop made MapReduce on commodity clusters practical, but writes every intermediate result to disk — slow for iterative and interactive work. Spark keeps data in memory, builds an execution graph and computes it lazily. This lecture covers the Hadoop ecosystem and its limits, how Spark is built and how it runs, RDDs with their transformations and actions, and the structured DataFrame and Dataset APIs with their optimized execution.",
   topics: ["Hadoop ecosystem", "Hadoop limitations", "Spark architecture", "RDDs", "Transformations and actions", "Lazy evaluation", "Caching", "Partitions", "DataFrames", "Catalyst"],
   difficulty: "core",
   estimatedMinutes: 70,

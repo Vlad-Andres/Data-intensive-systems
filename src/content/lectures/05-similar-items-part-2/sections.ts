@@ -6,7 +6,7 @@ import { ShinglingExplorer } from "./interactive/ShinglingExplorer";
 const objectives: Block[] = [
   {
     kind: "prose",
-    md: "Part 2 of *Finding Similar Items at Scale* uses the same study material as Part 1. It follows the first half of the Matching slides together with §3.1–§3.3 of *Mining of Massive Datasets*: turn entities into sets, and turn sets into short signatures that still remember how similar they were.",
+    md: "Part 2 of *Finding Similar Items at Scale* uses the same study material as Part 1. It covers §3.1–§3.3 of *Mining of Massive Datasets*: turn entities into sets, and turn sets into short signatures that still remember how similar they were.",
   },
   { kind: "list", variant: "objectives", items: lecture05Meta.objectives },
 ];
@@ -74,7 +74,7 @@ const shingling: Block[] = [
   },
   {
     kind: "steps",
-    title: "The slide example, k = 2",
+    title: "A small example, k = 2",
     steps: [
       { title: "Shingle each document", md: "$D_1 = abcab$ gives {ab, bc, ca} — *ab* occurs twice but appears once in the set. $D_2 = abfef$ gives {ab, bf, fe, ef}." },
       { title: "Fix an order on all shingles", md: "The shingles seen are [ab, bc, ca, bf, fe, ef]." },
@@ -89,7 +89,7 @@ const shingling: Block[] = [
     kind: "info",
     variant: "warning",
     title: "Selecting the right k",
-    md: "Pick $k$ large enough that the probability of any given shingle appearing in any given document is low; with $k = 1$ almost all web pages share almost all characters. The slides suggest **$k = 5$ for short documents** and **$k = 10$ for long documents**. The book reasons the same way: for emails, $27^5 \\approx 14$ million possible 5-shingles is plenty — though since common letters dominate, imagine only 20 characters and estimate $20^k$ — and **$k = 9$** is considered safe for research articles.",
+    md: "Pick $k$ large enough that the probability of any given shingle appearing in any given document is low; with $k = 1$ almost all web pages share almost all characters. A rule of thumb is **$k = 5$ for short documents** and **$k = 10$ for long documents**. The book reasons the same way: for emails, $27^5 \\approx 14$ million possible 5-shingles is plenty — though since common letters dominate, imagine only 20 characters and estimate $20^k$ — and **$k = 9$** is considered safe for research articles.",
   },
   {
     kind: "prose",
@@ -148,7 +148,7 @@ const matrices: Block[] = [
       ["5", "1", "1", "intersection and union"],
       ["6", "0", "1", "union"],
     ],
-    caption: "The slides' column-similarity example: 2 rows in the intersection, 5 in the union, Sim(C₁, C₂) = 2/5 = 0.4.",
+    caption: "Column similarity: 2 rows in the intersection, 5 in the union, Sim(C₁, C₂) = 2/5 = 0.4.",
   },
   {
     kind: "table",
@@ -189,7 +189,7 @@ const minhashing: Block[] = [
       ["6", "5", "7", "1", "1", "0", "1", "0"],
       ["7", "4", "5", "5", "1", "0", "1", "0"],
     ],
-    caption: "The slides' example: three permutations (each πᵢ gives a row's position in the permuted order) and a 7 × 4 input matrix of shingles × documents.",
+    caption: "The running example: three permutations (each πᵢ gives a row's position in the permuted order) and a 7 × 4 input matrix of shingles × documents.",
   },
   {
     kind: "table",
@@ -263,7 +263,7 @@ for r in rows:
             for i in range(n_hashes):
                 if h[i] < M[i][c]:
                     M[i][c] = h[i]`,
-    caption: "The algorithm from the slides: one pass over the rows builds every signature at once.",
+    caption: "The algorithm: one pass over the rows builds every signature at once.",
   },
   {
     kind: "interactive",
@@ -341,7 +341,7 @@ const mistakes: Block[] = [
     kind: "info",
     variant: "pitfall",
     title: "Reading the minhash as a row number before permuting",
-    md: "$h(C)$ is the position, **in the permuted order**, of the first row with a 1 — not the original row index. In the slide example the permutation columns give exactly those positions.",
+    md: "$h(C)$ is the position, **in the permuted order**, of the first row with a 1 — not the original row index. In the running example the permutation columns give exactly those positions.",
   },
 ];
 

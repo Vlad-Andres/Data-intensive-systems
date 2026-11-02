@@ -22,7 +22,7 @@ export const lecture06Meta: LectureMeta = {
   title: "Finding Similar Items at Scale — Part 3",
   subtitle: "Locality-sensitive hashing, and entity resolution at scale",
   summary:
-    "Signatures solve the space problem but not the pairs problem. Part 3 follows the second half of the Matching slides with MMDS §3.4 and §3.8.1–§3.8.3: band the signature matrix so that only similar columns are likely to share a bucket, analyse the resulting S-curve, assemble the whole pipeline, and see how real entity resolution adapts the idea to records — scoring, blocking and validating matches without labels.",
+    "Signatures solve the space problem but not the pairs problem. Part 3 covers MMDS §3.4 and §3.8.1–§3.8.3: band the signature matrix so that only similar columns are likely to share a bucket, analyse the resulting S-curve, assemble the whole pipeline, and see how real entity resolution adapts the idea to records — scoring, blocking and validating matches without labels.",
   topics: [
     "Locality-sensitive hashing",
     "Candidate pairs",

@@ -38,11 +38,11 @@ export const lecture04Quiz: QuizQuestion[] = [
     ],
     answerId: "a",
     explanation:
-      "The new centre is the mean of its points: $x = (3+6+7+8)/4 = 6$, $y = (5+1+2+1)/4 = 2.25$. (The slide writes 2.75 — a slip in the arithmetic.)",
+      "The new centre is the mean of its points: $x = (3+6+7+8)/4 = 6$, $y = (5+1+2+1)/4 = 2.25$. (2.75 comes from adding the wrong y-values.)",
   },
   {
     id: "q-kmeans-cons",
-    prompt: "Which pair are drawbacks of k-means named on the slides?",
+    prompt: "Which pair are drawbacks of k-means?",
     options: [
       { id: "a", text: "It is hard to implement and very slow." },
       { id: "b", text: "It ignores (is sensitive to) outliers, and the number of centres must be fixed in advance." },
