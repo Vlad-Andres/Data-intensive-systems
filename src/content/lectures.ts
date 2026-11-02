@@ -8,9 +8,10 @@ import { lecture07 } from "./lectures/07-mapreduce";
 import { lecture08 } from "./lectures/08-apache-spark";
 import { lecture09 } from "./lectures/09-distributed-file-systems";
 import { lecture10 } from "./lectures/10-nosql";
+import { lecture11 } from "./lectures/11-graph-databases";
 import type { Lecture } from "./types";
 
-const lectures: Lecture[] = [lecture01, lecture02, lecture03, lecture04, lecture05, lecture06, lecture07, lecture08, lecture09, lecture10].sort((a, b) => a.meta.number - b.meta.number);
+const lectures: Lecture[] = [lecture01, lecture02, lecture03, lecture04, lecture05, lecture06, lecture07, lecture08, lecture09, lecture10, lecture11].sort((a, b) => a.meta.number - b.meta.number);
 
 export function allLectures() {
   return lectures;
