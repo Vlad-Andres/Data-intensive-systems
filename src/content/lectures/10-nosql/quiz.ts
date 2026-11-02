@@ -131,7 +131,7 @@ export const lecture10Quiz: QuizQuestion[] = [
       { id: "d", text: "Eventual consistency" },
     ],
     answerId: "b",
-    explanation: "Pessimistic fixes take a write lock; optimistic fixes use a conditional update (or version stamp, as in the offline-lock slides) so the second write fails, or keep both values and merge.",
+    explanation: "Pessimistic fixes take a write lock; optimistic fixes use a conditional update (or a version stamp, as in the offline-lock example) so the second write fails, or keep both values and merge.",
   },
   {
     id: "q-rywr",
