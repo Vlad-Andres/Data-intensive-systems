@@ -29,6 +29,9 @@ import { lecture09Quiz } from "./lectures/09-distributed-file-systems/quiz";
 import { lecture10Concepts } from "./lectures/10-nosql/concepts";
 import { lecture10Meta } from "./lectures/10-nosql/meta";
 import { lecture10Quiz } from "./lectures/10-nosql/quiz";
+import { lecture11Concepts } from "./lectures/11-graph-databases/concepts";
+import { lecture11Meta } from "./lectures/11-graph-databases/meta";
+import { lecture11Quiz } from "./lectures/11-graph-databases/quiz";
 import type { Concept, ExerciseSheet, LectureMeta, QuizQuestion } from "./types";
 
 export interface LectureIndexEntry {
@@ -53,6 +56,7 @@ export const lectureIndex: LectureIndexEntry[] = [
   { meta: lecture08Meta, concepts: lecture08Concepts, quiz: lecture08Quiz, exercises: [] },
   { meta: lecture09Meta, concepts: lecture09Concepts, quiz: lecture09Quiz, exercises: [] },
   { meta: lecture10Meta, concepts: lecture10Concepts, quiz: lecture10Quiz, exercises: [] },
+  { meta: lecture11Meta, concepts: lecture11Concepts, quiz: lecture11Quiz, exercises: [] },
 ].sort((a, b) => a.meta.number - b.meta.number);
 
 export const lectureMetas: LectureMeta[] = lectureIndex.map((entry) => entry.meta);
