@@ -3,12 +3,13 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ChevronDown, GraduationCap, Menu, Search, X } from "lucide-react";
+import { ChevronDown, Flag, GraduationCap, Menu, Search, X } from "lucide-react";
 import type { LectureMeta } from "@/content/types";
 import type { SearchRecord } from "@/lib/search";
 import { SearchDialog } from "@/components/layout/SearchDialog";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
-import { EXAM_PATH, lecturePath } from "@/lib/format";
+import { DIFFICULT_PATH, EXAM_PATH, lecturePath } from "@/lib/format";
+import { useDifficult } from "@/hooks/useDifficult";
 import { cn } from "@/lib/cn";
 
 interface SiteHeaderProps {
@@ -22,6 +23,8 @@ export function SiteHeader({ metas, records }: SiteHeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [lecturesOpen, setLecturesOpen] = useState(false);
   const lecturesRef = useRef<HTMLDivElement>(null);
+  const { state: difficult } = useDifficult();
+  const difficultCount = Object.keys(difficult.items).length;
 
   const closeMenus = useCallback(() => {
     setMenuOpen(false);
@@ -117,6 +120,21 @@ export function SiteHeader({ metas, records }: SiteHeaderProps) {
             <GraduationCap size={15} aria-hidden />
             Exam training
           </Link>
+
+          <Link
+            href={DIFFICULT_PATH}
+            onClick={closeMenus}
+            className={cn(
+              "flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors hover:bg-sunken",
+              pathname.startsWith("/difficult") ? "text-brand" : "text-muted",
+            )}
+          >
+            <Flag size={15} aria-hidden />
+            Difficult
+            {difficultCount > 0 ? (
+              <span className="rounded-full bg-warning-soft px-1.5 text-xs font-semibold text-warning tabular-nums">{difficultCount}</span>
+            ) : null}
+          </Link>
         </nav>
 
         <div className="ml-auto flex items-center gap-2">
@@ -161,6 +179,13 @@ export function SiteHeader({ metas, records }: SiteHeaderProps) {
             className="block rounded-lg px-3 py-2 text-sm font-medium hover:bg-sunken"
           >
             Exam training
+          </Link>
+          <Link
+            href={DIFFICULT_PATH}
+            onClick={closeMenus}
+            className="block rounded-lg px-3 py-2 text-sm font-medium hover:bg-sunken"
+          >
+            Difficult parts{difficultCount > 0 ? ` (${difficultCount})` : ""}
           </Link>
           <p className="px-3 pb-1 pt-3 text-xs font-semibold tracking-wide text-faint uppercase">
             Lectures
