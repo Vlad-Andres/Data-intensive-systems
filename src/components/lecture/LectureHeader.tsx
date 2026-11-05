@@ -9,11 +9,11 @@ const SOURCE_ICON: Record<LectureSource["kind"], typeof FileText> = {
   notes: StickyNote,
 };
 
-export function LectureHeader({ meta }: { meta: LectureMeta }) {
+export function LectureHeader({ meta, badge }: { meta: LectureMeta; badge?: string }) {
   return (
     <header className="grid gap-5 border-b border-line pb-8">
       <div className="flex flex-wrap items-center gap-2">
-        <Badge tone="brand">Lecture {meta.number}</Badge>
+        <Badge tone="brand">{badge ?? `Lecture ${meta.number}`}</Badge>
         <Badge>{meta.difficulty}</Badge>
         <Badge>
           <Clock size={12} aria-hidden />

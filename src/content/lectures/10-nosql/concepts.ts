@@ -3,8 +3,8 @@ import type { Concept } from "@/content/types";
 export const lecture10Concepts: Concept[] = [
   {
     id: "data-model",
-    term: "Data model",
-    short: "The model through which we perceive and manipulate data: structures, constraints and operations.",
+    term: "Data model versus storage model",
+    short: "The data model is how we perceive and manipulate data (Lecture 1); the storage model is how the database stores it internally.",
     detail: "Distinct from the storage model, which describes how the database stores the data internally. NoSQL Distilled uses “data model” for the way the database organizes data — more formally a metamodel.",
     tags: ["models"],
   },
@@ -68,7 +68,7 @@ export const lecture10Concepts: Concept[] = [
     id: "graph-database",
     term: "Graph database",
     short: "Small records (nodes) with complex interconnections (edges); traversals are cheap because work moves from query time to insert time.",
-    detail: "Good for social networks, product preferences and eligibility rules. Graph databases usually run on one server and support ACID transactions across nodes and edges.",
+    detail: "Good for social networks, product preferences and eligibility rules. Graph databases usually run on one server and support ACID transactions across nodes and edges. Lecture 11 covers them in depth.",
     tags: ["models"],
   },
   {
@@ -101,16 +101,16 @@ export const lecture10Concepts: Concept[] = [
   },
   {
     id: "cap",
-    term: "CAP theorem",
-    short: "Of consistency, availability and partition tolerance you can get only two — in practice, under a partition you trade consistency against availability.",
-    detail: "Brewer 2000, proven by Gilbert and Lynch 2002. CAP availability means every request to a non-failing node gets a response. Fowler and Sadalage prefer to see it as a trade-off between consistency and latency.",
+    term: "CAP in NoSQL stores",
+    short: "When replicas are cut off from each other, a NoSQL store either refuses writes (consistency) or accepts them on both sides and reconciles later (availability).",
+    detail: "The theorem itself is defined in Lecture 3. NoSQL Distilled places Bigtable and HBase on C+P, Dynamo, Riak and Cassandra on A+P, and RDBMSs on C+A, and prefers to see the trade-off as consistency versus latency.",
     tags: ["consistency"],
   },
   {
     id: "quorum",
-    term: "Quorums",
+    term: "Quorums with N, R and W",
     short: "With replication factor N, a write quorum W > N/2 avoids conflicting writes; R + W > N gives strongly consistent reads.",
-    detail: "Example: N = 3, W = 2, R = 2. A replication factor of 3 tolerates one failed node while keeping both quorums.",
+    detail: "Lecture 3's quorum consensus with every replica weighing 1. Example: N = 3, W = 2, R = 2. A replication factor of 3 tolerates one failed node while keeping both quorums.",
     tags: ["consistency"],
   },
 ];

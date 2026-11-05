@@ -43,7 +43,7 @@ const hadoop: Block[] = [
   },
   {
     kind: "prose",
-    md: "Hadoop is **not a good fit** for low-latency data access, lots of small files, or multiple writers with arbitrary file modifications. Its large **block** abstraction is what it is good at: a file can be larger than any single disk in the network, the storage subsystem is simplified (metadata bookkeeping), and replication for fault tolerance and availability is easy. A job goes **from HDFS to HDFS**: input splits are mapped, sorted, copied and merged to reducers, and each output part is written back to HDFS with replication.\n\nOf the use cases, Hadoop handles **map-only** and **classic MapReduce** jobs well, and does **not** handle **iterative** jobs, point-to-point graph computations, streaming, or maps that communicate through shared memory.",
+    md: "Hadoop is **not a good fit** for low-latency data access, lots of small files, or multiple writers with arbitrary file modifications. Its large **block** abstraction is what it is good at: a file can be larger than any single disk in the network, the storage subsystem is simplified (metadata bookkeeping), and replication for fault tolerance and availability is easy (Lecture 9 covers HDFS blocks and replication in detail). A job goes **from HDFS to HDFS**: input splits are mapped, sorted, copied and merged to reducers, and each output part is written back to HDFS with replication.\n\nOf the use cases, Hadoop handles **map-only** and **classic MapReduce** jobs well, and does **not** handle **iterative** jobs, point-to-point graph computations, streaming, or maps that communicate through shared memory.",
   },
   {
     kind: "table",

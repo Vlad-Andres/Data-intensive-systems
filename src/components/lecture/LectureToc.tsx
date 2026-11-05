@@ -8,7 +8,7 @@ import { useProgress } from "@/hooks/useProgress";
 import { lectureStats } from "@/lib/progress";
 import { cn } from "@/lib/cn";
 
-export function LectureToc({ meta }: { meta: LectureMeta }) {
+export function LectureToc({ meta, progressLabel }: { meta: LectureMeta; progressLabel?: string }) {
   const { progress } = useProgress();
   const [open, setOpen] = useState(false);
   const [activeId, setActiveId] = useState(meta.outline[0]?.id ?? "");
@@ -55,7 +55,7 @@ export function LectureToc({ meta }: { meta: LectureMeta }) {
         </div>
         <ProgressBar
           value={stats.ratio}
-          label={`Lecture ${meta.number} progress`}
+          label={progressLabel ?? `Lecture ${meta.number} progress`}
           tone={stats.completed ? "positive" : "brand"}
         />
       </div>

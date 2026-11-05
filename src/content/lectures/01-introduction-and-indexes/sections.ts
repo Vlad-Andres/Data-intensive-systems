@@ -77,6 +77,10 @@ const course: Block[] = [
       { label: "Lecture 7", title: "MapReduce", md: "MMDS chapter 2: the model, and MapReduce algorithms for inverted indexes, matrix multiplication and joins." },
       { label: "Lecture 8", title: "Introduction to Apache Spark", md: "Spark versus Hadoop MapReduce, how Spark operates, RDDs and DataFrames." },
       { label: "Lecture 9", title: "Distributed File Systems", md: "The Google File System and the Hadoop Distributed File System." },
+      { label: "Lecture 10", title: "NoSQL", md: "NoSQL Distilled: why NoSQL, aggregates, key-value, document and column-family stores, consistency, CAP in practice and quorums." },
+      { label: "Lecture 11", title: "Graph Data Management", md: "Property graphs and RDF, relational storage of graphs, Neo4j with Cypher and Gremlin, data modelling with graphs, native graph internals, high availability and load balancing." },
+      { label: "Lecture 12", title: "Vector Databases", md: "What vector databases store, the similarity queries they answer, their indexes, existing systems and applications." },
+      { label: "Exam", title: "Final test", md: "On Remindo, on premises, around 2 hours, no material allowed: multiple choice and short open answers, some in pseudocode. A theory part and a part on the practical assignment. The Exam training page prepares for it." },
     ],
   },
   {
@@ -91,7 +95,6 @@ const course: Block[] = [
       { prompt: "How are the 100 points of the course split?", answer: "Final test 40% (multiple choice or short answers); project 60%, of which 10 points come from the presentation." },
       { prompt: "What is the project about?", answer: "A computationally intensive data-processing task that you make more efficient with distributed techniques and NoSQL technologies. Everyone gets the same topic." },
       { prompt: "Which two styles does the course combine?", answer: "A guided tour of important trends and technologies, and a deep dive into selected must-know algorithms, techniques and technologies." },
-      { prompt: "How is the course assessed?", answer: "A final test (40%, multiple choice or short answers) and a project (60%, of which 10 points come from the presentation)." },
     ],
   },
 ];

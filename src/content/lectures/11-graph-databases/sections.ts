@@ -1,11 +1,18 @@
 import type { Block, SectionBlocks } from "@/content/types";
 import { lecture11Meta, lecture11Outline } from "./meta";
+import { CypherShakespeareLab } from "./interactive/CypherShakespeareLab";
 import { RdfStorageLab } from "./interactive/RdfStorageLab";
 
 const objectives: Block[] = [
   {
     kind: "prose",
-    md: "The second NoSQL lecture is about data whose value lies in its **connections**. It covers the property graph model, **RDF** and how to store it with relational technology, **Neo4j** with its query languages Cypher and Gremlin, and how a native graph database works inside. For more Cypher than this page covers, the official Cypher manual is the reference.",
+    md: "The second NoSQL lecture is about data whose value lies in its **connections**. It covers the property graph model, **RDF** and how to store it with relational technology, **Neo4j** with its query languages Cypher and Gremlin, how to **model** a domain as a graph, and how a native graph database works inside and is load balanced.",
+  },
+  {
+    kind: "info",
+    variant: "note",
+    title: "What you are expected to know",
+    md: "The Cypher language **as far as the slides and Chapter 3 of *Graph Databases* use it** — not every extra feature in the Cypher manual — and the concepts on the slides. Those concepts are explained in Chapter 3 (Cypher and data modelling), Chapter 6 (graph database internals), the two pages on **load balancing** in Chapter 4, and the **High Availability** section of *Seven Databases in Seven Weeks*. All of them are on this page.",
   },
   { kind: "list", variant: "objectives", items: lecture11Meta.objectives },
 ];
@@ -261,9 +268,83 @@ MATCH (e:EphemeralNode) DELETE e;                              // then the node`
   },
   {
     kind: "prose",
-    md: "**Paths.** Friends of friends of Patty: MATCH (fof:Person)-[:friends]-(f:Person)-[:friends]-(p:Person {name: \"Patty\"}) RETURN fof.name. Leaving out the arrow head matches both directions. **Variable-length** patterns use a star: -[:ACTS_IN*1..4]- matches one to four ACTS_IN relationships. Each hop counts, so actors two degrees from Kevin Bacon are four hops away (actor–movie–actor–movie–actor). **shortestPath((a)-[:ACTS_IN*]-(b))** finds the shortest connection. Use **DISTINCT**: without it the same actor can be counted once per path (313 instead of 304 in the book's movie data).\n\n**Indexes and constraints** give a schemaless graph some structure: CREATE INDEX ON :Wine(name) speeds up lookups without changing queries; CREATE CONSTRAINT ON (w:Wine) ASSERT w.name IS UNIQUE rejects duplicates, checks existing data, and creates an index automatically.",
+    md: "**Paths.** Friends of friends of Patty: MATCH (fof:Person)-[:friends]-(f:Person)-[:friends]-(p:Person {name: \"Patty\"}) RETURN fof.name. Leaving out the arrow head matches both directions. **Variable-length** patterns use a star: -[:ACTS_IN*1..4]- matches one to four ACTS_IN relationships. Each hop counts, so actors two degrees from Kevin Bacon are four hops away (actor–movie–actor–movie–actor). **shortestPath((a)-[:ACTS_IN*]-(b))** finds the shortest connection. Use **DISTINCT**: without it the same actor can be counted once per path (313 instead of 304 in the book's movie data).\n\n**Indexes and constraints** give a schemaless graph some structure: CREATE INDEX ON :Wine(name) speeds up lookups without changing queries; CREATE CONSTRAINT ON (w:Wine) ASSERT w.name IS UNIQUE rejects duplicates, checks existing data, and creates an index automatically. On an existing database an index is populated in the background. Lookups work without an index — MATCH (v:Venue {name:'Theatre Royal'}) is correct either way — but without one Neo4j **scans and filters every node with that label**.",
   },
-  { kind: "concepts", ids: ["cypher"] },
+  {
+    kind: "prose",
+    md: "**Cypher, as Chapter 3 of *Graph Databases* presents it.** Cypher describes graphs the way we draw them, as **ASCII art**: nodes in parentheses, relationships as --> or <-- with the type in square brackets, labels and types prefixed by a colon, properties in curly braces. Three mutual friends look like this:\n\n(emil)<-[:KNOWS]-(jim)-[:KNOWS]->(ian)-[:KNOWS]->(emil)\n\nemil, jim and ian are **identifiers**: they let a pattern refer to the same node twice, which is how a one-dimensional line of text describes a two-dimensional drawing. The idea is **specification by example** — we draw a small instance of what we are looking for. A query **anchors** parts of the pattern to real nodes with labels and property predicates (the **bound nodes**, found with the help of indexes and constraints), and Cypher then *flexes* the rest of the pattern around those anchors to find local matches. The anchor can be written inline or in WHERE — the two queries below are equivalent:",
+  },
+  {
+    kind: "code",
+    lang: "cypher",
+    code: `// Jim's mutual friends: anchored inline …
+MATCH (a:Person {name:'Jim'})-[:KNOWS]->(b)-[:KNOWS]->(c),
+      (a)-[:KNOWS]->(c)
+RETURN b, c
+
+// … or anchored in WHERE
+MATCH (a:Person)-[:KNOWS]->(b)-[:KNOWS]->(c), (a)-[:KNOWS]->(c)
+WHERE a.name = 'Jim'
+RETURN b, c`,
+    caption: "A comma separates several patterns that must all match; the shared identifiers a and c tie them together.",
+  },
+  {
+    kind: "table",
+    headers: ["Clause", "What it does"],
+    rows: [
+      ["MATCH", "The specification-by-example part: the pattern to find, with anchored nodes"],
+      ["WHERE", "Filters matches: paths that must be present or absent, labels or relationship types, properties that must exist or have certain values, other predicates (e.g. a date range)"],
+      ["RETURN", "What to give back: nodes, relationships, properties; with DISTINCT, aggregation (count, collect), aliases (AS), ORDER BY and LIMIT"],
+      ["CREATE / CREATE UNIQUE", "Create nodes and relationships (a whole pattern at once)"],
+      ["MERGE", "Ensures a pattern exists: reuses the nodes and relationships that match, creates the missing ones"],
+      ["DELETE", "Removes nodes, relationships and properties"],
+      ["SET", "Sets property values"],
+      ["FOREACH", "Performs an updating action for each element of a list"],
+      ["UNION", "Merges the results of two or more queries"],
+      ["WITH", "Chains query parts, piping the results of one into the next (like a Unix pipe)"],
+      ["START", "Explicit starting points — deprecated in favour of anchoring in MATCH"],
+    ],
+    caption: "The Cypher clauses listed in Chapter 3. A Cypher statement runs in one transaction: a CREATE either adds the whole graph or nothing.",
+  },
+  {
+    kind: "prose",
+    md: "**CREATE versus MERGE.** Use CREATE when you add to the graph and duplicates do not matter; use **MERGE** when the domain forbids duplication — it makes sure a subgraph is present after it runs, creating only the parts that are missing. **Identifiers live only for one query**; to find a node again later, look it up by label and property (and index that combination).\n\n**More pattern syntax** from the Shakespeare example below: -[:STREET|CITY*1..2]- means one or two relationships, each of type STREET **or** CITY; () is an **anonymous node** you do not need later; -[w:WROTE_PLAY]- **binds a relationship** to the identifier w (before the colon) so WHERE or RETURN can use it; p = (…)-[…]-(…) binds a whole **path**, whose length(p) counts its relationships.",
+  },
+  {
+    kind: "figure",
+    src: "graph/shakespeare-graph.png",
+    alt: "Shakespeare graph: Author Shakespeare WROTE_PLAY Julius Caesar (1599) and The Tempest (1610); RSC PRODUCED two Productions with PRODUCTION_OF links to the plays; Performances with PERFORMANCE_OF and VENUE Theatre Royal; User Billy WROTE_REVIEW a Review that is REVIEW_OF a performance; Theatre Royal on Grey Street in Newcastle, Tyne and Wear, England; Shakespeare BORN_IN and RSC BASED_IN Stratford upon Avon.",
+    width: 1444,
+    height: 1878,
+    caption: "Three domains in one graph — literary (dotted), theatrical (solid) and geospatial (dashed).",
+  },
+  {
+    kind: "code",
+    lang: "cypher",
+    code: `CREATE (shakespeare:Author {firstname:'William', lastname:'Shakespeare'}),
+       (juliusCaesar:Play {title:'Julius Caesar'}),
+       (shakespeare)-[:WROTE_PLAY {year:1599}]->(juliusCaesar),
+       (theTempest:Play {title:'The Tempest'}),
+       (shakespeare)-[:WROTE_PLAY {year:1610}]->(theTempest),
+       (rsc:Company {name:'RSC'}),
+       (production1:Production {name:'Julius Caesar'}),
+       (rsc)-[:PRODUCED]->(production1),
+       (production1)-[:PRODUCTION_OF]->(juliusCaesar),
+       (performance1:Performance {date:20120729}),
+       (performance1)-[:PERFORMANCE_OF]->(production1),
+       // … the other production and performances, Billy's review,
+       // the venue, street, city, county and country …
+       (rsc)-[:BASED_IN]->(stratford),
+       (shakespeare)-[:BORN_IN]->(stratford)`,
+    caption: "Building the Shakespeare graph in one CREATE (abridged). The book's figure calls the review relationship REVIEW_OF; its code listing says RATED — same idea.",
+  },
+  {
+    kind: "interactive",
+    title: "Cypher on the Shakespeare graph",
+    description: "The queries of Chapter 3 (and three more). Pick one to see the pattern it matches highlighted in the graph and the rows it returns.",
+    component: CypherShakespeareLab,
+  },
+  { kind: "concepts", ids: ["cypher", "merge-with"] },
   {
     kind: "recall",
     cards: [
@@ -271,6 +352,10 @@ MATCH (e:EphemeralNode) DELETE e;                              // then the node`
       { prompt: "Why can't you delete a node straight away?", answer: "A node that still has relationships cannot be deleted; delete its relationships first (or match and delete both)." },
       { prompt: "What does -[:ACTS_IN*1..4]- mean?", answer: "A path of one to four ACTS_IN relationships, in either direction." },
       { prompt: "Index versus constraint in Neo4j?", answer: "An index speeds up lookups by label and property; a constraint (e.g. unique name) rejects bad writes and creates an index automatically." },
+      { prompt: "What is an anchored (bound) node?", answer: "A node of the pattern tied to real data by its label and property predicates; Cypher matches the rest of the pattern around it." },
+      { prompt: "CREATE versus MERGE?", answer: "CREATE always adds; MERGE makes sure the pattern exists, reusing what matches and creating only what is missing — use it when duplicates are not allowed." },
+      { prompt: "What does WITH do?", answer: "Chains query parts: the results of one part are piped into the next, e.g. to order or aggregate before RETURN, or to separate reads from SET." },
+      { prompt: "What does -[:STREET|CITY*1..2]- match?", answer: "One or two relationships, each of type STREET or CITY." },
     ],
   },
   {
@@ -288,6 +373,184 @@ MATCH (e:EphemeralNode) DELETE e;                              // then the node`
         prompt: "How many ACTS_IN hops separate two actors who are three degrees apart (three movies in between)?",
         check: { mode: "text", accept: ["6"], placeholder: "hops" },
         solution: "Each degree is actor → movie → actor, two hops: **6**. So use -[:ACTS_IN*1..6]- to reach everyone within three degrees.",
+      },
+      {
+        id: "venue-count",
+        prompt: "On the Shakespeare graph, write a query returning each venue's name with the number of performances held there, most performances first.",
+        check: { mode: "open" },
+        solution: "```cypher\nMATCH (perf:Performance)-[:VENUE]->(v:Venue)\nRETURN v.name AS venue, count(perf) AS performances\nORDER BY performances DESC;\n```\nOn the sample graph: Theatre Royal, 3.",
+      },
+      {
+        id: "merge-company",
+        prompt: "An import job runs every night and must add the company RSC only if it is not in the graph yet. CREATE or MERGE? Write the statement.",
+        check: { mode: "open" },
+        solution: "**MERGE**, because duplicates are not allowed: `MERGE (c:Company {name:'RSC'})`. CREATE would add a new RSC node on every run.",
+      },
+    ],
+  },
+];
+
+const modelling: Block[] = [
+  {
+    kind: "prose",
+    md: "**Models and goals.** Modelling is an abstraction driven by a goal: there is no natural representation of the world *as it really is*, only purposeful selections, some more useful than others. What sets graphs apart is the **close affinity between the logical and the physical model**. Relational modelling forces our natural-language picture first into a logical model and then into a physical one, and each step adds *semantic dissonance*; with a graph database, what we sketch on the whiteboard is what we store. Graph models and graph queries are *two sides of the same coin*: the model also shows which questions we want to ask.\n\nThe labeled property graph, recapped: nodes hold properties (think of them as documents of key–value pairs), carry one or more **labels** that group them by the **roles** they play, and are connected by **relationships** that always have a direction, a single name, a start node and an end node — there are no dangling relationships. Relationships can have properties too, useful for weights, quality and constraining queries at runtime.",
+  },
+  {
+    kind: "steps",
+    title: "Relational modelling of a data centre (the book's comparison)",
+    intro: "Applications run on virtual machines hosted by servers in racks behind load balancers, and use replicated databases. Operators need to find single points of failure and bill for resources.",
+    steps: [
+      { title: "Whiteboard", md: "Domain experts and architects agree on the entities and how they relate — and draw it as boxes and lines: a **graph**." },
+      { title: "E-R diagram", md: "The sketch becomes an entity-relationship diagram — another graph, but one that allows only **single, undirected, named** relationships between entities: a poor fit for rich, numerous, diverse relationships." },
+      { title: "Tables", md: "The E-R model is mapped to normalised tables. **Accidental complexity** appears before a single row of user data: foreign keys for one-to-many relationships and **join tables** (AppDatabase, UserApp) for many-to-many ones — metadata that serves the database, not the user." },
+      { title: "Denormalise", md: "Normalised models are rarely fast enough, so data is **duplicated** for specific access patterns (a user's main email addresses inlined in USER). The model now suits the engine, not the domain, and usually needs an RDBMS expert." },
+      { title: "Migrate, painfully", md: "Systems change in production too. Schema **migrations** of a denormalised database take weeks or months, risk downtime, performance and orphaned duplicate data — so the system's evolution lags behind the business." },
+    ],
+  },
+  {
+    kind: "figure",
+    src: "graph/datacenter-tables.png",
+    alt: "Relational tables for the data centre: App, AppDatabase, Database Server, UserApp, User, VirtualMachine, Server, Rack and Load Balancer with primary and foreign keys.",
+    width: 1529,
+    height: 1392,
+    caption: "The data centre as tables: foreign keys [FK] and join tables (AppDatabase, UserApp) are accidental complexity.",
+  },
+  {
+    kind: "prose",
+    md: "**Graph modelling** starts the same way — a whiteboard sketch — but instead of transforming it into tables we **enrich** it: for every entity we capture its **roles as labels**, its **attributes as properties** and its **connections as named, directed relationships**. Domain modelling is *isomorphic* to graph modelling, so improving the domain model improves the graph model. No tables, no normalisation, no denormalisation. In the data centre graph most nodes carry two labels — a specific one (App, VM, Server) and the general **Asset** — so queries can target one kind of asset or all of them.",
+  },
+  {
+    kind: "figure",
+    src: "graph/datacenter-graph.png",
+    alt: "Data centre graph: User 3 USER_OF App 3; apps USES database servers, which are SLAVE_OF Database Server 1; apps RUNS_ON VMs; VMs HOSTED_BY servers; servers IN racks; load balancers IN racks. Every node has a status and an Asset label.",
+    width: 1425,
+    height: 1275,
+    caption: "The same domain as a graph: what was drawn on the whiteboard is what is stored.",
+  },
+  {
+    kind: "prose",
+    md: "**Testing the model.** Two techniques, applied early so that later changes are driven by the business and not by poor design:\n\n1. **Check that the graph reads well**: start at a node and follow relationships, reading labels and relationship names aloud. *Server 3 runs VM 31, which hosts App Instance 3* should come out as a sensible sentence.\n2. **Design for queryability**: write the queries the use cases need. A user reports that an application is down — which assets between the user and the application, or that it depends on, are down?",
+  },
+  {
+    kind: "code",
+    lang: "cypher",
+    code: `MATCH (user:User)-[*1..5]-(asset:Asset)
+WHERE user.name = 'User 3' AND asset.status = 'down'
+RETURN DISTINCT asset`,
+    caption: "Unnamed, undirected relationships of length 1 to 5 reach every asset on the paths around User 3. Nodes without a status property are excluded; DISTINCT returns each asset once however many paths reach it.",
+  },
+  {
+    kind: "prose",
+    md: "**Cross-domain models.** A property graph joins domains without distorting them — a *graph of graphs*. The Shakespeare graph in the previous section connects a **literary** domain (Author, Play, WROTE_PLAY with a year), a **theatrical** one (Company, Production, Performance, Venue, User, Review) and a **geospatial** one (Street, City, County, Country). **Relationships** both partition the graph into domains and connect them; **labels** are first-class citizens that give each node its roles (a node can have several) and attach metadata such as indexes and uniqueness constraints. Stratford upon Avon takes part in all three domains, stored once. The business data lives in properties; the structure lives in labels and relationships, so foreign keys and cardinality constraints never pollute the data.",
+  },
+  {
+    kind: "steps",
+    title: "A modelling pitfall: email provenance",
+    intro: "The goal: find suspicious email patterns, such as someone copying their own alias.",
+    steps: [
+      { title: "First attempt", md: "Users as nodes, an ALIAS_OF relationship (Alice is an alias of Bob), and the actions as relationships: (bob)-[:EMAILED]->(charlie), (bob)-[:CC]->(davina), (bob)-[:BCC]->(edward). It reads well left to right — *Bob emailed Charlie*." },
+      { title: "It is lossy", md: "MATCH (bob)-[e:EMAILED]->(charlie) RETURN e only says that emails were exchanged. The **email itself is missing**: we cannot tell which recipients were copied on which email. Adding properties to EMAILED does not help, since EMAILED, CC and BCC still cannot be correlated." },
+      { title: "The cause: a verb hid a noun", md: "*Bob sent an email to Charlie* was shortened to *Bob emailed Charlie*. The entity — the email — was folded into a relationship." },
+      { title: "The fix", md: "Make the email a node: (bob)-[:SENT]->(email), (email)-[:TO]->(charlie), (email)-[:CC]->(davina), (email)-[:CC]->(alice), (email)-[:BCC]->(edward). The star now has the email at its centre." },
+      { title: "Now the question can be asked", md: "MATCH (bob:User {username:'Bob'})-[:SENT]->(email)-[:CC]->(alias), (alias)-[:ALIAS_OF]->(bob) RETURN email.id — emails where Bob copied one of his own aliases." },
+    ],
+  },
+  {
+    kind: "figure",
+    src: "graph/email-lossy.png",
+    alt: "Bob at the centre with EMAILED to Charlie, CC to Davina, BCC to Edward; Alice ALIAS_OF Bob.",
+    width: 788,
+    height: 973,
+    caption: "Lossy: the actions are relationships and the email is nowhere.",
+  },
+  {
+    kind: "figure",
+    src: "graph/email-star.png",
+    alt: "An Email node at the centre: Bob SENT it; it goes TO Charlie, CC Davina and Alice, BCC Edward.",
+    width: 941,
+    height: 970,
+    caption: "Fixed: the email is a node with SENT, TO, CC and BCC relationships.",
+  },
+  {
+    kind: "prose",
+    md: "**Evolving the domain.** Migrations cannot be avoided in any store, but in a graph they are usually simple: we tend to **add** new nodes and relationships rather than change the model in place. New relationship types do not affect existing queries — completely safe. Changing existing relationship types or the properties (not just values) of nodes may be safe, but should be checked by re-running a representative set of queries.\n\nAdding replies and forwards as relationships — (alice)-[:REPLIED_TO]->(email), (davina)-[:FORWARDED]->(email)-[:TO]->(charlie) — repeats the mistake: we cannot tell whom Alice replied to, and reusing TO mixes up recipients and forward targets. A reply **is an email** that is also a reply, so it becomes a node with **two labels**, :Email:Reply, addressed with the usual TO, CC and BCC and linked to the original by REPLY_TO. Forwards likewise become :Email:Forward nodes linked by FORWARD_OF, giving exact provenance.",
+  },
+  {
+    kind: "code",
+    lang: "cypher",
+    code: `CREATE (reply_1:Email:Reply {id:'7', content:'response'}),
+       (reply_1)-[:REPLY_TO]->(email_6),
+       (davina)-[:SENT]->(reply_1),
+       (reply_1)-[:TO]->(bob),
+       (reply_1)-[:TO]->(charlie);
+
+// who replied to email 6, at what depth (replies to replies, up to 4 deep)
+MATCH p=(email:Email {id:'6'})<-[:REPLY_TO*1..4]-(:Reply)<-[:SENT]-(replier)
+RETURN replier.username AS replier, length(p) - 1 AS depth
+ORDER BY depth
+
+// how many times was email 11 forwarded?
+MATCH (email:Email {id:'11'})<-[f:FORWARD_OF*]-(:Forward)
+RETURN count(f)`,
+    caption: "length(p) − 1 subtracts the SENT hop, leaving the reply depth. In the book's data Davina and Bob reply at depth 1, Charlie at 2 and Bob at 3; email 11 was forwarded twice.",
+  },
+  {
+    kind: "figure",
+    src: "graph/email-replies.png",
+    alt: "Emails 6 to 10: email 6 sent by Bob; replies 7, 8, 9 and 10 labeled Email and Reply, linked by REPLY_TO, with SENT, TO and CC relationships to Alice, Bob, Charlie and Davina.",
+    width: 1148,
+    height: 1142,
+    caption: "Replies modelled in high fidelity: each reply is an Email:Reply node with a REPLY_TO link.",
+  },
+  {
+    kind: "figure",
+    src: "graph/email-forwarding.png",
+    alt: "Alice SENT email 11 TO Bob; Bob SENT email 12 (Email, Forward) FORWARD_OF 11 TO Charlie; Charlie SENT email 13 (Email, Forward) FORWARD_OF 12 TO Davina.",
+    width: 1243,
+    height: 891,
+    caption: "Forwarding: a chain of Email:Forward nodes linked by FORWARD_OF.",
+  },
+  {
+    kind: "table",
+    headers: ["In the description of the domain…", "…becomes in the graph", "Example"],
+    rows: [
+      ["Common noun", "A label", "“user”, “email” → User, Email"],
+      ["Verb that takes an object", "A relationship type", "“sent”, “wrote” → SENT, WROTE"],
+      ["Proper noun (a person's or company's name)", "A node, with properties for its attributes", "Bob → (:User {username:'Bob'})"],
+    ],
+    caption: "Identifying nodes and relationships from the language we use about the domain.",
+  },
+  {
+    kind: "prose",
+    md: "**Design for queryability** sums up the process:\n\n1. Describe the client or end-user **goals** that motivate the model.\n2. Rewrite these goals as **questions** to ask of the domain.\n3. Identify the **entities and relationships** that appear in these questions.\n4. Translate them into **Cypher path expressions**.\n5. Express the questions as **graph patterns**, using path expressions like the ones that model the domain.\n\n**Avoiding anti-patterns.** Do **not encode entities into relationships**; use relationships for how entities are related and the quality of that relation. Watch out for **verbing** — nouns turned into verbs (*to email*, *to google*) hide entities. Graphs are **naturally additive**: add new nodes and relationships freely, and do not conflate data at write time to save query time — trust the graph database to stay fast at read time.",
+  },
+  { kind: "concepts", ids: ["design-for-queryability"] },
+  {
+    kind: "recall",
+    cards: [
+      { prompt: "What accidental complexity does the relational data-centre model have?", answer: "Foreign keys for one-to-many relationships and join tables for many-to-many ones — metadata that serves the database, not the domain — plus denormalised duplicates for speed." },
+      { prompt: "Two ways to test a graph model?", answer: "Check that it reads well (follow relationships and read sentences), and design for queryability (write the use-case queries against it)." },
+      { prompt: "Why was (bob)-[:EMAILED]->(charlie) a bad model?", answer: "It folds the email (an entity) into a relationship: content and recipients of each email are lost and EMAILED, CC and BCC cannot be correlated. Make Email a node." },
+      { prompt: "How are replies modelled?", answer: "As nodes with two labels, :Email:Reply, addressed with TO/CC/BCC and linked to the original by REPLY_TO." },
+      { prompt: "Common noun, verb, proper noun — what does each become?", answer: "A label; a relationship type; a node with properties." },
+      { prompt: "Why are graph migrations usually simple?", answer: "New facts are added as new nodes and relationship types, which do not affect existing queries." },
+    ],
+  },
+  {
+    kind: "practice",
+    id: "l11-modelling",
+    tasks: [
+      {
+        id: "orders",
+        prompt: "Model: “Customer Ann ordered a laptop and a mouse on 3 May; the order was shipped to her office.” Name the nodes (with labels) and the relationships.",
+        check: { mode: "open" },
+        solution: "The verb *ordered* hides a noun, so the order is a node: (ann:Customer {name:'Ann'})-[:PLACED]->(o:Order {date:'3 May'}), (o)-[:CONTAINS]->(:Product {name:'laptop'}), (o)-[:CONTAINS]->(:Product {name:'mouse'}), (o)-[:SHIPPED_TO]->(:Address {kind:'office'}). Putting the products directly on a (ann)-[:ORDERED]->(product) relationship would lose which items belonged to the same order.",
+      },
+      {
+        id: "cc-alias",
+        prompt: "Write the Cypher that finds the ids of emails Bob sent where one of the recipients copied (CC) is one of Bob's own aliases.",
+        check: { mode: "open" },
+        solution: "```cypher\nMATCH (bob:User {username:'Bob'})-[:SENT]->(email)-[:CC]->(alias),\n      (alias)-[:ALIAS_OF]->(bob)\nRETURN email.id\n```",
       },
     ],
   },
@@ -473,7 +736,7 @@ const dependability: Block[] = [
   },
   {
     kind: "prose",
-    md: "**Availability.** Neo4j clusters are **master-slave**, with a **complete replica** of the graph on every machine. Writes go to the master and are replicated to the slaves at frequent intervals; some slaves may lag behind by milliseconds. The classic topology is **write-master, read-slaves**: writes scale only up to one machine, reads almost linearly. Neo4j also allows **writing through slaves**: the slave first catches up with the master, then commits synchronously on both — durable on two instances, at the cost of write latency; every write still passes through the master. **Graph-local**, idiomatic queries that start from a few significant nodes spread the load, use the caches well and reduce contention. Two load-balancing techniques help: **separate reads and writes**, and **cache sharding** — send requests for the same part of the graph to the same instance.\n\n**HA cluster.** Masters are elected automatically, and a returning old master rejoins as a slave. Coordination used to rely on **ZooKeeper** — set unique ids for the coordinators, configure them, start all three, and point each Neo4j server in HA mode at them — but newer versions coordinate themselves. A write to one slave is not immediately synchronised with the others, so the cluster as a whole is **eventually consistent**: in CAP terms Neo4j HA is **AP** and recommended for read-mostly workloads. neo4j-admin takes full and incremental **backups**.",
+    md: "**Availability.** Neo4j clusters are **master-slave**, with a **complete replica** of the graph on every machine. Writes go to the master and are replicated to the slaves at frequent intervals; some slaves may lag behind by milliseconds. The classic topology is **write-master, read-slaves**: writes scale only up to one machine, reads almost linearly. Neo4j also allows **writing through slaves**: the slave first catches up with the master, then commits synchronously on both — durable on two instances, at the cost of write latency; every write still passes through the master. **Graph-local**, idiomatic queries that start from a few significant nodes spread the load, use the caches well and reduce contention.\n\n**HA cluster** (*Seven Databases in Seven Weeks*, High Availability). HA mode is Neo4j's answer to *can a graph database scale?* — yes, with caveats. As in MongoDB the servers **elect a master** that is responsible for data distribution; unlike MongoDB, **slaves accept writes**: a slave write synchronises with the master, which propagates it to the other slaves. A write to one slave is not immediately synchronised with all others, so for a brief moment consistency (in the CAP sense) is lost: the cluster is **eventually consistent** and **loses pure ACID** transactions across instances. In CAP terms Neo4j HA is **AP**, and it is presented mainly as a way to **increase read capacity**.\n\nCoordination used to rely on an external **ZooKeeper** ensemble — set unique ids for each coordinator, configure each to talk to the others and to its Neo4j server, start all three, then run each Neo4j server in HA mode with unique ports and point it at the coordinators — which meant a lot of extra administration. Newer versions are **self-managing and self-coordinating**: in a four-node cluster with node 4 offline, node 4 re-enters as a **slave** when it returns, and if master node 1 fails the others elect a new leader without any external service; the old master rejoins as a slave. To reduce the chance of reading stale data, **assign a session to one server**. **Backups** still matter for disaster recovery: neo4j-admin backup takes a **full** backup (a usable copy of the database) from any instance, after which **incremental** backups into the same directory are possible.",
   },
   {
     kind: "figure",
@@ -482,6 +745,10 @@ const dependability: Block[] = [
     width: 1126,
     height: 924,
     caption: "A ZooKeeper-style coordinated HA cluster: three coordinators, one master and two slaves.",
+  },
+  {
+    kind: "prose",
+    md: "**Load balancing** (*Graph Databases*, Chapter 4). Balancing traffic over a cluster maximises throughput and reduces latency. Neo4j has **no native load balancer**: it relies on the load-balancing capabilities of the network infrastructure. Two techniques, plus one special case:\n\n**1. Separate read traffic from write traffic.** Most writes should go to the master, so configure the load balancer to send **writes to the master** and **balance reads across the entire cluster**. In a web application the **HTTP method** often tells them apart: POST, PUT and DELETE may modify server-side resources, GET is side-effect free (server extensions are annotated with @GET and @POST). But the REST API submits **all** Cypher — reads and writes — with POST. Then use a **pair of load balancers**: a *write* load balancer that always targets the master and a *read* load balancer over the whole cluster, and let the application, which knows whether an operation reads or writes, pick the address. Each instance exposes a URI saying whether it is the master (and if not, which instance is), which load balancers can **poll** to route traffic.",
   },
   {
     kind: "figure",
@@ -498,6 +765,20 @@ const dependability: Block[] = [
     width: 1320,
     height: 1032,
     caption: "Cache sharding: requests for the same part of the graph go to the same instance, so its cache stays warm.",
+  },
+  {
+    kind: "prose",
+    md: "**2. Cache sharding.** Queries are fastest when the part of the graph they need is in main memory, but a graph of billions of elements does not fit, and **sharding a graph is unusually hard** (see the holy grail below). Since every instance holds a **full copy**, route each request to the instance where the needed part of the graph is **probably already cached**. This works when most queries are **graph-local** — they start from specific nodes and traverse the surrounding subgraph — so that queries starting from the same nodes always go to the same instance. How to route consistently depends on the domain: **sticky sessions**, letting the instance that first served a user serve all of that user's later requests, or routing by data characteristics, e.g. requests about one **geographical** area to an instance warmed for it.\n\n**3. Read your own writes.** Writes to the master are immediately consistent, but the cluster as a whole is eventually consistent, so the next load-balanced read may hit a slave that has not received the write yet. Fix: use the same consistent routing to send the **write to the slave that will serve the subsequent read** — one of the few cases where **writing through a slave** makes sense. Use it sparingly: writing through a slave can be **an order of magnitude slower** than writing to the master, so if many writes need it, throughput and latency suffer.",
+  },
+  {
+    kind: "table",
+    headers: ["Technique", "Problem it solves", "How", "Cost"],
+    rows: [
+      ["Separate reads and writes", "Writes must reach the master; reads can go anywhere", "Write load balancer → master; read load balancer → whole cluster; HTTP method or application logic decides", "Two endpoints; the application must know reads from writes"],
+      ["Cache sharding", "The graph does not fit in one instance's memory, and cannot easily be sharded", "Consistent routing (sticky sessions, per user, per region) so each instance keeps its part of the graph warm", "Uneven load if some parts are much hotter"],
+      ["Read your own writes", "A user must see their change on the next request, but slaves lag", "Route the write through the slave that will serve the next read", "Slave writes are up to 10× slower"],
+    ],
+    caption: "Load balancing a Neo4j HA cluster.",
   },
   {
     kind: "table",
@@ -520,7 +801,7 @@ const dependability: Block[] = [
     kind: "prose",
     md: "Beyond one cluster, a graph must be **sharded by the application** with synthetic keys, like MongoDB: traversals inside one instance stay fast, but hops between instances cost as much as a join. Mozilla's Pancake stored many small per-user graphs, which shard trivially. Automatically partitioning an arbitrary graph across machines with few cross-machine traversals is **NP-hard** in general — the *holy grail* of graph scalability.\n\n**Strengths and weaknesses:** open source, scales well, typeless and schemaless, Lucene lookups, Cypher and REST, constant-time traversals, HA for read-heavy sites. But HA **replicates the whole graph, not subgraphs**, which limits graph size; the node/relationship naming differs from vertex/edge; and the Enterprise features (HA, backups) need a commercial or AGPL licence.",
   },
-  { kind: "concepts", ids: ["neo4j-ha"] },
+  { kind: "concepts", ids: ["neo4j-ha", "load-balancing", "cache-sharding"] },
   {
     kind: "recall",
     cards: [
@@ -529,6 +810,23 @@ const dependability: Block[] = [
       { prompt: "What is write-through-slave?", answer: "A slave receiving a write catches up with the master and commits synchronously on both, giving durability on two instances at higher latency." },
       { prompt: "Neo4j HA in CAP?", answer: "AP: slaves may serve data that lags behind the master; the cluster is eventually consistent." },
       { prompt: "Three dimensions of scale for a graph database?", answer: "Capacity (graph size), latency (response time) and read/write throughput." },
+      { prompt: "Does Neo4j have a built-in load balancer?", answer: "No — it relies on the network infrastructure's load balancers." },
+      { prompt: "Why two load balancers when using the REST API?", answer: "The REST API sends both read and write Cypher as POST, so the HTTP method cannot separate them; the application picks the write balancer (→ master) or the read balancer (→ whole cluster)." },
+      { prompt: "What is cache sharding?", answer: "Consistently routing requests that touch the same part of the graph to the same instance, so its cache is warm — every instance still holds the full graph." },
+      { prompt: "How do you read your own writes in an eventually consistent cluster?", answer: "Route the write through the slave that will serve the next read — sparingly, because slave writes are much slower." },
+      { prompt: "What happens when the master of a self-coordinating HA cluster fails?", answer: "The remaining instances elect a new master; when the old master returns it rejoins as a slave." },
+    ],
+  },
+  {
+    kind: "practice",
+    id: "l11-load-balancing",
+    tasks: [
+      {
+        id: "route",
+        prompt: "A social site on a 3-instance Neo4j HA cluster: profile pages are read constantly, posts are written occasionally, and a user must see their own new post immediately. Describe how you would balance the load.",
+        check: { mode: "open" },
+        solution: "Put a **write load balancer** in front of the master and a **read load balancer** over all three instances; the application sends each request to the right one. Use **cache sharding** with consistent routing per user (sticky sessions), so each user's neighbourhood stays warm on one instance. For the user's own new post, route the write **through the slave that serves that user's reads** (read your own writes) — acceptable because posts are rare, since slave writes are much slower.",
+      },
     ],
   },
 ];
@@ -540,9 +838,13 @@ const mistakes: Block[] = [
   { kind: "info", variant: "pitfall", title: "Forgetting DISTINCT", md: "The same node can be reached along several paths; count(DISTINCT x) avoids counting it more than once." },
   { kind: "info", variant: "pitfall", title: "Putting multi-valued properties in a property table", md: "First normal form allows one value per column; multi-valued properties such as author go to the excess table." },
   { kind: "info", variant: "pitfall", title: "Calling Neo4j HA strongly consistent", md: "One instance is ACID, but a cluster's slaves may lag: HA is eventually consistent (AP) and aimed at reads." },
+  { kind: "info", variant: "pitfall", title: "Hiding an entity in a relationship", md: "(bob)-[:EMAILED]->(charlie) loses the email itself. When a verb hides a noun (email, order, review, payment), make the noun a node." },
+  { kind: "info", variant: "pitfall", title: "Using CREATE where MERGE is needed", md: "CREATE always adds, so a repeated import creates duplicates. MERGE reuses what is already there." },
+  { kind: "info", variant: "pitfall", title: "Expecting Neo4j to balance load itself", md: "There is no native load balancer: the network's balancers route writes to the master and reads to the cluster." },
+  { kind: "info", variant: "pitfall", title: "Thinking cache sharding partitions the graph", md: "Every instance still stores the whole graph; cache sharding only routes requests so that each instance's cache holds a different part of it." },
 ];
 
-const quiz: Block[] = [{ kind: "prose", md: "Thirteen questions on graph models, RDF storage, Cypher and Neo4j internals." }];
+const quiz: Block[] = [{ kind: "prose", md: "Eighteen questions on graph models, RDF storage, Cypher, graph modelling, Neo4j internals and load balancing." }];
 
 const summary: Block[] = [
   { kind: "list", variant: "takeaways", items: lecture11Meta.takeaways },
@@ -557,10 +859,13 @@ const summary: Block[] = [
       ["Vertical partitioning", "One (URI, value) table per predicate; merge-joins; names only in table names"],
       ["Hexastore", "6 orders of s, p, o; each value indexed twice"],
       ["Cypher", "MATCH (a:L {p: v})-[:T]->(b) WHERE … RETURN …; *1..4; shortestPath; DISTINCT"],
+      ["Cypher clauses", "CREATE adds, MERGE adds only what is missing, SET, DELETE, WITH pipes parts, UNION, FOREACH; count, collect, AS, ORDER BY"],
+      ["Graph modelling", "Labels = roles (common nouns), relationships = verbs, nodes = things; test by reading and by querying; no entities in relationships"],
       ["Gremlin", "g.V, g.E, outE, inV, out, in, both, filter{}; built on Pipes"],
       ["Index-free adjacency", "O(1) per hop, O(m) per traversal vs O(m log n)"],
       ["Record stores", "Fixed-size records; offset = id × size; node 9 bytes"],
-      ["Neo4j HA", "Master-slave, full replicas, eventually consistent (AP), no subgraph sharding"],
+      ["Neo4j HA", "Master-slave, full replicas, slaves accept writes via the master, self-elected master, eventually consistent (AP), no subgraph sharding"],
+      ["Load balancing", "No native balancer; writes → master, reads → cluster; cache sharding by consistent routing; read your own writes by writing through a slave"],
     ],
   },
 ];
@@ -572,6 +877,7 @@ export const lecture11Blocks: SectionBlocks<typeof lecture11Outline> = {
   rdf,
   "relational-storage": relationalStorage,
   cypher,
+  modelling,
   "gremlin-rest": gremlinRest,
   internals,
   dependability,
