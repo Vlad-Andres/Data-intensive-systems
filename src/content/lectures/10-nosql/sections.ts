@@ -293,7 +293,7 @@ const aggregateModels: Block[] = [
 const moreModels: Block[] = [
   {
     kind: "prose",
-    md: "**Relationships.** Data that is related is not always accessed together — orders may need to be processed on their own, yet look up their customer. The simplest link is to **embed the customer id** in the order and make a second call. Many stores let the database know about such links (indexes in document stores, link metadata in Riak). But atomicity covers **one aggregate**: updating several at once means handling a failure halfway yourself. Aggregate-oriented databases grow awkward as you work across aggregates — yet relational databases are no stars at complex relationships either: SQL with many joins becomes hairy and slow.\n\n**Graph databases** take the opposite approach to aggregates: **small records with complex interconnections** — nodes connected by edges, with properties. Queries such as *find the books in the Databases category written by someone whom a friend of mine likes* follow the edges. Traversal is cheap because the work of navigating relationships is moved from **query time to insert time**. They suit social networks, product preferences and eligibility rules, usually run on a single server, and support **ACID transactions** across nodes and edges. Examples: Neo4j, Sparksee, OrientDB, GraphDB, AllegroGraph, Blazegraph, RDF stores.",
+    md: "**Relationships.** Data that is related is not always accessed together — orders may need to be processed on their own, yet look up their customer. The simplest link is to **embed the customer id** in the order and make a second call. Many stores let the database know about such links (indexes in document stores, link metadata in Riak). But atomicity covers **one aggregate**: updating several at once means handling a failure halfway yourself. Aggregate-oriented databases grow awkward as you work across aggregates — yet relational databases are no stars at complex relationships either: SQL with many joins becomes hairy and slow.\n\n**Graph databases** take the opposite approach to aggregates: **small records with complex interconnections** — nodes connected by edges, with properties. Queries such as *find the books in the Databases category written by someone whom a friend of mine likes* follow the edges. Traversal is cheap because the work of navigating relationships is moved from **query time to insert time**. They suit social networks, product preferences and eligibility rules, usually run on a single server, and support **ACID transactions** across nodes and edges. Examples: Neo4j, Sparksee, OrientDB, GraphDB, AllegroGraph, Blazegraph, RDF stores. Lecture 11 covers graph databases in depth.",
   },
   {
     kind: "prose",
@@ -322,7 +322,7 @@ const moreModels: Block[] = [
 const consistency: Block[] = [
   {
     kind: "prose",
-    md: "**ACID** — the relational answer:\n\n- **Atomic**: a transaction is carried out completely or the database reverts to the state before it started.\n- **Consistent**: a processed transaction never endangers the structural integrity of the database.\n- **Isolated**: transactions cannot compromise each other while in progress.\n- **Durable**: once complete, the data persists through network or power outages.\n\nThe book's point: the real core is atomicity across many rows and tables. Consistency in a cluster is much more involved than *ACID or not*.",
+    md: "**ACID** (atomic, consistent, isolated, durable — defined in Lecture 1) is the relational answer. The book's point: its real core is **atomicity across many rows and tables**, and consistency in a cluster is much more involved than *ACID or not*. This section looks at the kinds of inconsistency a NoSQL store has to deal with.",
   },
   {
     kind: "prose",
@@ -348,7 +348,7 @@ const consistency: Block[] = [
   },
   {
     kind: "prose",
-    md: "**Read consistency.** Martin adds a line item and then updates the shipping charge; Pramod reads in between and sees new items with the old charge — a **read-write conflict** (an inconsistent read), breaking **logical consistency**. Relational databases prevent it with transactions. Aggregate-oriented stores give it **within one aggregate** — so put the line items and shipping charge in the order aggregate. Across aggregates, there is an **inconsistency window** (Amazon SimpleDB: usually under a second).\n\nReplication adds **replication consistency**: the same item read from different replicas should have the same value. Pramod in Mumbai books the last hotel room; the update reaches Boston before London, so Cindy sees it booked while Martin sees it free. The system is **eventually consistent**: if updates stop, all replicas converge. Out-of-date data is **stale**. Consistency can often be chosen **per request**.\n\nWorst is inconsistency with yourself: you post a comment, refresh, hit another node and your comment is gone. **Read-your-writes** consistency — usually provided as **session consistency** — fixes this, with **sticky sessions** (session affinity to one node) or **version stamps** that every node checks before answering.",
+    md: "**Read consistency.** Martin adds a line item and then updates the shipping charge; Pramod reads in between and sees new items with the old charge — a **read-write conflict** (an inconsistent read), breaking **logical consistency**. Relational databases prevent it with transactions. Aggregate-oriented stores give it **within one aggregate** — so put the line items and shipping charge in the order aggregate. Across aggregates, there is an **inconsistency window** (Amazon SimpleDB: usually under a second).\n\nReplication adds **replication consistency**: the same item read from different replicas should have the same value. Pramod in Mumbai books the last hotel room; the update reaches Boston before London, so Cindy sees it booked while Martin sees it free. The system is **eventually consistent**: if updates stop, all replicas converge. Out-of-date data is **stale**. Consistency can often be chosen **per request**.\n\nWorst is inconsistency with yourself: you post a comment, refresh, hit another node and your comment is gone. **Read-your-writes** consistency (one of the session guarantees of Lecture 3) — usually provided as **session consistency** — fixes this, with **sticky sessions** (session affinity to one node) or **version stamps** that every node checks before answering.",
   },
   { kind: "concepts", ids: ["conflicts", "eventual-consistency"] },
   {
@@ -365,7 +365,7 @@ const consistency: Block[] = [
 const cap: Block[] = [
   {
     kind: "prose",
-    md: "**The effect of replication.** Nick and Mary write to one database: no problem. Replicate it, and the link between the replicas can break. Then either the system **refuses** the writes until it can coordinate — *consistency guaranteed* — or it **accepts** both on their own sides — *availability guaranteed*, at the cost of divergence.\n\n**The CAP theorem** (Brewer 2000, proven by Gilbert and Lynch 2002):\n\n- **Consistency** — do all applications see the same data?\n- **Availability** — if some nodes fail, does everything still work? In CAP: every request to a non-failing node gets a response.\n- **Partition tolerance** — if nodes cannot talk to each other (a *split brain*), does everything still work?\n\nYou cannot have them all. A **single server** is CA — it cannot partition. A cluster must tolerate partitions, so the real statement is: **under a partition, choose consistency or availability** — and it is not binary: you can trade a little consistency for some availability.",
+    md: "**The CAP theorem** — consistency, availability, partition tolerance; under a partition, choose C or A — is defined in Lecture 3 (*CAP, PACELC and consistency*). This section adds the NoSQL Distilled view of it.\n\n**The effect of replication.** Nick and Mary write to one database: no problem. Replicate it, and the link between the replicas can break — a *split brain*. Then either the system **refuses** the writes until it can coordinate — *consistency guaranteed* — or it **accepts** both on their own sides — *availability guaranteed*, at the cost of divergence. A **single server** is CA because it cannot partition; a cluster must tolerate partitions, and the choice is **not binary**: you can trade a little consistency for some availability.",
   },
   {
     kind: "figure",
@@ -412,7 +412,7 @@ const cap: Block[] = [
   {
     kind: "recall",
     cards: [
-      { prompt: "What does CAP really say for a cluster?", answer: "Partitions will happen, so when one does you trade consistency against availability." },
+      { prompt: "Two options when the link between two replicas breaks?", answer: "Refuse writes until the replicas can coordinate (consistency), or accept writes on both sides and let them diverge (availability)." },
       { prompt: "Why is a single server CA?", answer: "It cannot partition; if it is up, it is available and consistent." },
       { prompt: "What does BASE stand for?", answer: "Basically Available, Soft state, Eventually consistent." },
       { prompt: "Which trade-off does NoSQL Distilled prefer to CAP's C vs A?", answer: "Consistency versus latency (response time)." },
@@ -427,7 +427,7 @@ const durabilityQuorums: Block[] = [
   },
   {
     kind: "prose",
-    md: "**Quorums.** Consistency is not all-or-nothing: the more nodes involved, the safer. With data replicated on **N** nodes (the **replication factor**):",
+    md: "**Quorums.** Consistency is not all-or-nothing: the more nodes involved, the safer. This is Lecture 3's quorum consensus with every replica weighing 1, written in NoSQL Distilled's notation. With data replicated on **N** nodes (the **replication factor**):",
   },
   {
     kind: "formula",

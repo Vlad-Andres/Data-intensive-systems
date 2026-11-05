@@ -12,3 +12,5 @@ export function formatPercent(value: number) {
 export function lecturePath(slug: string) {
   return `/lectures/${slug}/`;
 }
+
+export const EXAM_PATH = "/exam/";

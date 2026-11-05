@@ -125,7 +125,7 @@ const shingling: Block[] = [
 const matrices: Block[] = [
   {
     kind: "prose",
-    md: "With documents as sets, similarity is **Jaccard similarity**: the size of the intersection over the size of the union — two sets sharing 3 elements out of 8 distinct ones have similarity 3/8.\n\nMany similarity problems can be formalised as finding subsets with a significant intersection. **Encode sets as 0/1 vectors**, one dimension per element of the universal set: set intersection becomes **bitwise AND** and union **bitwise OR**. For $C_1 = 10111$ and $C_2 = 10011$ the intersection has size 3 and the union size 4, so the Jaccard *similarity* is 3/4 and the *distance* 1/4.",
+    md: "With documents as sets, similarity is **Jaccard similarity** (Lecture 2): the size of the intersection over the size of the union — two sets sharing 3 elements out of 8 distinct ones have similarity 3/8.\n\nMany similarity problems can be formalised as finding subsets with a significant intersection. **Encode sets as 0/1 vectors**, one dimension per element of the universal set: set intersection becomes **bitwise AND** and union **bitwise OR**. For $C_1 = 10111$ and $C_2 = 10011$ the intersection has size 3 and the union size 4, so the Jaccard *similarity* is 3/4 and the *distance* 1/4.",
   },
   {
     kind: "info",

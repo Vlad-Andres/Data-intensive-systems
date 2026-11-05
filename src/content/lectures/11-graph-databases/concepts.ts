@@ -85,4 +85,32 @@ export const lecture11Concepts: Concept[] = [
     detail: "Masters are elected automatically (formerly coordinated by ZooKeeper). Slaves can lag behind, so the cluster is eventually consistent — AP in CAP terms — and suited to read-heavy work. Whole graphs are replicated; subgraphs cannot be sharded.",
     tags: ["neo4j"],
   },
+  {
+    id: "merge-with",
+    term: "MERGE and WITH",
+    short: "MERGE ensures a pattern exists, reusing what matches and creating only what is missing; WITH pipes the results of one query part into the next.",
+    detail: "Use CREATE when duplicates do not matter, MERGE when the domain forbids them. WITH divides a complex query into simpler parts, e.g. ordering before collect, or separating reads from SET.",
+    tags: ["cypher"],
+  },
+  {
+    id: "design-for-queryability",
+    term: "Design for queryability",
+    short: "Model the graph from the questions you want to ask: goals → questions → entities and relationships → Cypher path expressions → graph patterns.",
+    detail: "Common nouns become labels, verbs with an object become relationship types, proper nouns become nodes with properties. Never encode an entity in a relationship: “Bob emailed Charlie” hides an Email node.",
+    tags: ["modelling"],
+  },
+  {
+    id: "load-balancing",
+    term: "Load balancing a Neo4j cluster",
+    short: "Neo4j has no native load balancer: send writes to the master and balance reads over the whole cluster, with two load balancers if the HTTP method cannot tell reads from writes.",
+    detail: "The REST API submits both read and write Cypher with POST, so the application chooses between a write load balancer (→ master) and a read load balancer (→ all instances). Instances expose a URI saying who the master is, which balancers poll.",
+    tags: ["availability"],
+  },
+  {
+    id: "cache-sharding",
+    term: "Cache sharding",
+    short: "Route requests for the same part of the graph to the same instance, so the data they need is already in that instance's memory.",
+    detail: "Works for graph-local queries; every instance still holds the whole graph. Routing by sticky session, by user, or by domain (e.g. geography). The same routing gives read-your-own-writes by writing through the slave that serves the next read — slowly.",
+    tags: ["availability"],
+  },
 ];

@@ -90,7 +90,7 @@ export function lectureToContext(lecture: Lecture) {
   const { meta, concepts } = lecture;
 
   const header = [
-    `# Lecture ${meta.number}: ${meta.title}`,
+    meta.number > 0 ? `# Lecture ${meta.number}: ${meta.title}` : `# ${meta.title}`,
     meta.subtitle,
     meta.summary,
     `Sources this lecture was built from:\n${meta.sources

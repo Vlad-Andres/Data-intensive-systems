@@ -3,12 +3,12 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ChevronDown, Menu, Search, X } from "lucide-react";
+import { ChevronDown, GraduationCap, Menu, Search, X } from "lucide-react";
 import type { LectureMeta } from "@/content/types";
 import type { SearchRecord } from "@/lib/search";
 import { SearchDialog } from "@/components/layout/SearchDialog";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
-import { lecturePath } from "@/lib/format";
+import { EXAM_PATH, lecturePath } from "@/lib/format";
 import { cn } from "@/lib/cn";
 
 interface SiteHeaderProps {
@@ -105,6 +105,18 @@ export function SiteHeader({ metas, records }: SiteHeaderProps) {
               </div>
             ) : null}
           </div>
+
+          <Link
+            href={EXAM_PATH}
+            onClick={closeMenus}
+            className={cn(
+              "flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors hover:bg-sunken",
+              pathname.startsWith("/exam") ? "text-brand" : "text-muted",
+            )}
+          >
+            <GraduationCap size={15} aria-hidden />
+            Exam training
+          </Link>
         </nav>
 
         <div className="ml-auto flex items-center gap-2">
@@ -142,6 +154,13 @@ export function SiteHeader({ metas, records }: SiteHeaderProps) {
             className="block rounded-lg px-3 py-2 text-sm font-medium hover:bg-sunken"
           >
             Overview
+          </Link>
+          <Link
+            href={EXAM_PATH}
+            onClick={closeMenus}
+            className="block rounded-lg px-3 py-2 text-sm font-medium hover:bg-sunken"
+          >
+            Exam training
           </Link>
           <p className="px-3 pb-1 pt-3 text-xs font-semibold tracking-wide text-faint uppercase">
             Lectures
