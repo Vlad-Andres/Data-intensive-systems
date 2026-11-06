@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# PGlite and pgvector, copied from node_modules before dev and build (scripts/copy-pglite.mjs)
+/public/pglite/

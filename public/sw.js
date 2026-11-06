@@ -38,6 +38,21 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
+  // In-browser PostgreSQL (PGlite) binaries: too large to precache, so cached on first use.
+  if (url.pathname.startsWith(`${scopeUrl.pathname}pglite/`) || /\/_next\/static\/media\/.+\.(wasm|data)$/.test(url.pathname)) {
+    event.respondWith(
+      caches.match(event.request).then(
+        (cached) =>
+          cached ??
+          fetch(event.request).then(async (response) => {
+            if (response.ok) await (await caches.open(CACHE_NAME)).put(event.request, response.clone());
+            return response;
+          }),
+      ),
+    );
+    return;
+  }
+
   if (url.pathname.startsWith(`${scopeUrl.pathname}_next/static/`)) {
     event.respondWith(caches.match(event.request).then((cached) => cached ?? fetch(event.request)));
     return;

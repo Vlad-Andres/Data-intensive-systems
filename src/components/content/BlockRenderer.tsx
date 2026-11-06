@@ -49,7 +49,7 @@ export function BlockRenderer({ block, concepts }: BlockRendererProps) {
       return <Formula tex={block.tex} caption={block.caption} />;
 
     case "code":
-      return <CodeBlock code={block.code} lang={block.lang} caption={block.caption} />;
+      return <CodeBlock code={block.code} lang={block.lang} caption={block.caption} run={block.run} />;
 
     case "table":
       return <DataTable headers={block.headers} rows={block.rows} caption={block.caption} />;

@@ -131,6 +131,30 @@ const kMeansSql: Block[] = [
     group by cid, iter)              -- new centre = mean of the cluster
 select * from clusters;`,
     caption: "k-means in SQL. The NOT EXISTS subquery is the formal definition of cluster(c); min(cid) breaks ties.",
+    run: {
+      note: "PostgreSQL does not allow aggregates inside the recursive part of WITH RECURSIVE (Umbra, used in the lecture, does), so this version keeps the k centres of an iteration in two arrays and recomputes them in a LATERAL subquery. Same algorithm, same points.",
+      hint: "move a starting centre (e.g. 12 → 5) or add a point to the VALUES list and rerun",
+      code: `-- k-means, PostgreSQL version: the centres of one iteration live in arrays cx, cy
+with recursive points (pid, x, y) as (
+    values ('A', 1, 5), ('B', 3, 5), ('C', 6, 1), ('D', 7, 2),
+           ('E', 8, 1), ('F', 8, 9), ('G', 10, 8), ('H', 12, 10)),
+  km (iter, cx, cy) as (
+    select 0, array[1, 3, 12]::float[], array[5, 5, 10]::float[]  -- initial centres
+  union all
+    select iter + 1, step.cx, step.cy
+    from km, lateral (
+      select array_agg(ax order by k) as cx, array_agg(ay order by k) as cy
+      from (
+        -- assign every point to its nearest centre k, then average per centre
+        select nearest.k, avg(p.x)::float as ax, avg(p.y)::float as ay
+        from points p,
+             lateral (select k from generate_subscripts(km.cx, 1) k
+                      order by (km.cx[k] - p.x)^2 + (km.cy[k] - p.y)^2, k
+                      limit 1) nearest
+        group by nearest.k) moved) step
+    where iter < 10)
+select iter, cx as centre_x, cy as centre_y from km order by iter;`,
+    },
   },
   {
     kind: "info",
@@ -205,6 +229,22 @@ with recursive gd (id, a, b) as (
     group by id, a, b)
 select * from gd order by id;`,
     caption: "Gradient descent (mini-batch) as a recursive query: five iterations, two weights, γ = 0.05.",
+    run: {
+      note: "The data table is already filled (10 points near y = 2x + 1). PostgreSQL forbids aggregates in the recursive part and has no tablesample reservoir, so the gradient is averaged in a LATERAL subquery over a random BERNOULLI(80) mini-batch.",
+      hint: "raise the iterations (id < 50) or the learning rate 0.05 and watch a and b approach 2 and 1",
+      code: `with recursive gd (id, a, b) as (
+    select 0, 1::float, 1::float                       -- initial weights
+  union all
+    select id + 1,
+           a - 0.05 * g.da,                            -- a - γ ∂l/∂a
+           b - 0.05 * g.db                             -- b - γ ∂l/∂b
+    from gd, lateral (
+      select avg(2 * x * (a * x + b - y)) as da,
+             avg(2 * (a * x + b - y))     as db
+      from data tablesample bernoulli(80)) as g        -- random mini-batch
+    where id < 5)
+select * from gd order by id;`,
+    },
   },
   {
     kind: "info",
@@ -294,6 +334,17 @@ insert into img (select id, 2, sepal_width  from iris);
 insert into img (select id, 3, petal_length from iris);
 insert into img (select id, 4, petal_width  from iris);`,
     caption: "The Iris data — sepal and petal length and width of 150 flowers of three species — as a relational feature matrix.",
+    run: {
+      note: "The sample database has 12 Iris rows; a SELECT is added at the end so you can see the matrix.",
+      code: `-- feature matrix of the Iris data: one (i, j, v) row per measurement
+create table if not exists img (i int, j int, v float);
+insert into img (select id, 1, sepal_length from iris);
+insert into img (select id, 2, sepal_width  from iris);
+insert into img (select id, 3, petal_length from iris);
+insert into img (select id, 4, petal_width  from iris);
+
+select * from img order by i, j;`,
+    },
   },
   {
     kind: "code",
@@ -306,6 +357,7 @@ select iris.row as i, dict.rank as j, 1 as v   -- sparse matrix: the 1s only
 from iris, dict
 where iris.species = dict.species;`,
     caption: "One-hot encoding the label: setosa → {1,0,0}, versicolor → {0,1,0}, virginica → {0,0,1}. An outer join with all (i, j) pairs adds the zeros if a dense matrix is needed.",
+    run: { hint: "drop the WHERE clause to see every (row, class) pair — the dense matrix needs a 0 for those" },
   },
   {
     kind: "table",
@@ -370,6 +422,7 @@ const neuralNetwork: Block[] = [
     group by id, w_ho, w_xh)
 select * from gd order by id;`,
     caption: "Training a neural network when applying matrix algebra on arrays (Listing 4): the database derives d_w_xh and d_w_ho from the loss lambda.",
+    run: false,
   },
   { kind: "concepts", ids: ["nn-sql"] },
   {

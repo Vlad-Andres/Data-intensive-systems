@@ -252,6 +252,7 @@ RETURN m.title, m.released ORDER BY m.released DESC;
 // co-actors: any outgoing relationship to a movie, then ACTED_IN coming back in
 MATCH (:Person {name:"Tom Hanks"})-->(:Movie)<-[:ACTED_IN]-(x:Person) RETURN x.name;`,
     caption: "Reading with MATCH, WHERE and RETURN on the Neo4j movie graph.",
+    run: { hint: "replace \"Tom Hanks\" with \"Meg Ryan\", or change the years 1990–2000" },
   },
   {
     kind: "code",
@@ -265,6 +266,7 @@ MATCH ()-[r]-() WHERE id(r) = 0 SET r.rating = 97 RETURN r;   // property on a r
 MATCH ()-[r:short_lived_relationship]-() DELETE r;             // delete relationships first,
 MATCH (e:EphemeralNode) DELETE e;                              // then the node`,
     caption: "Writing: CREATE, SET and DELETE. A node with relationships cannot be deleted.",
+    run: { hint: "run it and read the summaries: the first CREATE adds a second Tom Hanks, so the next MATCH creates two relationships — MERGE would not" },
   },
   {
     kind: "prose",
@@ -438,6 +440,7 @@ const modelling: Block[] = [
 WHERE user.name = 'User 3' AND asset.status = 'down'
 RETURN DISTINCT asset`,
     caption: "Unnamed, undirected relationships of length 1 to 5 reach every asset on the paths around User 3. Nodes without a status property are excluded; DISTINCT returns each asset once however many paths reach it.",
+    run: { hint: "change *1..5 to *1..3 — which down asset is no longer reachable?" },
   },
   {
     kind: "prose",
@@ -583,11 +586,19 @@ gremlin> g.V.filter{it.name=='Wine Expert Monthly'}.out.name      // out = outE.
 gremlin> pwolf = g.addVertex([name : 'Prancing Wolf Winery'])     // v[3]
 gremlin> g.addEdge(pwolf, g.v(0), 'produced')                     // e[2][3-produced->0]
 
+// two more rieslings from the same winery
+gremlin> kabinett = g.addVertex([name : 'Prancing Wolf Kabinett 2002'])  // v[4]
+gremlin> spatlese = g.addVertex([name : 'Prancing Wolf Spatlese 2007'])  // v[5]
+gremlin> g.addEdge(kabinett, g.v(2), 'grape_type'); g.addEdge(spatlese, g.v(2), 'grape_type')
+
 // wines sharing a grape type with the ice wine, without the ice wine itself
 ice_wine = g.v(0)
 ice_wine.out('grape_type').in('grape_type').filter{ !it.equals(ice_wine) }
 
-alice.bothE('friends').bothV.name   // both directions: Alice, Patty`,
+// friends: both directions with bothE and bothV
+alice = g.addVertex([name : 'Alice']); patty = g.addVertex([name : 'Patty'])
+g.addEdge(alice, patty, 'friends')
+alice.bothE('friends').bothV.name   // Alice, Patty`,
     caption: "Gremlin steps: outE, inE, inV, outV, out, in, both, bothE, bothV, filter; next() takes one element of a pipeline.",
   },
   {
