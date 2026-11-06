@@ -264,6 +264,7 @@ FROM   Vorlesungen v, Professoren p
 WHERE  v.gelesenVon = p.persNr
   AND  p.rang = 'C4';`,
     caption: "The running example: titles of the lectures read by full professors.",
+    run: { hint: "change 'C4' to 'C3', or select p.name as well" },
   },
   {
     kind: "steps",
@@ -479,6 +480,7 @@ CREATE TABLE random_stuff
   (things text, doodads text, etc text)
 DISTRIBUTED RANDOMLY;`,
     caption: "Greenplum distribution: the sharding decision.",
+    run: false,
   },
   {
     kind: "code",
@@ -499,6 +501,7 @@ PARTITION BY RANGE (date)
     DEFAULT PARTITION outlying_dates );`,
     caption:
       "A fragmentation example: sharded across segments by trans_id, then range-partitioned by month and list-subpartitioned by region inside each segment.",
+    run: false,
   },
   {
     kind: "interactive",
@@ -524,6 +527,7 @@ PARTITION BY RANGE (date)
 );`,
     caption:
       "Sharding clicks by user_id rather than by the primary key, so that all of one user's clicks — and any join on user_id — stay on one leaf node.",
+    run: false,
   },
   { kind: "concepts", ids: ["greenplum", "memsql"] },
   {

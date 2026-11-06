@@ -102,7 +102,7 @@ export type Block =
   | { kind: "info"; variant: InfoVariant; title: string; md: string }
   | { kind: "concepts"; ids: string[] }
   | { kind: "formula"; tex: string; caption?: string }
-  | { kind: "code"; lang: string; code: string; caption?: string }
+  | { kind: "code"; lang: string; code: string; caption?: string; run?: RunConfig | false }
   | { kind: "table"; headers: string[]; rows: string[][]; caption?: string }
   | { kind: "figure"; src: string; alt: string; width: number; height: number; caption?: string }
   | { kind: "steps"; title: string; intro?: string; steps: WorkedStep[] }
@@ -112,6 +112,17 @@ export type Block =
   | { kind: "exercises"; sheet: ExerciseSheet }
   | { kind: "recall"; cards: RecallCard[] }
   | { kind: "practice"; id: string; tasks: ExerciseTask[] };
+
+/**
+ * How a SQL, Cypher or Gremlin snippet runs. Omit it to run the code as shown; set `false` for
+ * code the in-browser engines cannot run (system-specific DDL); give `code` when the runnable
+ * version must differ, with a `note` saying why.
+ */
+export interface RunConfig {
+  code?: string;
+  note?: string;
+  hint?: string;
+}
 
 export interface WorkedStep {
   title: string;

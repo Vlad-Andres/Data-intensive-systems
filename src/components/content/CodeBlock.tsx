@@ -1,17 +1,37 @@
 import { codeToHtml } from "shiki";
+import { RunnableCode } from "@/components/content/RunnableCode";
+import type { RunConfig } from "@/content/types";
+import { runLanguage } from "@/lib/runner/types";
 
 interface CodeBlockProps {
   code: string;
   lang: string;
   caption?: string;
+  run?: RunConfig | false;
 }
 
-export async function CodeBlock({ code, lang, caption }: CodeBlockProps) {
+export async function CodeBlock({ code, lang, caption, run }: CodeBlockProps) {
   const html = await codeToHtml(code.trim(), {
     lang,
     themes: { light: "github-light", dark: "github-dark" },
     defaultColor: false,
   });
+
+  const engine = run === false ? null : runLanguage(lang);
+  if (engine) {
+    const config = run || {};
+    return (
+      <RunnableCode
+        lang={engine}
+        code={code}
+        runCode={config.code}
+        note={config.note}
+        hint={config.hint}
+        html={html}
+        caption={caption}
+      />
+    );
+  }
 
   return (
     <figure className="grid gap-2">

@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { statSync } from "node:fs";
 import { readdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
@@ -26,6 +27,9 @@ const toCacheUrl = (relativePath) => {
 const relativePaths = (await listFiles(OUTPUT_DIRECTORY))
   .map((filePath) => path.relative(OUTPUT_DIRECTORY, filePath))
   .filter((relativePath) => relativePath !== SERVICE_WORKER_FILE && !relativePath.endsWith(".txt") && !path.basename(relativePath).startsWith("."))
+  // PGlite (~15 MB, emitted under _next/static/media) is cached by the service worker the first
+  // time someone runs SQL, not up front.
+  .filter((relativePath) => !relativePath.startsWith(`pglite${path.sep}`) && statSync(path.join(OUTPUT_DIRECTORY, relativePath)).size < 2_000_000)
   .sort();
 
 const hash = createHash("sha256");

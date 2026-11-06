@@ -15,6 +15,8 @@ import { PracticeSet } from "@/components/content/PracticeSet";
 import { Timeline } from "@/components/content/Timeline";
 import { WorkedExample } from "@/components/content/WorkedExample";
 import type { ReviewBlock } from "@/lib/reviewData";
+import { RunnableCode } from "@/components/content/RunnableCode";
+import { runLanguage } from "@/lib/runner/types";
 
 interface ReviewBlockViewProps {
   block: ReviewBlock;
@@ -46,7 +48,12 @@ export function ReviewBlockView({ block, concepts, href }: ReviewBlockViewProps)
       );
     case "formula":
       return <Formula tex={block.tex} caption={block.caption} />;
-    case "code":
+    case "code": {
+      const engine = block.run === false ? null : runLanguage(block.lang);
+      if (engine) {
+        const config = block.run || {};
+        return <RunnableCode lang={engine} code={block.code} runCode={config.code} note={config.note} hint={config.hint} caption={block.caption} />;
+      }
       return (
         <figure className="grid gap-2">
           <pre className="overflow-x-auto rounded-xl border border-line bg-sunken p-4 font-mono text-xs leading-relaxed text-ink">
@@ -55,6 +62,7 @@ export function ReviewBlockView({ block, concepts, href }: ReviewBlockViewProps)
           {block.caption ? <figcaption className="text-xs text-faint">{block.caption}</figcaption> : null}
         </figure>
       );
+    }
     case "table":
       return <DataTable headers={block.headers} rows={block.rows} caption={block.caption} />;
     case "figure":

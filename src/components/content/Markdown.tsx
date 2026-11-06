@@ -2,7 +2,9 @@ import ReactMarkdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
+import { RunnableCode } from "@/components/content/RunnableCode";
 import { cn } from "@/lib/cn";
+import { runLanguage } from "@/lib/runner/types";
 
 const components: Components = {
   p: ({ children }) => <p className="leading-relaxed text-muted">{children}</p>,
@@ -44,11 +46,22 @@ const components: Components = {
       {children}
     </code>
   ),
-  pre: ({ children }) => (
-    <pre className="overflow-x-auto rounded-xl border border-line bg-sunken p-4 font-mono text-sm [&>code]:border-0 [&>code]:bg-transparent [&>code]:p-0">
-      {children}
-    </pre>
-  ),
+  pre: ({ children, node }) => {
+    // Fenced ```sql / ```cypher blocks become runnable against the sample data.
+    const codeNode = node?.children[0];
+    if (codeNode?.type === "element" && codeNode.tagName === "code") {
+      const classes = codeNode.properties.className;
+      const lang = (Array.isArray(classes) ? classes : []).map(String).find((name) => name.startsWith("language-"))?.slice(9);
+      const engine = lang ? runLanguage(lang) : null;
+      const text = codeNode.children.map((child) => (child.type === "text" ? child.value : "")).join("");
+      if (engine && text.trim()) return <RunnableCode lang={engine} code={text} />;
+    }
+    return (
+      <pre className="overflow-x-auto rounded-xl border border-line bg-sunken p-4 font-mono text-sm [&>code]:border-0 [&>code]:bg-transparent [&>code]:p-0">
+        {children}
+      </pre>
+    );
+  },
   blockquote: ({ children }) => (
     <blockquote className="border-l-2 border-brand/40 pl-4 text-muted italic">{children}</blockquote>
   ),

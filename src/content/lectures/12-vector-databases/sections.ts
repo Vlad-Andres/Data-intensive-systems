@@ -166,6 +166,20 @@ LIMIT 5;
 SELECT * FROM items ORDER BY embedding <-> '[3,1,2]' LIMIT 5;   -- k-NN
 SELECT * FROM items WHERE embedding <-> '[3,1,2]' < 5;          -- range`,
     caption: "Query interfaces: native systems mostly offer a small API (Chroma: add, query, update, upsert, delete…); systems built on relational databases extend SQL.",
+    run: {
+      note: "distance(embedding, :query_vector) is generic pseudo-SQL; the runnable version writes it with pgvector's <-> operator and the query vector [3,1,2].",
+      hint: "change the query vector, the price limit, k (LIMIT) or the radius 5; try <=> (cosine distance) instead of <->",
+      code: `-- hybrid k-NN: the 5 nearest items that also cost less than 100
+SELECT name, price, embedding, embedding <-> '[3,1,2]' AS distance
+FROM items
+WHERE price < 100
+ORDER BY embedding <-> '[3,1,2]'
+LIMIT 5;
+
+-- the same idea in PostgreSQL with pgvector: <-> is Euclidean distance
+SELECT * FROM items ORDER BY embedding <-> '[3,1,2]' LIMIT 5;   -- k-NN
+SELECT * FROM items WHERE embedding <-> '[3,1,2]' < 5;          -- range`,
+    },
   },
   { kind: "concepts", ids: ["similarity-score", "knn-ann", "ck-search", "hybrid-query", "multi-vector"] },
   {
