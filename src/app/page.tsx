@@ -1,12 +1,12 @@
 import Link from "next/link";
-import { ArrowRight, Gamepad2, GraduationCap, Layers, Sparkles } from "lucide-react";
+import { ArrowRight, Gamepad2, GraduationCap, Layers, Sparkles, Target } from "lucide-react";
 import { ContinueStudying } from "@/components/home/ContinueStudying";
 import { CourseOverview } from "@/components/home/CourseOverview";
 import { LectureCard } from "@/components/home/LectureCard";
 import { ProgressSummary } from "@/components/home/ProgressSummary";
 import { Card } from "@/components/ui/Card";
 import { countExercises, lectureIndex, lectureMetas } from "@/content/registry";
-import { EXAM_PATH } from "@/lib/format";
+import { EXAM_PATH, EXPECTED_PATH } from "@/lib/format";
 
 const PRINCIPLES = [
   {
@@ -46,6 +46,20 @@ export default function HomePage() {
           <span className="text-sm text-muted">
             A timed mock test from every lecture, exam-style open questions with model answers,
             pseudocode drills and a last-day checklist.
+          </span>
+        </span>
+        <ArrowRight size={18} className="text-brand transition-transform group-hover:translate-x-0.5" aria-hidden />
+      </Link>
+
+      <Link
+        href={EXPECTED_PATH}
+        className="group -mt-6 flex flex-wrap items-center gap-4 rounded-2xl border border-line bg-surface px-5 py-4 transition-colors hover:border-brand/60"
+      >
+        <Target size={28} className="shrink-0 text-brand" aria-hidden />
+        <span className="grid flex-1 gap-0.5">
+          <span className="text-base font-semibold text-ink">Expected at the exam</span>
+          <span className="text-sm text-muted">
+            Only what the course says you must know, per lecture, in concise form. Tick off what you know and study the rest.
           </span>
         </span>
         <ArrowRight size={18} className="text-brand transition-transform group-hover:translate-x-0.5" aria-hidden />

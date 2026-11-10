@@ -15,3 +15,4 @@ export function lecturePath(slug: string) {
 
 export const EXAM_PATH = "/exam/";
 export const DIFFICULT_PATH = "/difficult/";
+export const EXPECTED_PATH = "/expected/";

@@ -10,6 +10,12 @@ const objectives: Block[] = [
   { kind: "list", variant: "objectives", items: examMeta.objectives },
   {
     kind: "info",
+    variant: "insight",
+    title: "Short on time?",
+    md: "The **Expected at the exam** page (in the top menu) lists only what the course says you must know for each lecture, in concise form, and lets you tick off what you already know.",
+  },
+  {
+    kind: "info",
     variant: "warning",
     title: "About the sample test",
     md: "The course publishes one sample test to show the **style** of the questions. It is explicitly *not* study material, has no published solutions, and previous tests are not made public. The questions on this page are written for this site in the same style; some touch the same core topics, because those are central to the course, and every answer comes from the lectures.",

@@ -10,6 +10,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // PGlite's published files, copied from node_modules by scripts/copy-pglite.mjs:
+    "public/pglite/**",
   ]),
 ]);
 
