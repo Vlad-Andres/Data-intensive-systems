@@ -3,12 +3,12 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ChevronDown, Flag, GraduationCap, Menu, Search, X } from "lucide-react";
+import { ChevronDown, Flag, GraduationCap, Menu, Search, Target, X } from "lucide-react";
 import type { LectureMeta } from "@/content/types";
 import type { SearchRecord } from "@/lib/search";
 import { SearchDialog } from "@/components/layout/SearchDialog";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
-import { DIFFICULT_PATH, EXAM_PATH, lecturePath } from "@/lib/format";
+import { DIFFICULT_PATH, EXAM_PATH, EXPECTED_PATH, lecturePath } from "@/lib/format";
 import { useDifficult } from "@/hooks/useDifficult";
 import { cn } from "@/lib/cn";
 
@@ -122,6 +122,18 @@ export function SiteHeader({ metas, records }: SiteHeaderProps) {
           </Link>
 
           <Link
+            href={EXPECTED_PATH}
+            onClick={closeMenus}
+            className={cn(
+              "flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors hover:bg-sunken",
+              pathname.startsWith("/expected") ? "text-brand" : "text-muted",
+            )}
+          >
+            <Target size={15} aria-hidden />
+            Expected
+          </Link>
+
+          <Link
             href={DIFFICULT_PATH}
             onClick={closeMenus}
             className={cn(
@@ -179,6 +191,13 @@ export function SiteHeader({ metas, records }: SiteHeaderProps) {
             className="block rounded-lg px-3 py-2 text-sm font-medium hover:bg-sunken"
           >
             Exam training
+          </Link>
+          <Link
+            href={EXPECTED_PATH}
+            onClick={closeMenus}
+            className="block rounded-lg px-3 py-2 text-sm font-medium hover:bg-sunken"
+          >
+            Expected at the exam
           </Link>
           <Link
             href={DIFFICULT_PATH}
