@@ -43,7 +43,9 @@ stop points it lists.
 - [x] H4 by hand (fake model, 2026-11-11): job → outline → build → "Open your site" → `/courses/sample-course-<id>/` renders home, lectures, exam, difficult; accent applied; links stay under the course; bad keys 404; one CSP per path; portal home has no Tailwind; 375 px no overflow; no console errors. Escape test: `top.location`, cookie, `localStorage`, `fetch` and an image beacon all blocked inside the frame, error shown, page stayed
 - [ ] H4 still open: canned model (`core/generate/fake.ts`) does not emit a `custom` block yet; dark mode and "progress kept after reload" not checked by hand
 - [x] **Portal deployed to production** (2026-11-11, user's go-ahead): PR Vlad-Andres/playground-portal#2 `iteration-3 → main` merged (`58d4637`; #1 counted as merged with it). Vercel production deploy succeeded; live checks: `/` 200, `/courses/<unknown>/` 404 with the course CSP, Blob reachable, `/pglite/*` served. Earlier `iteration-3` previews failed because `scripts/run-d5.ts` imported the sibling template checkout; removed in `bdf67ce`
-- [ ] **Waiting on the user:** set `PORTAL_ACCESS_CODE` (12+ chars) in Vercel production; until then the live portal answers "Generation is disabled on this server." Then one real run on production to verify a live course (counts toward the 5-run limit)
+- [x] `PORTAL_ACCESS_CODE` set by the user; production redeployed; generation is on (wrong code → 401)
+- [x] PR Vlad-Andres/playground-portal#3 merged (`ea389df`, deployed): users never see model calls, token usage, the bundle or preview commands; the bundle route is gone; errors name no model. **GitHub publishing removed entirely** (user does not want repos created per course): courses are only hosted at `/courses/<key>/`. Do not reintroduce it
+- [ ] **Waiting on the user:** create one real course on the live site and send the job link; then verify the live course end to end
 - [ ] **Next: H5 takedown** (`DELETE /api/admin/courses/:key`, `ADMIN_TOKEN`), then H6 custom-component review, then package I (skip its code-runner steps). Production deploys `main`: new work goes through a PR from `iteration-3`
 
 ### D4 completed (2026-11-11)
