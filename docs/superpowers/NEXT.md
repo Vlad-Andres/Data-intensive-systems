@@ -39,7 +39,10 @@ stop points it lists.
 - [x] Iteration 3 F1 `@site/*` alias, F2 screens render `SiteData` (template `2f2dedc`, portal `6af271c`)
 - [x] Iteration 3 G1 `custom` block + `scanCustomHtml` (template `2f4a765`), G2 sandboxed `CustomFrame` (template `99769d4`)
 - [x] **G3 code-runner DEFERRED** by the user (2026-11-11): too much machinery for now. Findings (srcdoc frames inherit the page CSP, so a runtime needs a static runner page) in `notes/2026-11-code-runtimes.md`
-- [ ] **Next: package H** — portal syncs core to template `99769d4`, then H1 vendor the template UI, H2 publisher/store, H3 `/courses/[key]`, H4 by-hand check, H5 takedown, H6 custom-component review; then package I (skip its code-runner steps)
+- [x] Iteration 3 H1 vendor the template UI (portal `72f0c74`), H2 portal publisher + stored sites (`7a09c91`), H3 `/courses/[key]` routes (`5a699d4`, fix `461f05c`); portal 75/75 tests, lint and build clean
+- [x] H4 by hand (fake model, 2026-11-11): job → outline → build → "Open your site" → `/courses/sample-course-<id>/` renders home, lectures, exam, difficult; accent applied; links stay under the course; bad keys 404; one CSP per path; portal home has no Tailwind; 375 px no overflow; no console errors. Escape test: `top.location`, cookie, `localStorage`, `fetch` and an image beacon all blocked inside the frame, error shown, page stayed
+- [ ] H4 still open: canned model (`core/generate/fake.ts`) does not emit a `custom` block yet; dark mode and "progress kept after reload" not checked by hand
+- [ ] **Next: H5 takedown** (`DELETE /api/admin/courses/:key`, `ADMIN_TOKEN`), then H6 custom-component review, then package I (skip its code-runner steps)
 
 ### D4 completed (2026-11-11)
 

@@ -59,3 +59,10 @@ Task Z1: findings ledgered, not fixed (none Critical):
 - Low (template): `core/generate/plan.ts` accepts page ranges with `from > to`, unknown `file`, or no upper bound; `renderMaterials` then silently includes nothing for that range.
 Task Z1: checks after fixes — template: `npm run lint && npm test && npm run build && npm run build:dis && npx tsx scripts/snapshot-text.ts out --compare tests/baseline/pages.json` → 292/292 tests, lint ok, both builds ok, 0 pages differ (18 compared); portal: `npm run lint && npm test && npm run build` → 47/47 tests, lint ok, build ok.
 Task Z1: E2 "real publish" marked dropped in `plans/2026-11-11-iteration-2.md` with user approval: the 2026-11-11 (b) amendment replaces GitHub Pages publishing with portal-hosted courses. Spike/admin scripts remain operator tools.
+
+## Iteration 3 (2026-11-11)
+
+- G3 code runner deferred by the user; sandbox findings in `notes/2026-11-code-runtimes.md`.
+- Portal synced to template `99769d4` (`a9676c5`).
+- H1 `72f0c74`, H2 `7a09c91`, H3 `5a699d4`: courses publish to `courses/<key>/site.json` and render at `/courses/<key>/`.
+- H4 by hand passed (see NEXT.md); fix `461f05c` (trailing-slash links were redirected).
