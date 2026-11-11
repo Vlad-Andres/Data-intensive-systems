@@ -61,3 +61,25 @@ The runner frame is a `CustomFrame`-style sandbox: `sandbox="allow-scripts"`, op
 
 Each kept language runs “hello”, a loop and a runtime error at 375 px; then the showcase blocks
 (Python and JavaScript) in light and dark themes.
+
+## Browser check of the sandbox design (2026-11-11) — and deferral
+
+Tested in headless Chrome against a page carrying the template's own CSP:
+
+- A `srcdoc` frame **inherits the page CSP** (policy-container inheritance for `about:srcdoc`). The page has
+  no `'unsafe-eval'`, so `new Function` fails inside the frame and a blob worker fails too. The
+  `wrapCustomHtml` route therefore cannot host a runtime that needs `eval`, and the page CSP must not be
+  widened for it.
+- A sandboxed frame loaded **from a static file** (`sandbox="allow-scripts"`, e.g. `/runtimes/runner.html`)
+  does not inherit the page CSP; its own meta CSP applies, and `eval` works there.
+- Inside that opaque-origin frame a **blob module worker fails**; a blob classic worker, a `data:` classic
+  worker and a `data:` module worker work. Pyodide needs a module worker, so it would be a `data:` module
+  worker.
+- The runner page cannot know the site origin statically; it would have to write its meta CSP from
+  `location.href` (still the real URL in an opaque sandboxed frame) before any other script.
+- The Claude desktop browser pane does not run scripts in file-backed sandboxed frames at all; use real
+  Chrome for by-hand checks.
+
+**Decision (user, 2026-11-11):** the code-runner widget is deferred. Iteration 3 continues with hosting
+(package H). If it comes back, start from the static runner page + `data:` module worker design above,
+and consider MicroPython (< 1 MB, partial stdlib) against Pyodide (real CPython, ~12 MB first load).

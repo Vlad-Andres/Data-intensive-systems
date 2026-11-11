@@ -35,7 +35,11 @@ stop points it lists.
 - [x] **Iteration 2 E1 publisher against mocked GitHub complete** (`dc02b55`, 2026-11-11)
 - [x] **Iteration 2 E2 publish-spike and delete-site scripts written** (`a554a76`, 2026-11-11)
 - [x] Iteration-3 plan written (2026-11-11): `plans/2026-11-11-iteration-3.md` — courses hosted by the portal at `/courses/<key>/`, shared template UI, sandboxed `custom` block, `code-runner` widget, model-composed home page, 3 more widgets. Spec: "Amendments 2026-11-11 (b)" in the design doc
-- [ ] **Next: wait for the user's yes on the iteration-3 plan and their choice of execution method.** Then start at package Z (close iteration 2: review + PRs)
+- [x] Iteration-3 plan approved; package Z done (iteration-2 PRs open, not merged; branches `iteration-3` in all three repos)
+- [x] Iteration 3 F1 `@site/*` alias, F2 screens render `SiteData` (template `2f2dedc`, portal `6af271c`)
+- [x] Iteration 3 G1 `custom` block + `scanCustomHtml` (template `2f4a765`), G2 sandboxed `CustomFrame` (template `99769d4`)
+- [x] **G3 code-runner DEFERRED** by the user (2026-11-11): too much machinery for now. Findings (srcdoc frames inherit the page CSP, so a runtime needs a static runner page) in `notes/2026-11-code-runtimes.md`
+- [ ] **Next: package H** — portal syncs core to template `99769d4`, then H1 vendor the template UI, H2 publisher/store, H3 `/courses/[key]`, H4 by-hand check, H5 takedown, H6 custom-component review; then package I (skip its code-runner steps)
 
 ### D4 completed (2026-11-11)
 
