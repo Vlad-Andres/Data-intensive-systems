@@ -48,7 +48,7 @@ stop points it lists.
 - [x] The user created a real course on the live site (2026-11-12) and confirmed it works
 - [x] Iteration-4 plan written (2026-11-12): `plans/2026-11-12-iteration-4.md` — portal only: publish in the finish step, logs, error codes, English/Romanian (next-intl), landing page, `/create`, admin page (settings, invite codes, jobs, courses, takedown), private owner link to edit or delete a course. It replaces iteration-3 tasks H5 and H6
 - [ ] **Next: implement `plans/2026-11-12-iteration-4.md`** (approved by the user 2026-11-12). Follow its "Start here" section; its "Progress" list shows the next task. One pull request per package, merged only by the user. The prompt to start an implementing agent is in `plans/2026-11-12-iteration-4-handoff.md`. `playground-portal` has a local branch `iteration-4` cut from `main` (`ea389df`), no commits, not pushed
-- [ ] After iteration 4: `plans/2026-11-12-iteration-5.md` (AI-guided design, Google sign-in, refinement, added material, kept files, versions). It replaces iteration-3 package I and includes the open H4 hand checks. **Do not start it until iteration 4 is merged and the user says "start iteration 5"**
+- [ ] After iteration 4: `plans/2026-11-12-iteration-5.md`, approved by the user 2026-11-12 (AI-guided design, Google sign-in, refinement, added material, kept files, versions). It replaces iteration-3 package I and includes the open H4 hand checks. **Do not start it until iteration 4 is merged and the user says "start iteration 5"**
 - [ ] The user must set `ADMIN_TOKEN` (24+ characters) in Vercel before `/admin` works (plan Task C1)
 
 ### D4 completed (2026-11-11)
