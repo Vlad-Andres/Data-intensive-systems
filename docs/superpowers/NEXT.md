@@ -5,14 +5,15 @@
 - **Known issue (course pages):** in production each course page logs one console error because the template registers a service worker (`/sw.js`) the portal does not serve. Fix in `playground-template` (`SiteShell`), then `npm run sync:core`. Waiting for the owner's go-ahead.
 - **Not tested yet:** a real model run (the model account has no credit); test once it is topped up.
 
-## Iteration 5 (in progress)
+## Iteration 5 (merged, owner testing)
 
-- Package P merged (PR #8). Service-worker fix merged (PR #9); the known issue above is fixed.
-- **Packages A–D are built and pushed** on `iteration-5` (portal) and `iteration-5` (template, `30be21e`), in **PR #10**, waiting for the owner's merge.
-- Built fast at the owner's request (2026-11-12): **no new tests for B–D and no hand checks**. Only an API smoke run of create → design → alternative → done passed. Sign-in, refine, append, restore and kept files are untested.
-- **Next:** package E ([`plans/iter-5/package-E.md`](plans/iter-5/package-E.md)): evaluation set, whole-flow and security check, README. This is where the skipped tests and hand checks belong.
-- **Owner actions:** Google OAuth client + `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET`, `SESSION_SECRET` in Vercel, then redeploy. A real-model run when the model has credit.
-- **Note:** the owner's opencode agent has temporary worktrees holding both `iteration-5` branches; they are behind the pushed branches. Remove them (`git worktree prune` after deleting the temp folders) before using that agent again.
+- **Merged to production:** P (PR #8), the course service-worker fix (PR #9), and A–E (PR #10, `a02e044`). Template: branch `iteration-5` at `c8fe480`, vendored into the portal.
+- **What was checked (2026-11-12, fake model only):** portal 162 tests and template 450 tests pass; CI green. A scripted whole-flow run passed 37/37: guest flow and guest limit, every marker, language decisions, kept files on/off at creation, refine (summary, version, lock, refine-empty, concurrency, round limit), append, the append-or-reorganise choice both ways, another user and guests locked out, an old `plan`-step job. By hand in the browser: claim, restore, kept files off, delete a course, delete an account, design screen in EN/RO at 375 px, building from an alternative. Production build: course pages may be framed only by the portal (`frame-ancestors 'self'`), portal pages `'none'`; dev sign-in is 404 in production.
+- **Found and fixed during the check:** "keep my files" at creation was rejected by the request schema; the local file store could be read half-written by two job drivers; the level was not translated on the design screen.
+- **Not checked (stopped at the owner's request, who tests it):** console/CSP errors in a browser on the production build, a `[custom]` exercise in the sandbox after these changes, dark mode on a course, real Google sign-in, and any real-model run (the model has no credit). The content-fit rubric for real runs is in [`notes/2026-11-content-fit-rubric.md`](notes/2026-11-content-fit-rubric.md).
+- **Owner actions:** create the Google OAuth client (redirect `https://playground-portal-bay.vercel.app/api/auth/google/callback`) and set `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET`, `SESSION_SECRET` (32+ chars) in Vercel Production, then redeploy. Until then accounts stay off and the portal behaves as in iteration 4.
+- **Next:** the owner's testing; after that, a real-model run on the five fixtures (at most 5 runs, with the owner's go-ahead) scored with the rubric.
+- **Note:** the owner's opencode agent has temporary worktrees on both `iteration-5` branches that are now behind; delete them before reusing that agent.
 
 ## On-demand reference
 
