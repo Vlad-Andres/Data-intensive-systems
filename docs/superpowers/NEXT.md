@@ -1,13 +1,10 @@
 # NEXT — Live Hand-off
 
 - **Active iteration:** Iteration 4 (`playground-portal` only — do **not** touch `playground-template`)
-- **Active branch:** `iteration-4` (clean working tree, 4 local commits ahead of `origin/main`, not pushed yet; Packages A & B merged via PRs #4 and #5)
-  - Package C committed locally: C1 (`cbdcbef`), C2 (`4793bd5`), C3 (`eb00caf`)
-  - Package D committed locally: D1 (`19e3ec4` — `lib/sites/edit.ts` + `tests/site-edit.test.ts`)
-- **Active package:** [`plans/iter-4/package-D.md`](plans/iter-4/package-D.md)
-  - **Next task:** **D2 `The manage page`** → complete D2, run full gate (`npm run lint && npm test && npm run build`), push `iteration-4`, open PR `iteration-4 → main` (covering Packages C & D, reminding the owner about `ADMIN_TOKEN`), and stop
-- **Remaining in Iteration 4:** [`plans/iter-4/package-E.md`](plans/iter-4/package-E.md) (`E1` whole-flow check, `README.md`, final PR)
-- **Pending owner action:** Set `ADMIN_TOKEN` (24+ chars) in Vercel Production and redeploy before `/admin` works
+- **Active branch:** `iteration-4`. Packages A and B are merged (PRs #4, #5). **Packages C and D are done and pushed; their combined PR is open and waits for the owner's merge** (see the PR list on `Vlad-Andres/playground-portal`).
+- **Active package:** [`plans/iter-4/package-E.md`](plans/iter-4/package-E.md) — start only after the owner merges the C+D PR
+  - **Next task:** `E1` whole-flow check, `README.md`, final PR
+- **Pending owner actions:** merge the C+D PR; set `ADMIN_TOKEN` (24+ chars) in Vercel Production and redeploy before `/admin` works
 
 ## Queued next (blocked)
 
