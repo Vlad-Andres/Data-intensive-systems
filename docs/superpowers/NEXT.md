@@ -1,9 +1,9 @@
 # NEXT — Live Hand-off
 
-- **Iteration 4: complete and merged.** `playground-portal` `main` is at `b11f465`: packages A (#4), B (#5), C+D (#6) and the E1 README (`b11f465`) are all on `main`.
-- **Verification:** `npm run lint`, `npm test` (140/140) and `npm run build` are green on `main`. The E1 whole-flow and header checks are recorded in [`plans/iter-4/package-E.md`](plans/iter-4/package-E.md) under "Calls made / problems".
-- **Not verified yet:** the visual pass at desktop and 375 px in both languages, and the browser console. The flows were exercised over HTTP only.
-- **Owner action still open:** set `ADMIN_TOKEN` (24+ characters) in Vercel for Production and redeploy, otherwise `/admin` answers 404.
+- **Iteration 4: complete and merged.** `playground-portal` `main` is at `3e56fac`: packages A (#4), B (#5), C+D (#6), the README (`b11f465`) and admin translation editing (#7, `/admin/translations`).
+- **Verification:** lint, tests (149) and build green; the E1 flow, header, 375 px and console checks are recorded in [`plans/iter-4/package-E.md`](plans/iter-4/package-E.md).
+- **Known issue:** course pages log one console error in production because the template registers a service worker (`/sw.js`) the portal does not serve. Fix in `playground-template` (`SiteShell`), then `npm run sync:core`; waiting for the owner's go-ahead.
+- **Not tested yet:** a real model run (the model account has no credit); test it once it is topped up.
 
 ## Next: Iteration 5 (blocked on the owner)
 
