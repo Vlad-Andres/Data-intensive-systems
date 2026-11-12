@@ -67,3 +67,6 @@ Commit: `feat: jobs continue on the server between steps`.
 ---
 
 ## Calls made / problems
+
+- P3 check by hand (fake model, `next dev` in a separate `iteration-5` worktree): created a job, accepted the outline, then made a single `/advance` POST and did not touch it again; the job cascaded `lecture:1 → lecture:2 → finish → done` in ~1 s via the `after()` chain and ended `done` with a `/courses/<key>/` URL. The literal "close the tab" behaviour cannot be observed without a browser; on Vercel it must still be confirmed on the first real job after release.
+- Worked in a separate git worktree so the concurrent `iteration-4` translation work in the original checkout was never touched. That work later landed on `main` via PR #7; Package P's files do not overlap it.
