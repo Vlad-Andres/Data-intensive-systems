@@ -1,11 +1,12 @@
 # Iteration 4 — Package D: Creator Site Editing
 
 > **Scope:** `playground-portal` on branch `iteration-4`. Do **not** touch `playground-template`.
+> **Current state:** Task D1 (`19e3ec4`) is committed on `iteration-4` (along with Package C `cbdcbef`..`eb00caf`). Start directly at **Task D2**. When D2 is done, push `iteration-4` and open the PR (include the `ADMIN_TOKEN` reminder from Package C in the PR body).
 > **Styles & i18n:** CSS Modules (`*.module.css`) reusing `app/globals.css` tokens; no Tailwind on portal pages; work at 375 px with keyboard focus. All visible strings in `messages/en.json` and `messages/ro.json` (informal singular "tu"; comma-below diacritics `ă, â, î, ș, ț`; brand `"playground."` untranslated; glossary: course site → `"site de studiu"`, lecture → `"lecție"`, outline → `"cuprins"`).
 
 ---
 
-### Task D1: Patch logic (pure, no UI)
+### Task D1: Patch logic (pure, no UI) *(committed: `19e3ec4`)*
 
 **Files:** create `lib/sites/edit.ts`, `tests/site-edit.test.ts`.
 
@@ -68,3 +69,5 @@ Commit: `feat: creators can edit or delete their site`.
 ---
 
 ## Calls made / problems
+
+- D1: when empty sections are dropped, `lecture.meta.outline` is rebuilt from the remaining sections so assembled outline metadata stays aligned with `lecture.sections`.

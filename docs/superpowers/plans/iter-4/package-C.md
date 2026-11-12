@@ -1,7 +1,7 @@
 # Iteration 4 — Package C: Admin Page
 
 > **Scope:** `playground-portal` on branch `iteration-4`. Do **not** touch `playground-template`.
-> **Current state:** C1 (`cbdcbef`) and C2 (`4793bd5`) are already committed on `iteration-4`; C3 has uncommitted work in progress in the working tree. Inspect existing files before editing.
+> **Current state:** Package C is complete and committed locally on `iteration-4` (`cbdcbef` C1, `4793bd5` C2, `eb00caf` C3).
 > **Styles:** CSS Modules (`*.module.css`) reusing `app/globals.css` tokens; no Tailwind on portal pages.
 
 The owner controls the portal without changing code or redeploying. Settings live in one JSON file in the Blob store and are read on every request that needs them (no caching).
@@ -68,7 +68,7 @@ Commit: `feat: admin settings and invite codes`.
 
 ---
 
-### Task C3: Jobs, courses and takedown *(next / in progress)*
+### Task C3: Jobs, courses and takedown *(committed: `eb00caf`)*
 
 **Files:** create `lib/admin/overview.ts`, `tests/admin-overview.test.ts`; modify `app/admin/page.tsx`, `app/admin/actions.ts` (plus any client subcomponent needed for `window.confirm`, e.g. `app/admin/CourseTable.tsx`).
 

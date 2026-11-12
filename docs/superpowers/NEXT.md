@@ -1,11 +1,12 @@
 # NEXT — Live Hand-off
 
 - **Active iteration:** Iteration 4 (`playground-portal` only — do **not** touch `playground-template`)
-- **Active branch:** `iteration-4` (Packages A & B are merged to `main` via PRs #4 and #5)
-- **Active package:** [`plans/iter-4/package-C.md`](plans/iter-4/package-C.md)
-  - Committed on `iteration-4`: C1 (`cbdcbef`), C2 (`4793bd5`)
-  - Next / in progress in working tree: **C3 `admin overview and course takedown`** → finish C3, pass full gate, open Package C PR, and stop
-- **Remaining in Iteration 4:** [`plans/iter-4/package-D.md`](plans/iter-4/package-D.md) → [`plans/iter-4/package-E.md`](plans/iter-4/package-E.md)
+- **Active branch:** `iteration-4` (clean working tree, 4 local commits ahead of `origin/main`, not pushed yet; Packages A & B merged via PRs #4 and #5)
+  - Package C committed locally: C1 (`cbdcbef`), C2 (`4793bd5`), C3 (`eb00caf`)
+  - Package D committed locally: D1 (`19e3ec4` — `lib/sites/edit.ts` + `tests/site-edit.test.ts`)
+- **Active package:** [`plans/iter-4/package-D.md`](plans/iter-4/package-D.md)
+  - **Next task:** **D2 `The manage page`** → complete D2, run full gate (`npm run lint && npm test && npm run build`), push `iteration-4`, open PR `iteration-4 → main` (covering Packages C & D, reminding the owner about `ADMIN_TOKEN`), and stop
+- **Remaining in Iteration 4:** [`plans/iter-4/package-E.md`](plans/iter-4/package-E.md) (`E1` whole-flow check, `README.md`, final PR)
 - **Pending owner action:** Set `ADMIN_TOKEN` (24+ chars) in Vercel Production and redeploy before `/admin` works
 
 ## Queued next (blocked)
