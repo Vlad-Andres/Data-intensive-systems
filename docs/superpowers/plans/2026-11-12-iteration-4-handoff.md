@@ -1,5 +1,10 @@
 # Hand-off prompt for iteration 4
 
+A `CLAUDE.md` in the folder that contains the three repositories (outside git, so it is not in any
+repository) is loaded automatically by Claude Code and tells a new agent to read `NEXT.md` and this
+plan. With it, a first message of "start" or "continue" is enough. Use the long prompt below for an
+agent that does not read `CLAUDE.md`, or when that file is missing.
+
 Paste the text below as the first message to the implementing agent. Start the agent in the folder
 that contains `playground-portal`, `playground-template` and `Data-intensive-systems`.
 
