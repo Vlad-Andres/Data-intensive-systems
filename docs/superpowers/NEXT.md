@@ -5,13 +5,14 @@
 - **Known issue (course pages):** in production each course page logs one console error because the template registers a service worker (`/sw.js`) the portal does not serve. Fix in `playground-template` (`SiteShell`), then `npm run sync:core`. Waiting for the owner's go-ahead.
 - **Not tested yet:** a real model run (the model account has no credit); test once it is topped up.
 
-## Iteration 5 (started)
+## Iteration 5 (in progress)
 
-- Portal branch `iteration-5` is pushed; **Package P** is in **PR #8** (`Vlad-Andres/playground-portal`), awaiting the owner's merge.
-- Committed on `iteration-5`: P1 `c356629`, P2 `0153fa9`, P3 `df3f2b5`. Local gate green: `npm run lint`, `npm test` (151/151), `npm run build`.
-- **Next:** [`plans/iter-5/package-A.md`](plans/iter-5/package-A.md) — the generator infers, designs and adapts (`playground-template` then `npm run sync:core`). Start after the owner gives the go-ahead.
-- **Branch notes:** template `iteration-5` exists locally (cut from `origin/iteration-3`) but is **not** pushed yet — Package A pushes it.
-- **Owner actions:** set `ADMIN_TOKEN` (24+ chars) in Vercel Production and redeploy; confirm the P3 `after()` chaining on the first real job after release.
+- Package P merged (PR #8). Service-worker fix merged (PR #9); the known issue above is fixed.
+- **Packages A–D are built and pushed** on `iteration-5` (portal) and `iteration-5` (template, `30be21e`), in **PR #10**, waiting for the owner's merge.
+- Built fast at the owner's request (2026-11-12): **no new tests for B–D and no hand checks**. Only an API smoke run of create → design → alternative → done passed. Sign-in, refine, append, restore and kept files are untested.
+- **Next:** package E ([`plans/iter-5/package-E.md`](plans/iter-5/package-E.md)): evaluation set, whole-flow and security check, README. This is where the skipped tests and hand checks belong.
+- **Owner actions:** Google OAuth client + `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET`, `SESSION_SECRET` in Vercel, then redeploy. A real-model run when the model has credit.
+- **Note:** the owner's opencode agent has temporary worktrees holding both `iteration-5` branches; they are behind the pushed branches. Remove them (`git worktree prune` after deleting the temp folders) before using that agent again.
 
 ## On-demand reference
 
