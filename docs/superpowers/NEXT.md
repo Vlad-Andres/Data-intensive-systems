@@ -45,8 +45,11 @@ stop points it lists.
 - [x] **Portal deployed to production** (2026-11-11, user's go-ahead): PR Vlad-Andres/playground-portal#2 `iteration-3 → main` merged (`58d4637`; #1 counted as merged with it). Vercel production deploy succeeded; live checks: `/` 200, `/courses/<unknown>/` 404 with the course CSP, Blob reachable, `/pglite/*` served. Earlier `iteration-3` previews failed because `scripts/run-d5.ts` imported the sibling template checkout; removed in `bdf67ce`
 - [x] `PORTAL_ACCESS_CODE` set by the user; production redeployed; generation is on (wrong code → 401)
 - [x] PR Vlad-Andres/playground-portal#3 merged (`ea389df`, deployed): users never see model calls, token usage, the bundle or preview commands; the bundle route is gone; errors name no model. **GitHub publishing removed entirely** (user does not want repos created per course): courses are only hosted at `/courses/<key>/`. Do not reintroduce it
-- [ ] **Waiting on the user:** create one real course on the live site and send the job link; then verify the live course end to end
-- [ ] **Next: H5 takedown** (`DELETE /api/admin/courses/:key`, `ADMIN_TOKEN`), then H6 custom-component review, then package I (skip its code-runner steps). Production deploys `main`: new work goes through a PR from `iteration-3`
+- [x] The user created a real course on the live site (2026-11-12) and confirmed it works
+- [x] Iteration-4 plan written (2026-11-12): `plans/2026-11-12-iteration-4.md` — portal only: publish in the finish step, logs, error codes, English/Romanian (next-intl), landing page, `/create`, admin page (settings, invite codes, jobs, courses, takedown), private owner link to edit or delete a course. It replaces iteration-3 tasks H5 and H6
+- [ ] **Next: implement `plans/2026-11-12-iteration-4.md`, Task A1 first.** Read the plan's "Rules" section before anything else. `playground-portal` has a local branch `iteration-4` cut from `main` (`ea389df`), with no commits and not pushed. Production deploys `main`; never push or merge it — the user merges
+- [ ] After iteration 4: iteration-3 package I (generation quality) and the open H4 hand checks (dark mode, progress after reload)
+- [ ] The user must set `ADMIN_TOKEN` (24+ characters) in Vercel before `/admin` works (plan Task C1)
 
 ### D4 completed (2026-11-11)
 
